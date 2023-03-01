@@ -1,4 +1,6 @@
-public class SymDeclaring extends AST{
+package ASTvisitor;
+
+public class SymDeclaring extends AST {
 
     String id;
 

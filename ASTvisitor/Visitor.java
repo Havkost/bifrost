@@ -1,5 +1,7 @@
+package ASTvisitor;
+
 public abstract class Visitor {
-    
+
     public void visit(AST n) {
         n.accept(this);
     }
