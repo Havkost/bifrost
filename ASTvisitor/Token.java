@@ -18,14 +18,16 @@ public class Token {
         GEM, SOM, RUTINE, COLON, NEWLINE, SET,
         TIL, GENTAG, GANGE, KOR, HVIS, ELLER,
         OG, IKKE, ER, TEKST, HELTAL, DECIMALTAL,
-        BOOLSK, DOT, UNDERSCORE, SANDT, FALSK, TAB, QUOTE
+        BOOLSK, DOT, UNDERSCORE, SANDT, FALSK,
+        TAB, QUOTE, FLOAT, INTEGER
     }
 
     public final static String[] token2str = new String[] {
             "gem", "som", "rutine", ":", "\n", "set", "til",
             "gentag", "gange", "kor", "hvis", "eller", "og",
             "ikke", "er", "tekst", "heltal", "decimaltal",
-            "boolsk", ".", "_", "sandt", "falsk", "tab", "\""
+            "boolsk", ".", "_", "sandt", "falsk", "tab", "\"",
+            "float", "integer"
     };
 
     public String toString() {
