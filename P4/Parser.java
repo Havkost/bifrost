@@ -55,12 +55,12 @@ public class Parser {
             Id();
             expect(COLON);
             expect(NEWLINE);
-            /** TODO: INDENT + STATEMENTS **/
+            Stmts();
         }
     }
 
     public void Stmt(){
-        if (ts.peek() == SÆT){
+        if (ts.peek() == SÆT) {
             Assign();
         } else if (ts.peek() == GENTAG) {
             Loop();
@@ -68,6 +68,14 @@ public class Parser {
             Func();
         } else if (ts.peek() == HVIS) {
             If();
+        }
+        expect(NEWLINE);
+    }
+
+    public void Stmts(){
+        if (ts.peek() == SÆT || ts.peek() == GENTAG || ts.peek() == KØR ||ts.peek() == HVIS){
+            Stmt();
+            Stmts();
         }
     }
 
@@ -102,21 +110,42 @@ public class Parser {
             Expr();
             expect(COLON);
             expect(NEWLINE);
-            /** TODO: INDENT + STATEMENTS **/
+            Stmts();
         }
     }
 
     /** EXPRESSION */
     public void Expr(){
+        if (ts.peek() == LETTER) {
+            Or_expr();
+        }
     }
 
     public void Or_expr(){
+        And_expr();
+        if(ts.peek() == ELLER) {
+            expect(ELLER);
+            Or_expr();
+        }
     }
 
     public void And_expr(){
+        Equality_expr();
+        if(ts.peek() == OG){
+            expect(OG);
+            And_expr();
+        }
     }
 
     public void Equality_expr(){
+        Rel_expr();
+        if (ts.peek() == ER) {
+            expect(ER);
+            Rel_expr();
+        } else if (ts.peek() == IKKEER){
+            expect(IKKEER);
+            Equality_expr();
+        }
     }
 
     public void Rel_expr(){
