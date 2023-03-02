@@ -9,7 +9,7 @@ public class TokenStream {
         }
 
         public int peek() {
-            return nextToken.type;
+            return nextToken.type.ordinal();
         }
 
         public Token advance() {
