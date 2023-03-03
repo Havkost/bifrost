@@ -56,19 +56,25 @@ public class Parser {
             expect(COLON);
             expect(NEWLINE);
             Stmts();
+            return;
         }
+        error("Expected rutine");
     }
 
     public void Stmt(){
         if (ts.peek() == SÆT) {
             Assign();
+            return;
         } else if (ts.peek() == GENTAG) {
             Loop();
+            return;
         } else if (ts.peek() == KØR) {
             Func();
+            return;
         } else if (ts.peek() == HVIS) {
             If();
-        }
+            return;
+        } else error("Expected sæt, gentag, kør or hvis");
         expect(NEWLINE);
     }
 
@@ -223,26 +229,33 @@ public class Parser {
     }
 
     public void Float(){
-        Integer();
+        if (ts.peek() == DIGIT){
+
+        }
     }
 
     public void Parser_string(){
+        if (ts.peek() == QUOTE) {
+            expect(QUOTE);
+        } else if (ts.peek() == LETTER) {
+            Alphanumeric();
+        }
+        Parser_string();
     }
 
     public void Alphanumeric(){
+        if (ts.peek() == LETTER){
+            expect(LETTER);
+        } else if (ts.peek() == DIGIT){
+            expect(DIGIT);
+        }
     }
-    public void Letter(){
+    public void Id() {
+        expect(LETTER);
+        if (ts.peek() == LETTER || ts.peek() == DIGIT) {
+            Alphanumeric();
+        }
     }
-    public void Digit(){
-    }
-    public void Id(){
-    }
-    public void Boolean(){
-    }
-    public void Indent(){
-    }
-
-
 
     private void expect(int type) {
         Token t = ts.advance();
