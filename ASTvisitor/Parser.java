@@ -1,11 +1,7 @@
-package P4Parser;
-
-import ASTvisitor.CharStream;
-import ASTvisitor.TokenStream;
-
+package ASTvisitor;
 import java.util.ArrayList;
+
 import static ASTvisitor.TokenType.*;
-import static ASTvisitor.Token.*;
 
 public class Parser {
 
@@ -193,8 +189,8 @@ public class Parser {
     }
 
     public void Not_expr(){
-        if (ts.peek() == NOT) {
-            expect(NOT);
+        if (ts.peek() == IKKE) {
+            expect(IKKE);
         }
         Factor();
     }
@@ -205,7 +201,7 @@ public class Parser {
             Expr();
             expect(RPAREN);
         }
-        if (ts.peek() == DIGIT || ts.peek() == QUOTE || ts.peek() == BOOLEAN) {
+        if (ts.peek() == DIGIT || ts.peek() == QUOTE || ts.peek() == BOOLSK) {
             Value();
         }
         if (ts.peek() == LETTER) {
@@ -218,8 +214,8 @@ public class Parser {
             Parser_string();
         } else if (ts.peek() == DIGIT) {
             /** TODO: INTEGER ELLER FLOAT? **/
-        } else if (ts.peek() == BOOLEAN) {
-            Boolean();
+        } else if (ts.peek() == BOOLSK) {
+            expect(BOOLSK);
         }
     }
 
@@ -228,14 +224,14 @@ public class Parser {
             expect(MINUS);
         }
         if (ts.peek() == DIGIT) {
-            Digit();
+            expect(DIGIT);
             Integer();
         }
     }
 
     public void Float(){
         if (ts.peek() == DIGIT){
-
+        /** TODO: LAV FLOAT **/
         }
     }
 
@@ -244,8 +240,8 @@ public class Parser {
             expect(QUOTE);
         } else if (ts.peek() == LETTER) {
             Alphanumeric();
+            Parser_string();
         }
-        Parser_string();
     }
 
     public void Alphanumeric(){
@@ -262,13 +258,13 @@ public class Parser {
         }
     }
 
-    private void expect(int type) {
+    private void expect(TokenType type) {
         Token t = ts.advance();
         if (t.type != type) {
             throw new Error("Expected type "
-                    + Token.token2str[type]
+                    + type
                     + " but received type "
-                    + Token.token2str[t.type]);
+                    + t.type);
 
         }
     }
@@ -277,10 +273,11 @@ public class Parser {
         throw new Error(message);
     }
 
+    /** TODO: Jeg har refactoret den her @AJ, er den stadig korrekt ifht det du forventede? **/
     private boolean peekAndExpectTokens(ArrayList<Token> tokens) {
         for(Token token : tokens){
-            if(ts.peek() == token){
-                expect(token);
+            if(ts.peek() == token.type){
+                expect(token.type);
                 return true;
             }
         }

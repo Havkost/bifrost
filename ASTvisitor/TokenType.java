@@ -26,7 +26,21 @@ public enum TokenType {
     FALSK("falsk"),
     TAB("\t"),
     QUOTE("\""),
+    /** TODO: LETTERS **/
+    LETTER("any string that contains letters"),
+    IKKEER("ikke er"),
+    GREATER(">"),
+    LESSER("<"),
+    PLUS("+"),
+    MINUS("-"),
+    TIMES("*"),
+    DIVIDE("/"),
+    LPAREN("("),
+    RPAREN(")"),
+    DIGIT("any digit"),
+
     EOF("$");
+
 
     String val;
     TokenType(String val) {
