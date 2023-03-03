@@ -131,7 +131,7 @@ public class Parser {
 
     public void And_expr(){
         Equality_expr();
-        if(ts.peek() == OG){
+        if(ts.peek() == OG) {
             expect(OG);
             And_expr();
         }
@@ -142,37 +142,91 @@ public class Parser {
         if (ts.peek() == ER) {
             expect(ER);
             Rel_expr();
-        } else if (ts.peek() == IKKEER){
+        } else if (ts.peek() == IKKEER) {
             expect(IKKEER);
             Equality_expr();
         }
     }
 
     public void Rel_expr(){
+        Sum_expr();
+        if (ts.peek() == GREATER) {
+            expect(GREATER);
+            Sum_expr();
+        } else if (ts.peek() == LESSER) {
+            expect(LESSER);
+            Sum_expr();
+        }
     }
 
     public void Sum_expr(){
+        Product_expr();
+        if (ts.peek() == PLUS) {
+            expect(PLUS);
+            Sum_expr();
+        } else if (ts.peek() == MINUS) {
+            expect(MINUS);
+            Sum_expr();
+        }
     }
 
     public void Product_expr(){
+        Not_expr();
+        if (ts.peek() == TIMES) {
+            expect(TIMES);
+            Product_expr();
+        } else if (ts.peek() == DIVIDE) {
+            expect(DIVIDE);
+            Product_expr();
+        }
     }
 
     public void Not_expr(){
+        if (ts.peek() == NOT) {
+            expect(NOT);
+        }
+        Factor();
     }
 
-    public void Factor(){
+    public void Factor() {
+        if (ts.peek() == LPAREN) {
+            expect(LPAREN);
+            Expr();
+            expect(RPAREN);
+        }
+        if (ts.peek() == DIGIT || ts.peek() == QUOTE || ts.peek() == BOOLEAN) {
+            Value();
+        }
+        if (ts.peek() == LETTER) {
+            Id();
+        }
     }
 
     public void Value(){
+        if (ts.peek() == QUOTE) {
+            Parser_string();
+        } else if (ts.peek() == DIGIT) {
+            /** TODO: INTEGER ELLER FLOAT? **/
+        } else if (ts.peek() == BOOLEAN) {
+            Boolean();
+        }
     }
 
     public void Integer(){
+        if (ts.peek() == MINUS) {
+            expect(MINUS);
+        }
+        if (ts.peek() == DIGIT) {
+            Digit();
+            Integer();
+        }
     }
 
     public void Float(){
+        Integer();
     }
 
-    public void parser_string(){
+    public void Parser_string(){
     }
 
     public void Alphanumeric(){
