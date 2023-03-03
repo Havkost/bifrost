@@ -8,8 +8,8 @@ public class TokenStream {
             advance();
         }
 
-        public int peek() {
-            return nextToken.type.ordinal();
+        public Token peek() {
+            return nextToken;
         }
 
         public Token advance() {

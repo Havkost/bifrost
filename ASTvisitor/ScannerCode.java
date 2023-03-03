@@ -13,7 +13,7 @@ public class ScannerCode {
         Token ans;
         while (s.peek() == ' ')
             s.advance();
-        if (s.EOF()) return new Token(tokens.EOF);
+        if (s.EOF()) return new Token(TokenType.EOF);
         if (isDigit(s.peek()))
             ans = ScanDigits();
         else {

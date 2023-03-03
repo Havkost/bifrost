@@ -1,6 +1,11 @@
 package P4Parser;
 
+import ASTvisitor.CharStream;
+import ASTvisitor.TokenStream;
+
 import java.util.ArrayList;
+import static ASTvisitor.TokenType.*;
+import static ASTvisitor.Token.*;
 
 public class Parser {
 
@@ -19,7 +24,7 @@ public class Parser {
     }
 
     public void Line(){
-        if (ts.peek() == GEM || ts.peek() == RUTINE || ts.peek() == SÆT || ts.peek() == GENTAG || ts.peek() == KØR || ts.peek() == HVIS) {
+        if (ts.peek() == GEM || ts.peek() == RUTINE || ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR || ts.peek() == HVIS) {
             Dcl();
             Stmt();
             return;
@@ -62,13 +67,13 @@ public class Parser {
     }
 
     public void Stmt(){
-        if (ts.peek() == SÆT) {
+        if (ts.peek() == SET) {
             Assign();
             return;
         } else if (ts.peek() == GENTAG) {
             Loop();
             return;
-        } else if (ts.peek() == KØR) {
+        } else if (ts.peek() == KOR) {
             Func();
             return;
         } else if (ts.peek() == HVIS) {
@@ -79,15 +84,15 @@ public class Parser {
     }
 
     public void Stmts(){
-        if (ts.peek() == SÆT || ts.peek() == GENTAG || ts.peek() == KØR ||ts.peek() == HVIS){
+        if (ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR ||ts.peek() == HVIS){
             Stmt();
             Stmts();
         }
     }
 
     public void Assign(){
-        if (ts.peek() == SÆT) {
-            expect(SÆT);
+        if (ts.peek() == SET) {
+            expect(SET);
             Id();
             expect(TIL);
             Value();
@@ -104,8 +109,8 @@ public class Parser {
     }
 
     public void Func(){
-        if (ts.peek() == KØR) {
-            expect(KØR);
+        if (ts.peek() == KOR) {
+            expect(KOR);
             Id();
         }
     }
