@@ -1,16 +1,12 @@
-package ASTVisitor;
+package ASTvisitor;
 
 public abstract class Visitor {
-	public void visit(AST n){ 
-		//System.out.println ("In  AST visit\t"+n);
 
-		n.accept(this);
-	}
+    public void visit(AST n) {
+        n.accept(this);
+    }
 
-	abstract void visit(Prog n);
-	abstract void visit(SymDeclaring n);
-	abstract void visit(SymReferencing n);
-	
-
-
+    abstract void visit(FloatDcl n);
+    abstract void visit(IntDcl n);
+    abstract void visit(SymDeclaring n);
 }

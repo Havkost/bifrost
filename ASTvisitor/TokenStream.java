@@ -1,26 +1,20 @@
-package ASTVisitor;
-
-// $Id: TokenStream.java 22 2010-01-07 16:50:05Z cytron $
+package ASTvisitor;
 
 public class TokenStream {
-	
-	private Token nextToken;
-	
-	public TokenStream(CharStream s) {
-		ScannerCode.init(s);
-		advance();
-	}
-	
-	public TokenType peek() {
-		return nextToken.type;
-	}
+        private Token nextToken;
 
-	public Token advance() {
-		Token ans = nextToken;
-		nextToken = ScannerCode.Scanner();
-		return ans;
-	}
-	
-	
+        public TokenStream(CharStream s) {
+            ScannerCode.init(s);
+            advance();
+        }
 
+        public TokenType peek() {
+            return nextToken.type;
+        }
+
+        public Token advance() {
+            Token ans = nextToken;
+            nextToken = ScannerCode.Scanner();
+            return ans;
+    }
 }

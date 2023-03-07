@@ -1,15 +1,15 @@
-package ASTVisitor;
+package ASTvisitor;
 
 public class Token {
 
-	public final TokenType type;
+    public final TokenType type;
 
-	public Token(TokenType type) {
-		this.type = type;
-	}
+    public Token(TokenType type) {
+        this.type = type;
+    }
 
-	public String toString() {
-		return "Token{" +
-				"type=" + type.val + "}";
-	}
+    public String toString() {
+        return "Token{" +
+                "type=" + type.val + "}";
+    }
 }
