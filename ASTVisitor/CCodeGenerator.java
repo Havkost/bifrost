@@ -1,4 +1,4 @@
-package ASTVisitor;
+package ASTvisitor;
 
 public class CCodeGenerator extends Visitor {
 

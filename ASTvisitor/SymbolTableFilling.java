@@ -1,4 +1,4 @@
-package ASTvisitor;
+package ASTVisitor;
 
 public class SymbolTableFilling extends Visitor{
     @Override
