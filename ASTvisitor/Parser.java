@@ -1,11 +1,9 @@
 package ASTVisitor;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Arrays;
 
 import static ASTVisitor.TokenType.*;
-import static java.util.Arrays.asList;
 
 public class Parser {
 
@@ -250,7 +248,6 @@ public class Parser {
 			Integer();
 		}
 	}
-
 	public void Float(){
 		if (ts.peek() == DIGIT){
 			/** TODO: LAV FLOAT **/

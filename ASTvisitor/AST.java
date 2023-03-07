@@ -20,3 +20,4 @@ public abstract class AST {
 	public abstract void accept(Visitor v);
 
 }
+
