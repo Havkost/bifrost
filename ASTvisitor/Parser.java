@@ -276,9 +276,9 @@ public class Parser {
 
     /** TODO: Jeg har refactoret den her @AJ, er den stadig korrekt ifht det du forventede? **/
     private boolean peekAndExpectTokens(ArrayList<TokenType> tokens) {
-        for(Token token : tokens){
-            if(ts.peek() == token.type){
-                expect(token.type);
+        for(TokenType token : tokens){
+            if(ts.peek() == token){
+                expect(token);
                 return true;
             }
         }
