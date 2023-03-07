@@ -6,6 +6,7 @@ public abstract class Visitor {
         n.accept(this);
     }
 
+    abstract void visit(Assigning n);
     abstract void visit(FloatDcl n);
     abstract void visit(IntDcl n);
     abstract void visit(SymDeclaring n);
