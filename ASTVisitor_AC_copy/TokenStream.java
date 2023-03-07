@@ -1,4 +1,4 @@
-package ASTVisitor;
+package ASTVisitor_AC_copy;
 
 // $Id: TokenStream.java 22 2010-01-07 16:50:05Z cytron $
 
@@ -11,10 +11,10 @@ public class TokenStream {
 		advance();
 	}
 	
-	public TokenType peek() {
+	public int peek() {
 		return nextToken.type;
 	}
-
+	
 	public Token advance() {
 		Token ans = nextToken;
 		nextToken = ScannerCode.Scanner();

@@ -1,6 +1,6 @@
-package ASTVisitor;
+package ASTVisitor_AC_copy;
 
-import static ASTVisitor.CharStream.*;
+import static ASTVisitor.CharStream.BLANK;
 import static ASTVisitor.Token.*;
 
 // $Id: ScannerCode.java 17 2010-01-07 16:47:29Z cytron $

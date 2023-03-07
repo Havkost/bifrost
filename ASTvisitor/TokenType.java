@@ -1,4 +1,4 @@
-package ASTvisitor;
+package ASTVisitor;
 
 public enum TokenType {
     GEM("gem"),
@@ -25,8 +25,9 @@ public enum TokenType {
     SANDT("sandt"),
     FALSK("falsk"),
     TAB("\t"),
+    EOF("$"),
     QUOTE("\""),
-    /** TODO: LETTERS **/
+    /* TODO: LETTERS */
     LETTER("any string that contains letters"),
     IKKEER("ikke er"),
     GREATER(">"),
@@ -37,14 +38,10 @@ public enum TokenType {
     DIVIDE("/"),
     LPAREN("("),
     RPAREN(")"),
-    DIGIT("any digit"),
-
-    EOF("$");
-
+    DIGIT("any digit");
 
     String val;
     TokenType(String val) {
         this.val = val;
     }
 }
-

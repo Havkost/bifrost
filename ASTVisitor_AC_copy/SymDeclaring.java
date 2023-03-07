@@ -1,4 +1,4 @@
-package ASTVisitor;
+package ASTVisitor_AC_copy;
 
 public class SymDeclaring extends AST {
 	String id;
