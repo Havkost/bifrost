@@ -1,18 +1,21 @@
-package ASTvisitor;
-import java.util.ArrayList;
+package ASTVisitor;
 
-import static ASTvisitor.TokenType.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static ASTVisitor.TokenType.*;
 
 public class Parser {
 
-    /* TODO: Lav Tokenstream, CharStream, ScannerCode, Token classes */
+	/* TODO: Lav Tokenstream, CharStream, ScannerCode, Token classes */
 
-    private TokenStream ts;
+	private TokenStream ts;
 
-    public Parser(CharStream s) {
-        ts = new TokenStream(s);
-    }
+	public Parser(CharStream s) {
+		ts = new TokenStream(s);
+	}
 
+<<<<<<< HEAD
     public void Program() {
         if (ts.peek() == EOF) return;
         Line();
@@ -41,7 +44,7 @@ public class Parser {
     }
 
     public void Type() {
-        ArrayList<Token> tokens = [TEKST, HELTAL, DECIMALTAL, BOOLSK];
+        ArrayList<Token> tokens = ;
         boolean err = !peekAndExpectTokens(tokens);
         if (err) error("Expected tekst, heltal, decimaltal or boolsk");
     }
@@ -171,7 +174,6 @@ public class Parser {
         } else error("Expected er or ikke er");
     }
 
-
     public void Rel_expr(){
         Sum_expr();
         if (ts.peek() == GREATER) {
@@ -239,61 +241,22 @@ public class Parser {
         error("Expected quote, digit or boolean");
     }
 
-    public void Integer(){
-        if (ts.peek() == MINUS) {
-            expect(MINUS);
-        }
-        if (ts.peek() == DIGIT) {
-            expect(DIGIT);
-            Integer();
-        }
-    }
 
-    public void Float(){
-        if (ts.peek() == DIGIT){
-        /** TODO: LAV FLOAT **/
-        }
-    }
+	public void Integer(){
+		if (ts.peek() == MINUS) {
+			expect(MINUS);
+		}
+		if (ts.peek() == DIGIT) {
+			expect(DIGIT);
+			Integer();
+		}
+	}
+	public void Float(){
+		if (ts.peek() == DIGIT){
+			/** TODO: LAV FLOAT **/
+		}
+	}
 
-    public void Parser_string(){
-        if (ts.peek() == QUOTE) {
-            expect(QUOTE);
-        } else if (ts.peek() == LETTER) {
-            Alphanumeric();
-            Parser_string();
-        }
-    }
-
-    public void Alphanumeric(){
-        if (ts.peek() == LETTER){
-            expect(LETTER);
-        } else if (ts.peek() == DIGIT){
-            expect(DIGIT);
-        }
-    }
-    public void Id() {
-        expect(LETTER);
-        if (ts.peek() == LETTER || ts.peek() == DIGIT) {
-            Alphanumeric();
-        }
-    }
-
-    private void expect(TokenType type) {
-        Token t = ts.advance();
-        if (t.type != type) {
-            throw new Error("Expected type "
-                    + type
-                    + " but received type "
-                    + t.type);
-
-        }
-    }
-
-    private void error(String message) {
-        throw new Error(message);
-    }
-
-    /** TODO: Jeg har refactoret den her @AJ, er den stadig korrekt ifht det du forventede? **/
     private boolean peekAndExpectTokens(ArrayList<TokenType> tokens) {
         for(TokenType token : tokens){
             if(ts.peek() == token){
@@ -303,4 +266,53 @@ public class Parser {
         }
         return false;
     }
+
+	public void Parser_string(){
+		if (ts.peek() == QUOTE) {
+			expect(QUOTE);
+		} else if (ts.peek() == LETTER) {
+			Alphanumeric();
+			Parser_string();
+		}
+	}
+
+	public void Alphanumeric(){
+		if (ts.peek() == LETTER){
+			expect(LETTER);
+		} else if (ts.peek() == DIGIT){
+			expect(DIGIT);
+		}
+	}
+	public void Id() {
+		expect(LETTER);
+		if (ts.peek() == LETTER || ts.peek() == DIGIT) {
+			Alphanumeric();
+		}
+	}
+
+	private void expect(TokenType type) {
+		Token t = ts.advance();
+		if (t.type != type) {
+			throw new Error("Expected type "
+					+ type
+					+ " but received type "
+					+ t.type);
+
+		}
+	}
+
+	private void error(String message) {
+		throw new Error(message);
+	}
+
+	/** TODO: Jeg har refactoret den her @AJ, er den stadig korrekt ifht det du forventede? **/
+	private boolean peekAndExpectTokens(List<TokenType> tokenTypes) {
+		for(TokenType tokenType : tokenTypes){
+			if(ts.peek() == tokenType){
+				expect(tokenType);
+				return true;
+			}
+		}
+		return false;
+	}
 }
