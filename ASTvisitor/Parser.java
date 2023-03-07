@@ -14,43 +14,39 @@ public class Parser {
     }
 
     public void Program() {
-        if(ts.peek() == EOF) return;
+        if (ts.peek() == EOF) return;
         Line();
         Program();
     }
 
-    public void Line(){
-        if (ts.peek() == GEM || ts.peek() == RUTINE || ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR || ts.peek() == HVIS) {
+    public void Line() {
+        if (ts.peek() == GEM || ts.peek() == RUTINE) {
             Dcl();
+        } else if (ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR || ts.peek() == HVIS) {
             Stmt();
-            return;
-        }
-        error("Expected gem, rutine, sæt, gentag, kør eller hvis");
+        } else error("Expected gem, rutine, sæt, gentag, kør eller hvis");
     }
 
-    public void Dcl(){
-        if (ts.peek() == GEM){
+    public void Dcl() {
+        if (ts.peek() == GEM) {
             expect(GEM);
             Type();
             Value();
             expect(SOM);
             Id();
-            return;
         }
-        if(ts.peek() == RUTINE){
+        if (ts.peek() == RUTINE) {
             Fnc_dcl();
-            return;
-        }
-        error("Expected gem");
+        } else error("Expected gem");
     }
 
-    public void Type(){
+    public void Type() {
         ArrayList<Token> tokens = [TEKST, HELTAL, DECIMALTAL, BOOLSK];
         boolean err = !peekAndExpectTokens(tokens);
-        if(err) error("Expected tekst, heltal, decimaltal or boolsk");
+        if (err) error("Expected tekst, heltal, decimaltal or boolsk");
     }
 
-    public void Fnc_dcl(){
+    public void Fnc_dcl() {
         if (ts.peek() == RUTINE) {
             expect(RUTINE);
             Id();
@@ -58,11 +54,10 @@ public class Parser {
             expect(NEWLINE);
             Stmts();
             return;
-        }
-        error("Expected rutine");
+        } else error("Expected rutine");
     }
 
-    public void Stmt(){
+    public void Stmt() {
         if (ts.peek() == SET) {
             Assign();
             return;
@@ -79,81 +74,103 @@ public class Parser {
         expect(NEWLINE);
     }
 
-    public void Stmts(){
-        if (ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR ||ts.peek() == HVIS){
+    public void Stmts() {
+        if (ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR || ts.peek() == HVIS) {
             Stmt();
             Stmts();
-        }
+        } else error("Expected sæt, gentag, kør or hvis");
     }
 
-    public void Assign(){
+    public void Assign() {
         if (ts.peek() == SET) {
             expect(SET);
             Id();
             expect(TIL);
             Value();
-        }
+        } else error("Expected sæt");
     }
 
-    public void Loop(){
+    public void Loop() {
         if (ts.peek() == GENTAG) {
             expect(GENTAG);
             Func();
             Integer();
             expect(GANGE);
-        }
+        } else error("Expected gentag");
     }
 
-    public void Func(){
+    public void Func() {
         if (ts.peek() == KOR) {
             expect(KOR);
             Id();
-        }
+        } else error("Expected kør");
     }
 
-    public void If(){
+    public void If() {
         if (ts.peek() == HVIS) {
             expect(HVIS);
             Expr();
             expect(COLON);
             expect(NEWLINE);
             Stmts();
-        }
+        } else error("Expected hvis");
     }
 
-    /** EXPRESSION */
-    public void Expr(){
+    /**
+     * EXPRESSION
+     */
+    public void Expr() {
         if (ts.peek() == LETTER) {
             Or_expr();
-        }
+        } else error("Expected letter");
     }
 
-    public void Or_expr(){
+    public void Or_expr() {
         And_expr();
-        if(ts.peek() == ELLER) {
-            expect(ELLER);
-            Or_expr();
-        }
+        Or_expr2();
+        /** TODO: Hvordan handler vi errors her **/
+
     }
 
-    public void And_expr(){
-        Equality_expr();
-        if(ts.peek() == OG) {
-            expect(OG);
+    public void Or_expr2() {
+        if (ts.peek() == ELLER) {
+            expect(ELLER);
             And_expr();
-        }
+            Or_expr2();
+
+        } else error("FORVENTEDE ELLER");
+    }
+
+    public void And_expr() {
+        Equality_expr();
+        And_expr2();
+        /** TODO: Hvordan handler vi errors her **/
+        error("Expected og");
+    }
+
+    public void And_expr2() {
+        if (ts.peek() == OG){
+            expect(OG);
+            Equality_expr();
+            And_expr2();
+        } else error("Expected og");
     }
 
     public void Equality_expr(){
         Rel_expr();
-        if (ts.peek() == ER) {
+        Equality_expr2();
+    }
+
+    public void Equality_expr2(){
+        if (ts.peek() == ER){
             expect(ER);
             Rel_expr();
-        } else if (ts.peek() == IKKEER) {
+        } else if (ts.peek() == IKKEER){
             expect(IKKEER);
-            Equality_expr();
-        }
+            Rel_expr();
+        } else error("Expected er or ikke er");
     }
+
 
     public void Rel_expr(){
         Sum_expr();
@@ -164,6 +181,7 @@ public class Parser {
             expect(LESSER);
             Sum_expr();
         }
+        error("Expected > or <");
     }
 
     public void Sum_expr(){
@@ -175,6 +193,7 @@ public class Parser {
             expect(MINUS);
             Sum_expr();
         }
+        error("Expected + or -");
     }
 
     public void Product_expr(){
@@ -186,12 +205,13 @@ public class Parser {
             expect(DIVIDE);
             Product_expr();
         }
+        error("Expected * or /");
     }
 
     public void Not_expr(){
         if (ts.peek() == IKKE) {
             expect(IKKE);
-        }
+        } else error("Expected ikke");
         Factor();
     }
 
@@ -200,13 +220,12 @@ public class Parser {
             expect(LPAREN);
             Expr();
             expect(RPAREN);
-        }
-        if (ts.peek() == DIGIT || ts.peek() == QUOTE || ts.peek() == BOOLSK) {
+        } else if (ts.peek() == DIGIT || ts.peek() == QUOTE || ts.peek() == BOOLSK) {
             Value();
-        }
-        if (ts.peek() == LETTER) {
+        } else if (ts.peek() == LETTER) {
             Id();
         }
+        error("Expected (, digit, quote, boolean or letter");
     }
 
     public void Value(){
@@ -217,6 +236,7 @@ public class Parser {
         } else if (ts.peek() == BOOLSK) {
             expect(BOOLSK);
         }
+        error("Expected quote, digit or boolean");
     }
 
     public void Integer(){
@@ -274,10 +294,10 @@ public class Parser {
     }
 
     /** TODO: Jeg har refactoret den her @AJ, er den stadig korrekt ifht det du forventede? **/
-    private boolean peekAndExpectTokens(ArrayList<Token> tokens) {
-        for(Token token : tokens){
-            if(ts.peek() == token.type){
-                expect(token.type);
+    private boolean peekAndExpectTokens(ArrayList<TokenType> tokens) {
+        for(TokenType token : tokens){
+            if(ts.peek() == token){
+                expect(token);
                 return true;
             }
         }

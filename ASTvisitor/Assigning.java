@@ -1,11 +1,11 @@
 package ASTvisitor;
 
-public class Assigning extends AST {
+public class Assignment extends AST {
     String id;
     AST child1;
 
     //TODO Overvej om first child skal være en SymReferencing node
-    public Assigning(String id, AST child1) {
+    public Assignment(String id, AST child1) {
         this.id = id;
         this.child1 = child1;
     }
