@@ -1,5 +1,6 @@
 package ASTvisitor;
 import java.util.ArrayList;
+import java.util.List;
 
 import static ASTvisitor.TokenType.*;
 
@@ -45,7 +46,7 @@ public class Parser {
     }
 
     public void Type(){
-        ArrayList<Token> tokens = [TEKST, HELTAL, DECIMALTAL, BOOLSK];
+        ArrayList<TokenType> tokens = new ArrayList<>(List.of(TEKST, HELTAL, DECIMALTAL, BOOLSK));
         boolean err = !peekAndExpectTokens(tokens);
         if(err) error("Expected tekst, heltal, decimaltal or boolsk");
     }
@@ -274,7 +275,7 @@ public class Parser {
     }
 
     /** TODO: Jeg har refactoret den her @AJ, er den stadig korrekt ifht det du forventede? **/
-    private boolean peekAndExpectTokens(ArrayList<Token> tokens) {
+    private boolean peekAndExpectTokens(ArrayList<TokenType> tokens) {
         for(Token token : tokens){
             if(ts.peek() == token.type){
                 expect(token.type);

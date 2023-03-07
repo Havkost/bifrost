@@ -23,6 +23,12 @@ public class SymbolTableFilling extends Visitor{
 
     }
 
+    @Override
+    void visit(Computing n) {
+        n.child1.accept(this);
+        n.child2.accept(this);
+    }
+
     private void error(String message) {
         throw new Error(message);
     }

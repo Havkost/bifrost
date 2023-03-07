@@ -10,4 +10,5 @@ public abstract class Visitor {
     abstract void visit(FloatDcl n);
     abstract void visit(IntDcl n);
     abstract void visit(SymDeclaring n);
+    abstract void visit(Computing n);
 }
