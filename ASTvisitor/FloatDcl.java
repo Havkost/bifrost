@@ -1,7 +1,7 @@
-package ASTvisitor;
+package ASTVisitor;
 
-import ASTvisitor.SymDeclaring;
-import ASTvisitor.Visitor;
+import ASTVisitor.SymDeclaring;
+import ASTVisitor.Visitor;
 
 public class FloatDcl extends SymDeclaring {
     FloatDcl(String i) { id = i; }

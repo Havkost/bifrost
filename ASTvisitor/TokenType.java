@@ -1,4 +1,4 @@
-package ASTvisitor;
+package ASTVisitor;
 
 public enum TokenType {
     GEM("gem"),

@@ -1,5 +1,5 @@
-package ASTvisitor;
-import static ASTvisitor.Token.*;
+package ASTVisitor;
+import static ASTVisitor.Token.*;
 
 public class ScannerCode {
 

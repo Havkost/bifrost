@@ -1,4 +1,4 @@
-package ASTvisitor;
+package ASTVisitor;
 import java.io.Reader;
 
 public class CharStream {

@@ -1,6 +1,6 @@
-package ASTvisitor;
+package ASTVisitor;
 
-import ASTvisitor.Visitor;
+import ASTVisitor.Visitor;
 
 import java.util.Hashtable;
 

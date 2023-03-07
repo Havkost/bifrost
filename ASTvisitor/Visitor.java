@@ -1,4 +1,4 @@
-package ASTvisitor;
+package ASTVisitor;
 
 public abstract class Visitor {
 

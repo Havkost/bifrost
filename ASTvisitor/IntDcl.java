@@ -1,7 +1,7 @@
-package ASTvisitor;
+package ASTVisitor;
 
-import ASTvisitor.SymDeclaring;
-import ASTvisitor.Visitor;
+import ASTVisitor.SymDeclaring;
+import ASTVisitor.Visitor;
 
 public class IntDcl extends SymDeclaring {
     IntDcl(String i) { id = i; }
