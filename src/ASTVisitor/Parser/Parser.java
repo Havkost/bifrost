@@ -1,11 +1,14 @@
 package ASTVisitor.Parser;
 
+import ASTVisitor.Lexer.Token;
+import ASTVisitor.Lexer.TokenStream;
+import ASTVisitor.Lexer.TokenType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static ASTVisitor.Parser.TokenType.*;
-import ASTVisitor.Lexer.*;
+import static ASTVisitor.Lexer.TokenType.*;
 
 public class Parser {
 

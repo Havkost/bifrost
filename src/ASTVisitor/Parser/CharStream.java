@@ -1,4 +1,4 @@
-package ASTVisitor.Lexer;
+package ASTVisitor.Parser;
 import java.io.Reader;
 
 public class CharStream {

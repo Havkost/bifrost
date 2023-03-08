@@ -1,6 +1,4 @@
-package ASTVisitor.Lexer;
-
-import ASTVisitor.Visitor;
+package ASTVisitor.Parser;
 
 public class Computing extends  AST {
     String operation;

@@ -1,6 +1,6 @@
-package ASTVisitor.Lexer;
+package ASTVisitor.Parser;
 
-import ASTVisitor.Visitor;
+import java.util.ArrayList;
 
 public class Prog extends AST {
     ArrayList<AST> prog;
