@@ -1,4 +1,4 @@
-package acASTVisitor;
+package BentsCompiler;
 
 // $Id: Token.java 31 2010-01-07 20:25:05Z cytron $
 

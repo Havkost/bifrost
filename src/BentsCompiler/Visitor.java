@@ -1,4 +1,4 @@
-package acASTVisitor;
+package BentsCompiler;
 
 public abstract class Visitor {
 	public void visit(AST n){ 

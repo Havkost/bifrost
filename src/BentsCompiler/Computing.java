@@ -1,4 +1,4 @@
-package acASTVisitor;
+package BentsCompiler;
 
 public class Computing extends AST {
 	String operation;

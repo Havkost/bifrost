@@ -1,8 +1,9 @@
-package acASTVisitor;
-import static acASTVisitor.CharStream.*;
-import static acASTVisitor.Token.*;
+package BentsCompiler;
 
 // $Id: ScannerCode.java 17 2010-01-07 16:47:29Z cytron $
+
+import static BentsCompiler.CharStream.BLANK;
+import static BentsCompiler.Token.*;
 
 /**
  * Scanner and ScanDigits from chapter 2

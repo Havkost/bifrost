@@ -1,4 +1,4 @@
-package acASTVisitor;
+package BentsCompiler;
 
 public class SymDeclaring extends AST {
 	String id;
