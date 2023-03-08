@@ -1,10 +1,10 @@
 
-package Parser;
+package ASTVisitor.Parser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static ASTVisitor.TokenType.*;
+import static ASTVisitor.Parser.TokenType.*;
 
 public class Parser {
 

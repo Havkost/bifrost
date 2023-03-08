@@ -1,7 +1,7 @@
 package acASTVisitor;
 import static acASTVisitor.Token.*;
 
-// $Id: Parser.java 25 2010-01-07 17:03:40Z cytron $
+// $Id: ASTVisitor.Parser.java 25 2010-01-07 17:03:40Z cytron $
 
 /**
  * Recursive-descent parser based on the grammar given
