@@ -1,4 +1,3 @@
-
 package ASTVisitor.Parser;
 
 import java.util.ArrayList;
@@ -6,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static ASTVisitor.Parser.TokenType.*;
+import ASTVisitor.Lexer.*;
 
 public class Parser {
 

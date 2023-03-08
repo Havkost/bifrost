@@ -1,4 +1,6 @@
 package ASTVisitor.Parser;
+import ASTVisitor.Lexer.*;
+
 
 public class TokenStream {
         private Token nextToken;
