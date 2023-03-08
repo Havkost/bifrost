@@ -2,6 +2,7 @@
 package ASTVisitor.Parser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static ASTVisitor.Parser.TokenType.*;
@@ -44,7 +45,7 @@ public class Parser {
     }
 
     public void Type() {
-        ArrayList<Token> tokens = ;
+        List<TokenType> tokens = Arrays.asList(TEKST, HELTAL, DECIMALTAL, BOOLSK);
         boolean err = !peekAndExpectTokens(tokens);
         if (err) error("Expected tekst, heltal, decimaltal or boolsk");
     }

@@ -2,8 +2,6 @@ package ASTVisitor.Lexer;
 
 import ASTVisitor.Visitor;
 
-import java.util.ArrayList;
-
 public class Prog extends AST {
     ArrayList<AST> prog;
 
