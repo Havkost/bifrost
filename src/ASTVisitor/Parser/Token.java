@@ -1,4 +1,5 @@
-package ASTVisitor;
+package ASTVisitor.Parser;
+
 
 public class Token {
 
