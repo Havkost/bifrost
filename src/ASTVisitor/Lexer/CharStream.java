@@ -33,9 +33,6 @@ public class CharStream {
         char ans = nextChar;
         try {
             int next = reader.read();
-            //
-            //  If end of file, read will return -1
-            //
             if (next == -1) {
                 eof = true;
                 nextChar = 0;
@@ -44,9 +41,8 @@ public class CharStream {
                 nextChar = (char) next;
             }
         }
-        //
+
         //  On any problem, just assume end of input
-        //
         catch (Throwable t) {
             System.out.println("Error encountered " + t);
             eof = true;

@@ -5,12 +5,12 @@ public class TokenStream {
         private Token nextToken;
 
         public TokenStream(CharStream s) {
-            CodeScanner.init(s);
+            CodeScanner.initialize(s);
             advance();
         }
 
         public TokenType peek() {
-            return nextToken.type;
+            return nextToken.getType();
         }
 
         public Token advance() {
