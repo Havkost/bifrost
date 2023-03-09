@@ -1,31 +1,41 @@
 package ASTVisitor.Lexer;
+
+//import java.io.InputStream;
 import java.io.Reader;
 
+/**
+ * Provides peek, EOF, and advance for the chapter 2 scanner
+ * @author cytron
+ *
+ */
 public class CharStream {
 
-    private final static char BLANK = ' ';
-    private final Reader is;
+    private final Reader reader;
     private char nextChar;
     private boolean eof;
 
-    public CharStream(Reader is) {
-        this.is = is;
-        this.nextChar = 0;
+    public CharStream(Reader reader) {
+        this.reader = reader;
         this.eof = false;
+        this.nextChar = 0;
+        advance();
     }
 
     public char peek() {
         return nextChar;
     }
-    public boolean EOF() {
+
+    public boolean getEOF() {
         return eof;
     }
 
     public char advance() {
         char ans = nextChar;
         try {
-            int next = is.read();
+            int next = reader.read();
+            //
             //  If end of file, read will return -1
+            //
             if (next == -1) {
                 eof = true;
                 nextChar = 0;
@@ -34,7 +44,9 @@ public class CharStream {
                 nextChar = (char) next;
             }
         }
+        //
         //  On any problem, just assume end of input
+        //
         catch (Throwable t) {
             System.out.println("Error encountered " + t);
             eof = true;
@@ -43,4 +55,3 @@ public class CharStream {
         return ans;
     }
 }
-

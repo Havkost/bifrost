@@ -1,10 +1,11 @@
-package ASTVisitor.Parser;
+package ASTVisitor.Lexer;
 
 public enum TokenType {
     GEM("gem"),
     SOM("som"),
     RUTINE("rutine"),
-    COLON(":"),
+    BLOCKSTART(":"),
+    BLOCKSLUT("."),
     NEWLINE("\n"),
     SET("sæt"),
     TIL("til"),
@@ -20,7 +21,7 @@ public enum TokenType {
     HELTAL("heltal"),
     DECIMALTAL("decimaltal"),
     BOOLSK("boolsk"),
-    DOT("."),
+    DECIMAL(","),
     UNDERSCORE("_"),
     SANDT("sandt"),
     FALSK("falsk"),

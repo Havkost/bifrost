@@ -1,15 +1,6 @@
-package acASTVisitor;
+package BentsCompiler;
 
-import static acASTVisitor.Token.ASSIGN;
-import static acASTVisitor.Token.EOF;
-import static acASTVisitor.Token.FLTDCL;
-import static acASTVisitor.Token.FNUM;
-import static acASTVisitor.Token.ID;
-import static acASTVisitor.Token.INTDCL;
-import static acASTVisitor.Token.INUM;
-import static acASTVisitor.Token.MINUS;
-import static acASTVisitor.Token.PLUS;
-import static acASTVisitor.Token.PRINT;
+import static BentsCompiler.Token.*;
 
 import java.util.ArrayList;
 

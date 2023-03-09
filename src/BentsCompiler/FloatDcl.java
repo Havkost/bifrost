@@ -1,4 +1,4 @@
-package acASTVisitor;
+package BentsCompiler;
 
 public class FloatDcl extends SymDeclaring {
 	FloatDcl(String i){

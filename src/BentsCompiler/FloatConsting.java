@@ -1,4 +1,4 @@
-package acASTVisitor;
+package BentsCompiler;
 
 public class FloatConsting extends AST {
 	String val;

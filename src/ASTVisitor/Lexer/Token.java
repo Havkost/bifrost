@@ -1,4 +1,4 @@
-package ASTVisitor.Parser;
+package ASTVisitor.Lexer;
 
 
 public class Token {

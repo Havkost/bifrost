@@ -1,5 +1,5 @@
-package acASTVisitor;
-import static acASTVisitor.Token.*;
+package BentsCompiler;
+import static BentsCompiler.Token.*;
 
 // $Id: ASTVisitor.Parser.java 25 2010-01-07 17:03:40Z cytron $
 

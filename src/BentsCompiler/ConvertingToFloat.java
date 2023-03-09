@@ -1,4 +1,4 @@
-package acASTVisitor;
+package BentsCompiler;
 
 public class ConvertingToFloat extends AST {
 
