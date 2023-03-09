@@ -7,7 +7,7 @@ public class TokenStream {
         private Token nextToken;
 
         public TokenStream(CharStream s) {
-            ScannerCode.init(s);
+            CodeScanner.init(s);
             advance();
         }
 
@@ -17,7 +17,7 @@ public class TokenStream {
 
         public Token advance() {
             Token ans = nextToken;
-            nextToken = ScannerCode.Scanner();
+            nextToken = CodeScanner.Scanner();
             return ans;
     }
 }

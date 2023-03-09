@@ -2,7 +2,6 @@ package ASTVisitor.Parser;
 import java.io.Reader;
 
 public class CharStream {
-
     private final static char BLANK = ' ';
     private final Reader is;
     private char nextChar;
