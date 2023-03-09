@@ -43,7 +43,6 @@ public enum TokenType {
     LPAREN("("),
     RPAREN(")"),
     DIGIT("any digit"),
-
     EOF("$");
 
 
