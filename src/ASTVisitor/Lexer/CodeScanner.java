@@ -4,9 +4,12 @@ package ASTVisitor.Lexer;
 
 
 import static ASTVisitor.Lexer.TokenType.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CodeScanner {
     private static final String BLANK = "\t \r";
+    private static final Pattern identifierPattern = Pattern.compile("[a-zæøå_]+[a-zæøå_0-9]*", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     private static CharStream charStream;
 
     public static void initialize(CharStream charStream) {
@@ -32,7 +35,11 @@ public class CodeScanner {
         }
 
         // Nextword must be identifier
+        if(!identifierPattern.matcher(nextWord).matches()){
+            throw new Error("Failed to identify symbol '"+nextWord+"'.");
+        }
 
+        return new Token(ID, nextWord);
     }
 
     private static String getNextWord() {
@@ -53,11 +60,11 @@ public class CodeScanner {
         }
 
         if(charStream.peek() != ',') {
-            type = DECIMALTAL;
+            type = DECIMALTAL_LIT;
         }
 
         else {
-            type = HELTAL;
+            type = HELTAL_LIT;
         }
         return new Token(type, num.toString());
     }

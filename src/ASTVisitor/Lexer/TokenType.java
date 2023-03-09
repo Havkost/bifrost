@@ -3,6 +3,8 @@ package ASTVisitor.Lexer;
 import java.util.Map;
 import static java.util.Map.entry;
 
+// TODO: Vi blander engelsk og dansk i vores enum, kan vi gøre det konsekvent?
+
 public enum TokenType {
     ID(null),
     GEM("gem"),
@@ -25,6 +27,10 @@ public enum TokenType {
     HELTAL("heltal"),
     DECIMALTAL("decimaltal"),
     BOOLSK("boolsk"),
+    TEKST_LIT(null),
+    HELTAL_LIT(null),
+    DECIMALTAL_LIT(null),
+    BOOLSK_LIT(null),
     DECIMAL(","),
     UNDERSCORE("_"),
     SANDT("sandt"),
