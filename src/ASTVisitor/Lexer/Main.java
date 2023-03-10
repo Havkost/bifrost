@@ -8,8 +8,8 @@ public class Main {
 
         String example =
                 "gem heltal 3 som a\n" +
-                "hvis 10 = 10: \n" +
-                "   a = 2";
+                "hvis 10 er 10: \n" +
+                "   sæt a til 2.";
 
 
         try {
@@ -19,7 +19,10 @@ public class Main {
 
             CodeScanner.initialize(charStream);
 
-            System.out.println(CodeScanner.scan());
+            while(!charStream.getEOF()) {
+                System.out.println(CodeScanner.scan());
+            }
+
         } catch (Throwable e) {
             System.out.println("Ended with error: " + e);
             System.out.println("Stack trace:\n");

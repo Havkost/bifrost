@@ -2,7 +2,6 @@ package ASTVisitor.Lexer;
 
 //TODO: check for illegal symbols mid-string
 
-
 import static ASTVisitor.Lexer.TokenType.*;
 import java.util.regex.Pattern;
 
@@ -36,7 +35,7 @@ public class CodeScanner {
 
         // Match keywords
         if(tokenTypeMap.get(nextWord) != null) {
-            return new Token(tokenTypeMap.get(nextWord), nextWord);
+            return new Token(tokenTypeMap.get(nextWord));
         }
 
         // Nextword must be identifier
@@ -68,11 +67,11 @@ public class CodeScanner {
         }
 
         if(charStream.peek() != ',') {
-            type = DECIMALTAL_LIT;
+            type = HELTAL_LIT;
         }
 
         else {
-            type = HELTAL_LIT;
+            type = DECIMALTAL_LIT;
         }
         return new Token(type, num.toString());
     }
