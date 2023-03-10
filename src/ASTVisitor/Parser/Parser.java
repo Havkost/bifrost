@@ -59,7 +59,7 @@ public class Parser {
     public void Fnc_dcl() {
         expect(RUTINE);
         expect(ID);
-        expect(COLON);
+        expect(BLOCKSTART);
         expect(NEWLINE);
         Stmts();
         expect(DOT);

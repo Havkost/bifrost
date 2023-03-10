@@ -4,12 +4,13 @@ package ASTVisitor.Lexer;
 
 
 import static ASTVisitor.Lexer.TokenType.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CodeScanner {
     private static final String BLANK = "\t \r";
     private static final Pattern identifierPattern = Pattern.compile("[a-zæøå_]+[a-zæøå_0-9]*", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    private static final Pattern nonSymbolPattern = Pattern.compile("[a-zæøå_0-9]", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+
     private static CharStream charStream;
 
     public static void initialize(CharStream charStream) {
@@ -29,6 +30,10 @@ public class CodeScanner {
         // Read whole word
         String nextWord = getNextWord();
 
+        if (nextWord.equals("sandt") || nextWord.equals("falsk")) {
+            return new Token(BOOLSK_LIT, nextWord);
+        }
+
         // Match keywords
         if(tokenTypeMap.get(nextWord) != null) {
             return new Token(tokenTypeMap.get(nextWord), nextWord);
@@ -44,7 +49,10 @@ public class CodeScanner {
 
     private static String getNextWord() {
         StringBuilder res = new StringBuilder();
-        while (BLANK.indexOf(charStream.peek()) == -1) {
+        res.append(charStream.advance());
+        if(!nonSymbolPattern.matcher(res).matches()) return res.toString();
+
+        while (nonSymbolPattern.matcher(String.valueOf(charStream.peek())).matches()) {
             res.append(charStream.advance());
         }
 
@@ -76,7 +84,7 @@ public class CodeScanner {
         while((nextC = charStream.advance()) != quoteType) {
             val.append(nextC);
         }
-        return new Token(TEKST, val.toString());
+        return new Token(TEKST_LIT, val.toString());
     }
 
     private static boolean isDigit(char in) {

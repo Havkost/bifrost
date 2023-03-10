@@ -15,7 +15,7 @@ public class TokenStream {
 
         public Token advance() {
             Token ans = nextToken;
-            nextToken = CodeScanner.Scanner();
+            nextToken = CodeScanner.scan();
             return ans;
     }
 }
