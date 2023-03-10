@@ -37,8 +37,6 @@ public enum TokenType {
     FALSK("falsk"),
     TAB("\t"),
     QUOTE("\""),
-    /** TODO: LETTERS **/
-    LETTER("any string that contains letters"),
     IKKEER("ikke er"),
     GREATER(">"),
     LESSER("<"),
@@ -48,7 +46,6 @@ public enum TokenType {
     DIVIDE("/"),
     LPAREN("("),
     RPAREN(")"),
-    DIGIT("any digit"),
     EOF("$");
 
 
@@ -85,7 +82,6 @@ public enum TokenType {
         entry(FALSK.name, FALSK),
         entry(TAB.name, TAB),
         entry(QUOTE.name, QUOTE),
-        entry(LETTER.name, LETTER),
         entry(IKKEER.name, IKKEER),
         entry(GREATER.name, GREATER),
         entry(LESSER.name, LESSER),
@@ -95,7 +91,6 @@ public enum TokenType {
         entry(DIVIDE.name, DIVIDE),
         entry(LPAREN.name, LPAREN),
         entry(RPAREN.name, RPAREN),
-        entry(DIGIT.name, DIGIT),
         entry(EOF.name, EOF)
     );
 }
