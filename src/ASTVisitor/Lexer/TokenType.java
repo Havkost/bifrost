@@ -42,7 +42,6 @@ public enum TokenType {
     RPAREN(")"),
     EOF("\u001a");
 
-
     final String name;
     TokenType(String name) {
         this.name = name;

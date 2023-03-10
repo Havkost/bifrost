@@ -11,9 +11,6 @@ import java.util.List;
 import ASTVisitor.Lexer.*;
 
 public class Parser {
-
-    // TODO: LAV EMPTY SET PRODUCTIONS
-    // TODO: LAV VALUE (HVORDAN VÆRDIER FRA STRING TIL INT)
     private TokenStream ts;
 
     public Parser(CharStream s) {
@@ -32,7 +29,7 @@ public class Parser {
             Lines();
         } else if (ts.peek() == EOF) {
             // do nothing (empty set)
-        } else error("Forventede gem, rutine, sæt, gentag, kør, eller hvis");
+        } else error("FORVENTEDE gem, rutine, sæt, gentag, kør, ELLER hvis");
     }
 
     public void Line() {
@@ -40,7 +37,7 @@ public class Parser {
             Dcl();
         } else if (ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR || ts.peek() == HVIS) {
             Stmt();
-        }
+        } else error("FORVENTEDE gem, rutine, sæt, gentag, kør, ELLER hvis");
     }
 
     public void Dcl() {
@@ -53,7 +50,7 @@ public class Parser {
         }
         if (ts.peek() == RUTINE) {
             Fnc_dcl();
-        } else error("Expected gem");
+        } else error("FORVENTEDE gem ELLER rutine");
     }
 
     public void Fnc_dcl() {
@@ -62,7 +59,7 @@ public class Parser {
         expect(BLOCKSTART);
         expect(NEWLINE);
         Stmts();
-        expect(DOT);
+        expect(BLOCKSLUT);
     }
 
     public void Stmt() {
@@ -74,8 +71,8 @@ public class Parser {
             Func();
         } else if (ts.peek() == HVIS) {
             If();
-        } else error("Expected sæt, gentag, kør or hvis");
-        expect(NEWLINE); //TODO Er denne nødvendig?
+        } else error("FORVENTEDE sæt, gentag, kør ELLER hvis");
+        expect(NEWLINE); //TODO Er denne nødvendig? - JA tror Jack
     }
 
     public void Stmts() {
@@ -84,7 +81,7 @@ public class Parser {
             Stmts();
         } else if (ts.peek() == NEWLINE) {
             // do nothing (empty set)
-        } else error("Expected sæt, gentag, kør or hvis");
+        } else error("FORVENTEDE sæt, gentag, kør ELLER hvis");
     }
 
     public void Assign() {
@@ -97,7 +94,7 @@ public class Parser {
     public void Loop() {
         expect(GENTAG);
         Func();
-        expect(INTEGER);
+        expect(HELTAL_LIT);
         expect(GANGE);
     }
 
@@ -109,23 +106,23 @@ public class Parser {
     public void If() {
         expect(HVIS);
         Expr();
-        expect(COLON);
+        expect(BLOCKSTART);
         expect(NEWLINE);
         Stmts();
-        expect(DOT);
+        expect(BLOCKSLUT);
     }
 
     /**
      * EXPRESSION
      */
     public void Expr() {
-        if (ts.peek() == ID || ts.peek() == INTEGER || ts.peek() == IKKE || ts.peek() == LPAREN
-                || ts.peek() == STRING ||ts.peek() == FLOAT || ts.peek() == BOOLEAN ) {
+        if (ts.peek() == ID || ts.peek() == HELTAL_LIT || ts.peek() == IKKE || ts.peek() == LPAREN
+                || ts.peek() == TEKST_LIT || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT) {
             Or_expr();
-        } else error("Expected letter");
+        } else error("FORVENTEDE id, heltal, tekst, decimaltal, boolsk, ikke, ELLER (");
     }
 
-    public void Or_expr(){
+    public void Or_expr() {
         And_expr();
         Or_expr2();
     }
@@ -135,9 +132,9 @@ public class Parser {
             expect(ELLER);
             And_expr();
             Or_expr2();
-        } else if (ts.peek() == RPAREN || ts.peek() == COLON) {
+        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART) {
             // produce nothing
-        } else error("FORVENTEDE ELLER");
+        } else error("FORVENTEDE eller");
     }
 
     public void And_expr() {
@@ -146,56 +143,56 @@ public class Parser {
     }
 
     public void And_expr2() {
-        if (ts.peek() == OG){
+        if (ts.peek() == OG) {
             expect(OG);
             Equality_expr();
             And_expr2();
-        } else if(ts.peek() == COLON || ts.peek() == ELLER || ts.peek() == RPAREN){
+        } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == RPAREN) {
             // Do nothing (empty set)
-        } else error("Expected og");
+        } else error("FORVENTEDE og");
     }
 
-    public void Equality_expr(){
+    public void Equality_expr() {
         Rel_expr();
         Equality_expr2();
     }
 
-    public void Equality_expr2(){
-        if (ts.peek() == ER){
+    public void Equality_expr2() {
+        if (ts.peek() == ER) {
             expect(ER);
             Rel_expr();
-        } else if (ts.peek() == IKKEER){
+        } else if (ts.peek() == IKKEER) {
             expect(IKKEER);
             Rel_expr();
-        } else if(ts.peek() == COLON || ts.peek() == ELLER || ts.peek() == OG|| ts.peek() == RPAREN){
-          // Do nothing, empty set
-        } else error("Expected er or ikke er");
+        } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == RPAREN) {
+            // Do nothing, empty set
+        } else error("FORVENTEDE er ELLER ikke er");
     }
 
-    public void Rel_expr(){
+    public void Rel_expr() {
         Sum_expr();
         Rel_expr2();
     }
 
     public void Rel_expr2() {
-        if (ts.peek() == LESSER){
+        if (ts.peek() == LESSER) {
             expect(LESSER);
             Sum_expr();
-        } else if (ts.peek() == GREATER){
+        } else if (ts.peek() == GREATER) {
             expect(GREATER);
             Sum_expr();
-        } else if (ts.peek() == COLON || ts.peek() == ELLER || ts.peek() == OG
+        } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG
                 || ts.peek() == RPAREN || ts.peek() == ER || ts.peek() == IKKE) {
             // Do nothing (empty set)
         } else error("FORVENTEDE < ELLER >");
     }
 
-    public void Sum_expr(){
+    public void Sum_expr() {
         Product_expr();
         Sum_expr2();
     }
 
-    public void Sum_expr2(){
+    public void Sum_expr2() {
         if (ts.peek() == PLUS) {
             expect(PLUS);
             Product_expr();
@@ -204,7 +201,7 @@ public class Parser {
             expect(MINUS);
             Product_expr();
             Sum_expr2();
-        } else if (ts.peek() == COLON || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == ER || ts.peek() == IKKE
+        } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == ER || ts.peek() == IKKE
                 || ts.peek() == LESSER || ts.peek() == GREATER || ts.peek() == RPAREN) {
             // Do nothing, empty set
         } else error("FORVENTEDE + ELLER -");
@@ -215,7 +212,7 @@ public class Parser {
         Product_expr2();
     }
 
-    public void Product_expr2(){
+    public void Product_expr2() {
         if (ts.peek() == TIMES) {
             expect(TIMES);
             Not_expr();
@@ -224,14 +221,14 @@ public class Parser {
             expect(DIVIDE);
             Not_expr();
             Product_expr2();
-        } else if (ts.peek() == COLON || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == ER
+        } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == ER
                 || ts.peek() == LESSER || ts.peek() == GREATER || ts.peek() == RPAREN
                 || ts.peek() == PLUS || ts.peek() == MINUS) {
             // Do nothing (empty set)
         } else error("FORVENTEDE * ELLER /");
     }
 
-    public void Not_expr(){
+    public void Not_expr() {
         if (ts.peek() == IKKE) {
             expect(IKKE);
             Factor();
@@ -241,27 +238,27 @@ public class Parser {
 
     //TODO skriv ordentlig fejlbesked
     public void Factor() {
-        if (ts.peek() == LPAREN){
+        if (ts.peek() == LPAREN) {
             expect(LPAREN);
             Expr();
             expect(RPAREN);
-        } else if (ts.peek() == INTEGER || ts.peek() == STRING || ts.peek() == FLOAT || ts.peek() == BOOLEAN) {
+        } else if (ts.peek() == HELTAL_LIT || ts.peek() == TEKST_LIT || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT) {
             Value();
         } else if (ts.peek() == ID) {
             expect(ID);
-        } else error("FORVENTEDE bla bla bla");
+        } else error("FORVENTEDE (, heltal, decimaltal, tekst ELLER boolsk");
     }
 
-    public void Value(){
-        if (ts.peek() == STRING) {
-            expect(STRING);
-        } else if (ts.peek() == INTEGER) {
-            expect(INTEGER);
-        } else if (ts.peek() == FLOAT) {
-            expect(FLOAT);
-        } else if (ts.peek() == BOOLEAN) {
-            expect(BOOLEAN);
-        } else error("FORVENTEDE TEKST, HELTAL, DECIMALTAL, BOOLSK VÆRDIER");
+    public void Value() {
+        if (ts.peek() == TEKST_LIT) {
+            expect(TEKST_LIT);
+        } else if (ts.peek() == HELTAL_LIT) {
+            expect(HELTAL_LIT);
+        } else if (ts.peek() == DECIMALTAL_LIT) {
+            expect(DECIMALTAL_LIT);
+        } else if (ts.peek() == BOOLSK_LIT) {
+            expect(BOOLSK_LIT);
+        } else error("FORVENTEDE tekst, heltal, decimaltal ELLER boolsk");
     }
 
     public void Type() {
@@ -273,12 +270,12 @@ public class Parser {
             expect(DECIMALTAL);
         } else if (ts.peek() == BOOLSK) {
             expect(BOOLSK);
-        } else error("Type ikke genkendt");
+        } else error("TYPE IKKE GODKENDT. FORVENTEDE tekst, heltal, decimaltal, ELLER boolsk");
     }
 
     private boolean peekAndExpectTokens(ArrayList<TokenType> tokens) {
-        for(TokenType token : tokens){
-            if(ts.peek() == token){
+        for (TokenType token : tokens) {
+            if (ts.peek() == token) {
                 expect(token);
                 return true;
             }
@@ -288,11 +285,11 @@ public class Parser {
 
     private void expect(TokenType type) {
         Token t = ts.advance();
-        if (t.type != type) {
+        if (t.getType() != type) {
             throw new Error("Expected type "
                     + type
                     + " but received type "
-                    + t.type);
+                    + t.getType());
 
         }
     }
@@ -300,4 +297,5 @@ public class Parser {
     private void error(String message) {
         throw new Error(message);
     }
+}
 
