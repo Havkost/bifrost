@@ -1,5 +1,6 @@
 package ASTVisitor.Parser;
 
+import ASTVisitor.ASTnodes.ProgramNode;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.Token;
 import ASTVisitor.Lexer.TokenStream;
@@ -17,21 +18,21 @@ public class ASTParser {
         this.tokenStream = new TokenStream(charStream);
     }
 
-    public Node prog() {
-        Prog progAST = new Prog(new ArrayList<>());
-        ArrayList<Node> linesList = lines();
+    public AST prog() {
+        ProgramNode progAST = new ProgramNode(new ArrayList<>());
+        ArrayList<AST> linesList = lines();
         expect(EOF);
-        if(linesList != null) progAST.child.addAll(linesList);
+        if(linesList != null) progAST.getChild().addAll(linesList);
         return progAST;
     }
 
-    public ArrayList<Node> lines() {
-        ArrayList<Node> linesList = new ArrayList<>();
+    public ArrayList<AST> lines() {
+        ArrayList<AST> linesList = new ArrayList<>();
         if(tokenStream.peek() == GEM || tokenStream.peek() == RUTINE ||
                 tokenStream.peek() == SAET || tokenStream.peek() == GENTAG ||
                 tokenStream.peek() == KOER || tokenStream.peek() == HVIS) {
-            Node line = line();
-            ArrayList<Node> lines = lines();
+            AST line = line();
+            ArrayList<AST> lines = lines();
             linesList.add(line);
             linesList.addAll(lines);
         } else if (tokenStream.peek() == EOF) {
@@ -40,8 +41,8 @@ public class ASTParser {
         return linesList;
     }
 
-    private Node line() {
-        Node lineAST = null;
+    private AST line() {
+        AST lineAST = null;
         if(tokenStream.peek() == GEM || tokenStream.peek() == RUTINE) {
             lineAST = dcl();
         } else lineAST = stmt();
@@ -49,8 +50,8 @@ public class ASTParser {
         return lineAST;
     }
 
-    private Node dcl() {
-        Node dclAST = null;
+    private AST dcl() {
+        AST dclAST = null;
         if(tokenStream.peek() == GEM){
             expect(GEM);
             dclAST = varDcl();
@@ -61,13 +62,13 @@ public class ASTParser {
         return dclAST;
     }
 
-    private Node stmt() {
-        Node stmtAST = null;
+    private AST stmt() {
+        AST stmtAST = null;
         if(tokenStream.peek() == SAET) {
             expect(SAET);
             Token idToken = expect(ID);
             expect(TIL);
-            Node value = value();
+            AST value = value();
             stmtAST = new Assigning(idToken.getVal(), value);
 
         } else if(tokenStream.peek() == GENTAG) {
@@ -80,35 +81,36 @@ public class ASTParser {
         return stmtAST;
     }
 
-
-    private Node varDcl(){
+    
+    private AST varDcl(){
         if(tokenStream.peek() == TEKST_DCL){
             expect(TEKST_DCL);
-            Node value = value();
+            AST value = value();
             expect(SOM);
             Token idToken = expect(ID);
         } else if(tokenStream.peek() == HELTAL_DCL){
             expect(HELTAL_DCL);
-            Node value = value();
+            AST value = value();
             expect(SOM);
             Token idToken = expect(ID);
         } else if(tokenStream.peek() == DECIMALTAL_DCL){
             expect(DECIMALTAL_DCL);
-            expect(DECIMALTAL_LIT);
+            AST value = value();
             expect(SOM);
             expect(ID);
         } else if (tokenStream.peek() == BOOLSK_DCL) {
             expect(BOOLSK_DCL);
             expect(BOOLSK_LIT);
-            expect(SOM)
+            expect(SOM);
         } else error("Forventede type deklaration (tekst, heltal, decimaltal eller boolsk).");
+        return itsAST;
     }
 
-    private Node funcDcl(){
+    private AST funcDcl(){
 
     }
 
-    private Node assStmt() {
+    private AST assStmt() {
         expect(ID);
         expect();
     }

@@ -33,7 +33,6 @@ public enum TokenType {
     HELTAL_LIT(null),
     DECIMALTAL_LIT(null),
     BOOLSK_LIT(null),
-    /** TODO: LETTERS **/
     GREATER(">"),
     LESSER("<"),
     PLUS("+"),

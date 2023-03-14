@@ -1,5 +1,7 @@
 package ASTVisitor.Parser;
 
+import ASTVisitor.ASTnodes.*;
+
 public class Prettyprinting extends Visitor {
 
 	@Override
@@ -21,10 +23,11 @@ public class Prettyprinting extends Visitor {
 	}
 
 	@Override
-	void visit(Prog n) {
+	void visit(ProgramNode n) {
 		// TODO Auto-generated method stub
-		for(Node node : n.prog){
-			node.accept(this);
+
+		for(AST ast : n.getChild()){
+			ast.accept(this);
 		};
 		System.out.println();
 
