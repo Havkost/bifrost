@@ -1,7 +1,6 @@
 package ASTVisitor.Parser;
 
-import ASTVisitor.ASTnodes.ProgramNode;
-import ASTVisitor.ASTnodes.SymDeclaring;
+import ASTVisitor.ASTnodes.*;
 
 public class CCodeGenerator extends Visitor {
 
@@ -21,11 +20,11 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
-    void visit(Computing n) {
+    void visit(BinaryComputing n) {
         // TODO Auto-generated method stub
-        n.child1.accept(this);
-        emit(" " + n.operation + " ");
-        n.child2.accept(this);
+        n.getChild1().accept(this);
+        emit(" " + n.getOperation() + " ");
+        n.getChild2().accept(this);
 
 
     }

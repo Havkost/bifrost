@@ -1,7 +1,8 @@
 package ASTVisitor.Parser;
 
-import ASTVisitor.ASTnodes.ProgramNode;
-import ASTVisitor.ASTnodes.SymDeclaring;
+import ASTVisitor.ASTnodes.*;
+
+import java.util.Base64;
 
 public class SymbolTableFilling extends Visitor {
     @Override
@@ -20,9 +21,9 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    void visit(Computing n) {
-        n.child1.accept(this);
-        n.child2.accept(this);
+    void visit(BinaryComputing n) {
+        n.getChild1().accept(this);
+        n.getChild2().accept(this);
     }
 
     private void error(String message) {

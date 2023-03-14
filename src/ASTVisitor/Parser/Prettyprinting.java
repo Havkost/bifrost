@@ -14,11 +14,11 @@ public class Prettyprinting extends Visitor {
 	}
 
 	@Override
-	void visit(Computing n) {
+	void visit(BinaryComputing n) {
 		// TODO Auto-generated method stub
-		n.child1.accept(this); 
-		System.out.print(" " + n.operation + " ");
-		n.child2.accept(this);
+		n.getChild1().accept(this);
+		System.out.print(" " + n.getOperation() + " ");
+		n.getChild2().accept(this);
 
 	}
 

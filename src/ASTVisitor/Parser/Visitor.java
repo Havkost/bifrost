@@ -13,7 +13,7 @@ public abstract class Visitor {
 	abstract void visit(SymDeclaring n);
 	//abstract void visit(SymReferencing n);
 
-	abstract void visit(Computing n);
+	abstract void visit(BinaryComputing n);
 	
 	abstract void visit(Assigning n);
 
