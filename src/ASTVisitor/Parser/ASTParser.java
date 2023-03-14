@@ -1,5 +1,6 @@
 package ASTVisitor.Parser;
 
+import ASTVisitor.ASTnodes.ProgramNode;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.Token;
 import ASTVisitor.Lexer.TokenStream;
@@ -17,7 +18,7 @@ public class ASTParser {
 
 
     public AST Program() {
-        Program theAST = new Program(new ArrayList<AST>());
+        ProgramNode theAST = new ProgramNode(new ArrayList<AST>());
         if(ts.peek() != EOF) {
             Lines();
             expect(EOF);
@@ -26,7 +27,7 @@ public class ASTParser {
     }
 
     public void Lines() {
-        if (ts.peek() == GEM || ts.peek() == RUTINE || ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR || ts.peek() == HVIS) {
+        if (ts.peek() == GEM || ts.peek() == RUTINE || ts.peek() == SAET || ts.peek() == GENTAG || ts.peek() == KOER || ts.peek() == HVIS) {
             Line();
             expect(NEWLINE);
             Lines();
@@ -39,9 +40,10 @@ public class ASTParser {
         if (ts.peek() == GEM || ts.peek() == RUTINE) {
 
 
-        } else if (ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR || ts.peek() == HVIS) {
+        } else if (ts.peek() == SAET || ts.peek() == GENTAG || ts.peek() == KOER || ts.peek() == HVIS) {
 
         } else error("FORVENTEDE gem, rutine, sæt, gentag, kør, ELLER hvis");
+        return null;
     }
 
     public void Dcl() {
@@ -57,17 +59,17 @@ public class ASTParser {
     }
 
     public void Stmt() {
-        if (ts.peek() == SET) {
+        if (ts.peek() == SAET) {
 
         } else if (ts.peek() == GENTAG) {
 
-        } else if (ts.peek() == KOR) {
+        } else if (ts.peek() == KOER) {
         } else if (ts.peek() == HVIS) {
         } else error("FORVENTEDE sæt, gentag, kør ELLER hvis");
     }
 
     public void Stmts() {
-        if (ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR || ts.peek() == HVIS) {
+        if (ts.peek() == SAET || ts.peek() == GENTAG || ts.peek() == KOER || ts.peek() == HVIS) {
         } else if (ts.peek() == NEWLINE) {
             // do nothing (empty set)
         } else error("FORVENTEDE sæt, gentag, kør ELLER hvis");
@@ -129,7 +131,7 @@ public class ASTParser {
     public void Equality_expr2() {
         if (ts.peek() == ER) {
 
-        } else if (ts.peek() == IKKEER) {
+        } else if (ts.peek() == IKKE) {
 
         } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == RPAREN) {
             // Do nothing, empty set
@@ -207,10 +209,10 @@ public class ASTParser {
     }
 
     public void Type() {
-        if (ts.peek() == TEKST) {
-        } else if (ts.peek() == HELTAL) {
-        } else if (ts.peek() == DECIMALTAL) {
-        } else if (ts.peek() == BOOLSK) {
+        if (ts.peek() == TEKST_DCL) {
+        } else if (ts.peek() == HELTAL_DCL) {
+        } else if (ts.peek() == DECIMALTAL_DCL) {
+        } else if (ts.peek() == BOOLSK_DCL) {
         } else error("TYPE IKKE GODKENDT. FORVENTEDE tekst, heltal, decimaltal, ELLER boolsk");
     }
 
@@ -228,5 +230,4 @@ public class ASTParser {
     private void error(String message) {
         throw new Error(message);
     }
-}
 }

@@ -1,5 +1,8 @@
 package ASTVisitor.Parser;
 
+import ASTVisitor.ASTnodes.ProgramNode;
+import ASTVisitor.ASTnodes.SymDeclaring;
+
 public class CCodeGenerator extends Visitor {
 
     private String code = "";
@@ -28,7 +31,7 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
-    void visit(Program n) {
+    void visit(ProgramNode n) {
         // TODO Auto-generated method stub
 
         emit("#include < stdio.h>\n\n");

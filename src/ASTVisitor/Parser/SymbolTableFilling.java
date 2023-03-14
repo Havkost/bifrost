@@ -1,5 +1,8 @@
 package ASTVisitor.Parser;
 
+import ASTVisitor.ASTnodes.ProgramNode;
+import ASTVisitor.ASTnodes.SymDeclaring;
+
 public class SymbolTableFilling extends Visitor {
     @Override
     void visit(Assigning n) {
@@ -7,7 +10,7 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    void visit(Program n) {
+    void visit(ProgramNode n) {
 
     }
 

@@ -1,5 +1,8 @@
 package ASTVisitor.Parser;
 
+import ASTVisitor.ASTnodes.ProgramNode;
+import ASTVisitor.ASTnodes.SymDeclaring;
+
 public class Prettyprinting extends Visitor {
 
 	@Override
@@ -21,7 +24,7 @@ public class Prettyprinting extends Visitor {
 	}
 
 	@Override
-	void visit(Program n) {
+	void visit(ProgramNode n) {
 		// TODO Auto-generated method stub
 		for(AST ast : n.program){
 			ast.accept(this);

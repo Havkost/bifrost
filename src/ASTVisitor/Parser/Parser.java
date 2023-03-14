@@ -11,6 +11,7 @@ import java.util.List;
 import ASTVisitor.Lexer.*;
 
 public class Parser {
+
     private TokenStream ts;
 
     public Parser(CharStream s) {
