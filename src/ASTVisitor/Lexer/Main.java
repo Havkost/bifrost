@@ -9,11 +9,12 @@ public class Main {
         String example =
                 "gem heltal 3 som a\n" +
                 "hvis 10 er 10: \n" +
-                "   sæt a til 2.";
+                "   sæt a til 2. \n" +
+                "print a";
 
 
         try {
-            System.out.println("Parse: " + example);
+            System.out.println("Get Token stream from: \n" + example + "\n");
             CharArrayReader reader = new CharArrayReader(example.toCharArray());
             CharStream charStream = new CharStream(reader);
 

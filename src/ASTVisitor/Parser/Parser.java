@@ -23,10 +23,11 @@ public class Parser {
     }
 
     public void Lines() {
-        if (ts.peek() == GEM || ts.peek() == RUTINE || ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR || ts.peek() == HVIS) {
+        if (ts.peek() == GEM || ts.peek() == RUTINE || ts.peek() == SAET || ts.peek() == GENTAG || ts.peek() == KOER || ts.peek() == HVIS) {
             Line();
             expect(NEWLINE);
             Lines();
+        } else if (ts.peek() == EOF) {
         } else if (ts.peek() == EOF) {
             // do nothing (empty set)
         } else error("FORVENTEDE gem, rutine, sæt, gentag, kør, ELLER hvis");
@@ -35,7 +36,7 @@ public class Parser {
     public void Line() {
         if (ts.peek() == GEM || ts.peek() == RUTINE) {
             Dcl();
-        } else if (ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR || ts.peek() == HVIS) {
+        } else if (ts.peek() == SAET || ts.peek() == GENTAG || ts.peek() == KOER || ts.peek() == HVIS) {
             Stmt();
         } else error("FORVENTEDE gem, rutine, sæt, gentag, kør, ELLER hvis");
     }
@@ -63,11 +64,11 @@ public class Parser {
     }
 
     public void Stmt() {
-        if (ts.peek() == SET) {
+        if (ts.peek() == SAET) {
             Assign();
         } else if (ts.peek() == GENTAG) {
             Loop();
-        } else if (ts.peek() == KOR) {
+        } else if (ts.peek() == KOER) {
             Func();
         } else if (ts.peek() == HVIS) {
             If();
@@ -76,7 +77,7 @@ public class Parser {
     }
 
     public void Stmts() {
-        if (ts.peek() == SET || ts.peek() == GENTAG || ts.peek() == KOR || ts.peek() == HVIS) {
+        if (ts.peek() == SAET || ts.peek() == GENTAG || ts.peek() == KOER || ts.peek() == HVIS) {
             Stmt();
             Stmts();
         } else if (ts.peek() == NEWLINE) {
@@ -85,7 +86,7 @@ public class Parser {
     }
 
     public void Assign() {
-        expect(SET);
+        expect(SAET);
         expect(ID);
         expect(TIL);
         Value();
@@ -99,7 +100,7 @@ public class Parser {
     }
 
     public void Func() {
-        expect(KOR);
+        expect(KOER);
         expect(ID);
     }
 
@@ -161,8 +162,9 @@ public class Parser {
         if (ts.peek() == ER) {
             expect(ER);
             Rel_expr();
-        } else if (ts.peek() == IKKEER) {
-            expect(IKKEER);
+        } else if (ts.peek() == IKKE) {
+            expect(IKKE);
+            expect(ER);
             Rel_expr();
         } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == RPAREN) {
             // Do nothing, empty set
@@ -262,14 +264,14 @@ public class Parser {
     }
 
     public void Type() {
-        if (ts.peek() == TEKST) {
-            expect(TEKST);
-        } else if (ts.peek() == HELTAL) {
-            expect(HELTAL);
-        } else if (ts.peek() == DECIMALTAL) {
-            expect(DECIMALTAL);
-        } else if (ts.peek() == BOOLSK) {
-            expect(BOOLSK);
+        if (ts.peek() == TEKST_DCL) {
+            expect(TEKST_DCL);
+        } else if (ts.peek() == HELTAL_DCL) {
+            expect(HELTAL_DCL);
+        } else if (ts.peek() == DECIMALTAL_DCL) {
+            expect(DECIMALTAL_DCL);
+        } else if (ts.peek() == BOOLSK_DCL) {
+            expect(BOOLSK_DCL);
         } else error("TYPE IKKE GODKENDT. FORVENTEDE tekst, heltal, decimaltal, ELLER boolsk");
     }
 

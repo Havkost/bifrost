@@ -20,6 +20,7 @@ public enum TokenType {
     GANGE("gange"),
     KOER("kør"),
     HVIS("hvis"),
+    PRINT("print"),
     ELLER("eller"),
     OG("og"),
     IKKE("ikke"),
