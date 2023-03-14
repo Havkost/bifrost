@@ -1,7 +1,5 @@
 package ASTVisitor.Parser;
 
-import ASTVisitor.Lexer.TokenType;
-
 public class SymbolTableFilling extends Visitor {
     @Override
     void visit(Assigning n) {
@@ -9,7 +7,7 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    void visit(Prog n) {
+    void visit(Program n) {
 
     }
 

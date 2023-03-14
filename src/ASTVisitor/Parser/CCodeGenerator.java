@@ -28,12 +28,12 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
-    void visit(Prog n) {
+    void visit(Program n) {
         // TODO Auto-generated method stub
 
         emit("#include < stdio.h>\n\n");
         emit("void main()\n{\n");
-        for(AST ast : n.prog){
+        for(AST ast : n.program){
             ast.accept(this);
         };
         emit("return 0;");

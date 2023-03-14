@@ -21,9 +21,9 @@ public class Prettyprinting extends Visitor {
 	}
 
 	@Override
-	void visit(Prog n) {
+	void visit(Program n) {
 		// TODO Auto-generated method stub
-		for(AST ast : n.prog){
+		for(AST ast : n.program){
 			ast.accept(this);
 		};
 		System.out.println();

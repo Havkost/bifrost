@@ -4,7 +4,7 @@ import java.util.Hashtable;
 public abstract class AST {
 
 
-    public static Hashtable<String,Integer> symbolTable = new Hashtable<String,Integer>();
+    public static Hashtable<String,Integer> SymbolTable = new Hashtable<String,Integer>();
 
     AST(){
 
