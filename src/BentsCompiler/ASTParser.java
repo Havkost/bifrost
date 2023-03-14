@@ -1,4 +1,4 @@
-package BentsCompiler;
+	package BentsCompiler;
 
 import static BentsCompiler.Token.*;
 

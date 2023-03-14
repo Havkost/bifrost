@@ -23,8 +23,8 @@ public class Prettyprinting extends Visitor {
 	@Override
 	void visit(Prog n) {
 		// TODO Auto-generated method stub
-		for(AST ast : n.prog){
-			ast.accept(this);
+		for(Node node : n.prog){
+			node.accept(this);
 		};
 		System.out.println();
 

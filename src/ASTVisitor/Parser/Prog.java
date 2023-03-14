@@ -2,10 +2,10 @@ package ASTVisitor.Parser;
 
 import java.util.ArrayList;
 
-public class Prog extends AST {
-    ArrayList<AST> prog;
+public class Prog extends Node {
+    ArrayList<Node> child;
 
-    Prog(ArrayList<AST> prg) {prog = prg;}
+    Prog(ArrayList<Node> child) {this.child = child;}
 
     public void accept(Visitor v) {v.visit(this);}
 }

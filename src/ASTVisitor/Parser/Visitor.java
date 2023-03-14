@@ -1,11 +1,7 @@
 package ASTVisitor.Parser;
 
-import ASTVisitor.Parser.Assigning;
-import ASTVisitor.Parser.Prog;
-import ASTVisitor.Parser.SymDeclaring;
-
 public abstract class Visitor {
-	public void visit(AST n){
+	public void visit(Node n){
 		//System.out.println ("In  AST visit\t"+n);
 
 		n.accept(this);

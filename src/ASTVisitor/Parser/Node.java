@@ -1,12 +1,12 @@
 package ASTVisitor.Parser;
 import java.util.Hashtable;
 
-public abstract class AST {
+public abstract class Node {
 
 
     public static Hashtable<String,Integer> symbolTable = new Hashtable<String,Integer>();
 
-    AST(){
+    Node(){
 
     }
 

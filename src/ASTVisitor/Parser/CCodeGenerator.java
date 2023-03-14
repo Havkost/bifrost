@@ -33,8 +33,8 @@ public class CCodeGenerator extends Visitor {
 
         emit("#include < stdio.h>\n\n");
         emit("void main()\n{\n");
-        for(AST ast : n.prog){
-            ast.accept(this);
+        for(Node node : n.child){
+            node.accept(this);
         };
         emit("return 0;");
         emit("\n}");
