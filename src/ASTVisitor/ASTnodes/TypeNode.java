@@ -5,6 +5,8 @@ import ASTVisitor.Parser.Visitor;
 
 public class TypeNode extends AST {
 
+    private String name;
+
     @Override
     public void accept(Visitor v) {
 

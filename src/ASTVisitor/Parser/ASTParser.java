@@ -1,10 +1,11 @@
 package ASTVisitor.Parser;
 
-import ASTVisitor.ASTnodes.ProgramNode;
+import ASTVisitor.ASTnodes.*;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.Token;
 import ASTVisitor.Lexer.TokenStream;
 import ASTVisitor.Lexer.TokenType;
+import com.sun.jdi.Value;
 
 import java.util.ArrayList;
 
@@ -69,15 +70,21 @@ public class ASTParser {
             Token idToken = expect(ID);
             expect(TIL);
             AST value = value();
-            stmtAST = new Assigning(idToken.getVal(), value);
-
+            stmtAST = new AssignNode(idToken.getVal(), value);
         } else if(tokenStream.peek() == GENTAG) {
-            //stmtAST = loopStmt();
+            expect(GENTAG);
+            // func call
+            Token funcCall = expect(ID);
+            Token intToken = expect(HELTAL_LIT);
+            expect(GANGE);
+            stmtAST = new LoopNode(new FuncNode(funcCall.getVal()),
+                    new HeltalLiteral(intToken.getVal()));
+
         } else if(tokenStream.peek() == KOER) {
             //stmtAST = funcStmt();
         } else if (tokenStream.peek() == HVIS) {
             //stmtAST = ifStmt();
-        } else error("Forventede sæt, gentag, kør eller hvis");
+        } else error("Forventede kommando (sæt, gentag, kør eller hvis).");
         return stmtAST;
     }
 
@@ -108,7 +115,22 @@ public class ASTParser {
     }
 
     private AST value() {
-        return null;
+        AST valueAST = null;
+        if (tokenStream.peek() == TEKST_LIT) {
+            Token tekstToken = expect(TEKST_LIT);
+            valueAST = new TekstLiteral(tekstToken.getVal());
+        } else if (tokenStream.peek() == HELTAL_LIT) {
+            Token heltalToken = expect(HELTAL_LIT);
+            valueAST = new HeltalLiteral(heltalToken.getVal());
+        } else if (tokenStream.peek() == DECIMALTAL_LIT) {
+            Token decimaltalToken = expect(DECIMALTAL_LIT);
+            valueAST = new TekstLiteral(decimaltalToken.getVal());
+        } else if (tokenStream.peek() == BOOLSK_LIT) {
+            Token boolskToken = expect(BOOLSK_LIT);
+            valueAST = new TekstLiteral(boolskToken.getVal());
+        }
+
+        return valueAST;
     }
 
     private AST funcDcl(){

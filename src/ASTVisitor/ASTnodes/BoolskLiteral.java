@@ -5,7 +5,11 @@ import ASTVisitor.Parser.Visitor;
 
 public class BoolskLiteral extends AST {
 
-    private boolean is;
+    private String val;
+
+    public BoolskLiteral(String val) {
+        this.val = val;
+    }
 
     @Override
     public void accept(Visitor v) {

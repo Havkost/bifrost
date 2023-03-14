@@ -5,12 +5,12 @@ import ASTVisitor.Parser.Visitor;
 
 public class AssignNode extends AST {
 
-    private AST child1;
-    private AST child2;
+    private String id;
+    private AST val;
 
-    public AssignNode(AST child1, AST child2) {
-        this.child1 = child1;
-        this.child2 = child2;
+    public AssignNode(String id, AST val) {
+        this.id = id;
+        this.val = val;
     }
 
     @Override

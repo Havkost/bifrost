@@ -1,6 +1,7 @@
 package BentsCompiler;
 
 public class IntConsting extends AST {
+
 	String val;
 	
 	IntConsting(String v){
@@ -8,7 +9,5 @@ public class IntConsting extends AST {
 	}
 	
 	public void accept(Visitor v){v.visit(this);}
-	
-
 
 }
