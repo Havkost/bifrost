@@ -72,17 +72,18 @@ public class ASTParser {
             stmtAST = new Assigning(idToken.getVal(), value);
 
         } else if(tokenStream.peek() == GENTAG) {
-            stmtAST = loopStmt();
+            //stmtAST = loopStmt();
         } else if(tokenStream.peek() == KOER) {
-            stmtAST = funcStmt();
+            //stmtAST = funcStmt();
         } else if (tokenStream.peek() == HVIS) {
-            stmtAST = ifStmt();
+            //stmtAST = ifStmt();
         } else error("Forventede sæt, gentag, kør eller hvis");
         return stmtAST;
     }
 
-    
+
     private AST varDcl(){
+        AST dclAST = null;
         if(tokenStream.peek() == TEKST_DCL){
             expect(TEKST_DCL);
             AST value = value();
@@ -103,16 +104,20 @@ public class ASTParser {
             expect(BOOLSK_LIT);
             expect(SOM);
         } else error("Forventede type deklaration (tekst, heltal, decimaltal eller boolsk).");
-        return itsAST;
+        return dclAST;
+    }
+
+    private AST value() {
+        return null;
     }
 
     private AST funcDcl(){
-
+        return null;
     }
 
     private AST assStmt() {
         expect(ID);
-        expect();
+        return null;
     }
 
     private Token expect(TokenType type) {

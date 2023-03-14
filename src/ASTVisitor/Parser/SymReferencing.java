@@ -1,6 +1,6 @@
 package ASTVisitor.Parser;
 
-public class SymReferencing extends Node {
+public class SymReferencing extends AST {
     String id;
 
     public SymReferencing(String id) {

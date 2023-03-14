@@ -3,7 +3,7 @@ package ASTVisitor.ASTnodes;
 import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
-public class ExpressionAST extends AST {
+public class ExpressionNode extends AST {
 
 
     @Override

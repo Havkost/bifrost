@@ -1,8 +1,9 @@
 package ASTVisitor.ASTnodes;
 
+import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
-public class SymDeclaring extends Node {
+public class SymDeclaring extends AST {
 
     String id;
 

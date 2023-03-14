@@ -12,7 +12,7 @@ public class Computing extends AST {
 		
 	}
 	
-	public void accept(Visitor v){v.visit(this);}
-	
-	
+	public void accept(Visitor v) {
+		v.visit(this);
+	}
 }
