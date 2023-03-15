@@ -12,4 +12,17 @@ public class FuncDclNode extends AST {
     public void accept(Visitor v) {
 
     }
+
+    public FuncDclNode(String id, AST child1) {
+        this.id = id;
+        this.child1 = child1;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public AST getChild1() {
+        return child1;
+    }
 }

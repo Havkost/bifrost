@@ -11,4 +11,12 @@ public class TypeNode extends AST {
     public void accept(Visitor v) {
 
     }
+
+    public TypeNode(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

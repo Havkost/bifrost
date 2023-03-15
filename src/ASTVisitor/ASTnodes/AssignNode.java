@@ -15,6 +15,13 @@ public class AssignNode extends AST {
 
     @Override
     public void accept(Visitor v) {
+    }
 
+    public String getId() {
+        return id;
+    }
+
+    public AST getVal() {
+        return val;
     }
 }

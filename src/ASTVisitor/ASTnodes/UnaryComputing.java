@@ -4,8 +4,8 @@ import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
 public class UnaryComputing extends AST {
-    String operation;
-    AST child;
+    private String operation;
+    private AST child;
 
     public UnaryComputing(String operation, AST child) {
         this.operation = operation;
@@ -14,5 +14,13 @@ public class UnaryComputing extends AST {
 
     public void accept(Visitor v) {
         v.visit(this);
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public AST getChild() {
+        return child;
     }
 }

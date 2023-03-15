@@ -18,4 +18,12 @@ public class LoopNode extends AST {
     public void accept(Visitor v) {
 
     }
+
+    public AST getBody() {
+        return body;
+    }
+
+    public HeltalLiteral getRepeats() {
+        return repeats;
+    }
 }

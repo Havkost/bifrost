@@ -15,4 +15,8 @@ public class DecimaltalLiteral extends AST {
     public void accept(Visitor v) {
 
     }
+
+    public String getVal() {
+        return val;
+    }
 }
