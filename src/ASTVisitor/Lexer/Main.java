@@ -1,5 +1,9 @@
 package ASTVisitor.Lexer;
 
+import ASTVisitor.Parser.AST;
+import ASTVisitor.Parser.ASTParser;
+import ASTVisitor.Parser.Prettyprinting;
+
 import java.io.CharArrayReader;
 
 public class Main {
@@ -23,6 +27,11 @@ public class Main {
             while(!charStream.getEOF()) {
                 System.out.println(CodeScanner.scan());
             }
+
+            ASTParser p = new ASTParser(charStream);
+            AST ast = p.prog();
+
+            ast.accept(new Prettyprinting());
 
         } catch (Throwable e) {
             System.out.println("Ended with error: " + e);

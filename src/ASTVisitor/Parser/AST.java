@@ -6,5 +6,8 @@ public abstract class AST {
 
     public abstract void accept(Visitor v);
 
+    public static Hashtable<String, Integer> getSymbolTable() {
+        return SymbolTable;
+    }
 }
 
