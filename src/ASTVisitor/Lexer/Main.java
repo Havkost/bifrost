@@ -25,16 +25,14 @@ public class Main {
 
             CodeScanner.initialize(charStream);
 
-            while(!charStream.getEOF()) {
+            /*while(!charStream.getEOF()) {
                 System.out.println(CodeScanner.scan());
-            }
+            }*/
 
             ASTParser p = new ASTParser(charStream);
             AST ast = p.prog();
 
-
-            ast.accept(new Prettyprinting());
-            ast.accept(new CCodeGenerator());
+            //ast.accept(new CCodeGenerator());
 
 
         } catch (Throwable e) {

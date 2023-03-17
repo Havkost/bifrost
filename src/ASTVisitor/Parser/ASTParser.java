@@ -28,9 +28,10 @@ public class ASTParser {
 
     public ArrayList<AST> lines() {
         ArrayList<AST> linesList = new ArrayList<>();
+        System.out.println(ts.peek());
         if(ts.peek() == GEM || ts.peek() == RUTINE ||
                 ts.peek() == SAET || ts.peek() == GENTAG ||
-                ts.peek() == KOER || ts.peek() == HVIS) {
+                ts.peek() == KOER || ts.peek() == HVIS || ts.peek() == PRINT) {
             AST line = line();
             ArrayList<AST> lines = lines();
             linesList.add(line);
@@ -47,6 +48,9 @@ public class ASTParser {
             lineAST = dcl();
         } else lineAST = stmt();
 
+        if(ts.peek() != EOF) expect(NEWLINE);
+
+
         return lineAST;
     }
 
@@ -60,6 +64,23 @@ public class ASTParser {
             dclAST = funcDcl();
         }
         return dclAST;
+    }
+
+    private ArrayList<AST> stmts() {
+        ArrayList<AST> stmtList = new ArrayList<>();
+        if(ts.peek() == GEM || ts.peek() == RUTINE ||
+                ts.peek() == SAET || ts.peek() == GENTAG ||
+                ts.peek() == KOER || ts.peek() == HVIS) {
+            System.out.println(ts.peek());
+            AST stmt = stmt();
+            ArrayList<AST> stmts = stmts();
+            stmtList.add(stmt);
+            if(ts.peek() != BLOCKSLUT) expect(NEWLINE);
+            stmtList.addAll(stmts);
+        } else if (ts.peek() == BLOCKSLUT) {
+            // Do nothing (lambda-production)
+        } else error("Forventede gem, rutine, sæt, gentag, kør eller hvis.");
+        return stmtList;
     }
 
     private AST stmt() {
@@ -85,6 +106,13 @@ public class ASTParser {
         } else if (ts.peek() == HVIS) {
             expect(HVIS);
             expr();
+            expect(BLOCKSTART);
+            expect(NEWLINE);
+            stmts();
+            expect(BLOCKSLUT);
+        } else if (ts.peek() == PRINT) {
+            expect(PRINT);
+            expect(ID);
         } else error("Forventede kommando (sæt, gentag, kør eller hvis).");
         return stmtAST;
     }
@@ -104,7 +132,7 @@ public class ASTParser {
         AST andExpr = and_expr();
         AST orExpr = or_expr2();
 
-        if(orExpr != null) expr = new BinaryComputing("eller", andExpr, orExpr);
+        if(orExpr != null) expr = new BinaryComputing(ELLER.name(), andExpr, orExpr);
         else expr = andExpr;
         
         return expr;
@@ -116,7 +144,7 @@ public class ASTParser {
             expect(ELLER);
             AST andExpr = and_expr();
             AST ors = or_expr2();
-            if(ors != null) orExpr = new BinaryComputing("eller", andExpr, ors);
+            if(ors != null) orExpr = new BinaryComputing(ELLER.name(), andExpr, ors);
             else orExpr = andExpr;
         } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART) {
             // produce nothing
@@ -125,101 +153,142 @@ public class ASTParser {
     }
 
     public AST and_expr() {
-        AST expr = null;
-        equality_expr();
-        and_expr2();
+        AST expr;
+        AST eqExpr = equalityExpr();
+        AST andExpr = and_expr2();
+        if(andExpr != null) expr = new BinaryComputing(OG.name(), eqExpr, andExpr);
+        else expr = eqExpr;
 
         return expr;
     }
 
-    public void and_expr2() {
+    public AST and_expr2() {
+        AST andExpr = null;
         if (ts.peek() == OG) {
             expect(OG);
-            equality_expr();
-            and_expr2();
-        } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == RPAREN) {
-            // Do nothing (empty set)
-        } else error("Forventede udtryk eller kolon. Fandt " + ts.advance());
+            AST eqExpr = equalityExpr();
+            AST ands = and_expr2();
+            if(ands != null) andExpr = new BinaryComputing(OG.name(), eqExpr, ands);
+            else andExpr = eqExpr;
+        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER) {
+            // produce nothing
+        } else error("Forventede eller, udtryk eller kolon. Fandt " + ts.advance());
+        return andExpr;
     }
 
-    public void equality_expr() {
-        rel_expr();
-        equality_expr2();
+    public AST equalityExpr() {
+        AST expr;
+        AST relExpr = relExpr();
+        String op = ts.peek().name();
+        AST eqExpr = equalityExpr2();
+        if(eqExpr != null) expr = new BinaryComputing(op, relExpr, eqExpr);
+        else expr = relExpr;
+
+        System.out.println(expr);
+        return expr;
     }
 
-    public void equality_expr2() {
-        if (ts.peek() == ER) {
+    public AST equalityExpr2() {
+        AST eqExpr = null;
+        TokenType opType = ts.peek();
+        if (opType == ER || opType == IKKE) {
+            expect(opType);
+            AST relExpr = relExpr();
+            String op = ts.peek().name();
+            AST eqs = equalityExpr2();
+            if(eqs != null) eqExpr = new BinaryComputing(op, eqExpr, eqs);
+            else eqExpr = relExpr;
+        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG) {
+            // produce nothing
+        } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance());
+        return eqExpr;
+    }
+
+    public AST relExpr() {
+        AST expr;
+        AST sumExpr = sumExpr();
+        String op = ts.peek().name();
+        AST relExpr = relExpr2();
+        if(relExpr != null) expr = new BinaryComputing(op, sumExpr, relExpr);
+        else expr = sumExpr;
+
+        return expr;
+    }
+
+    public AST relExpr2() {
+        AST relExpr = null;
+        TokenType opType = ts.peek();
+        if (opType == GREATER || opType == LESSER) {
+            expect(opType);
+            AST sumExpr = sumExpr();
+            String op = ts.peek().name();
+            AST rels = equalityExpr2();
+            if(rels != null) relExpr = new BinaryComputing(op, sumExpr, rels);
+            else relExpr = sumExpr;
+        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG
+                    || ts.peek() == ER || ts.peek() == IKKE) {
+            // produce nothing
+        } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance());
+        return relExpr;
+    }
+
+    public AST sumExpr() {
+        AST expr;
+        AST prodExpr = productExpr();
+        String op = ts.peek().name();
+        AST sumExpr = sumExpr2();
+        if(sumExpr != null) expr = new BinaryComputing(op, prodExpr, sumExpr);
+        else expr = prodExpr;
+
+        return expr;
+    }
+
+    public AST sumExpr2() {
+        AST sumExpr = null;
+        TokenType opType = ts.peek();
+        if (opType == PLUS || opType == MINUS) {
+            expect(opType);
+            AST prodExpr = productExpr();
+            String op = ts.peek().name();
+            AST sums = sumExpr2();
+            if(sums != null) sumExpr = new BinaryComputing(op, prodExpr, sums);
+            else sumExpr = prodExpr;
+        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG
+                    || ts.peek() == ER || ts.peek() == IKKE || ts.peek() == LESSER || ts.peek() == GREATER) {
+            // produce nothing
+        } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance());
+        return sumExpr;
+    }
+
+    public AST productExpr() {
+        AST expr;
+        AST notExpr = not_expr();
+        String op = ts.peek().name();
+        AST prodExpr = sumExpr2();
+        if(prodExpr != null) expr = new BinaryComputing(op, notExpr, prodExpr);
+        else expr = notExpr;
+
+        return expr;
+    }
+
+    public AST productExpr2() {
+        AST prodExpr = null;
+        if (ts.peek() == TIMES || ts.peek() == DIVIDE) {
             expect(ER);
-            rel_expr();
-        } else if (ts.peek() == IKKE) {
-            expect(IKKE);
-            expect(ER);
-            rel_expr();
-        } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == RPAREN) {
-            // Do nothing, empty set
-        } else error("FORVENTEDE er ELLER ikke er");
+            AST notExpr = not_expr();
+            String op = ts.peek().name();
+            AST prods = productExpr2();
+            if(prods != null) prodExpr = new BinaryComputing(op, notExpr, prods);
+            else prodExpr = notExpr;
+        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG
+                || ts.peek() == ER || ts.peek() == IKKE || ts.peek() == LESSER || ts.peek() == GREATER ||
+                ts.peek() == PLUS || ts.peek() == MINUS) {
+            // produce nothing
+        } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance());
+        return prodExpr;
     }
 
-    public void rel_expr() {
-        sum_expr();
-        rel_expr2();
-    }
-
-    public void rel_expr2() {
-        if (ts.peek() == LESSER) {
-            expect(LESSER);
-            sum_expr();
-        } else if (ts.peek() == GREATER) {
-            expect(GREATER);
-            sum_expr();
-        } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG
-                || ts.peek() == RPAREN || ts.peek() == ER || ts.peek() == IKKE) {
-            // Do nothing (empty set)
-        } else error("FORVENTEDE < ELLER >");
-    }
-
-    public void sum_expr() {
-        product_expr();
-        sum_expr2();
-    }
-
-    public void sum_expr2() {
-        if (ts.peek() == PLUS) {
-            expect(PLUS);
-            product_expr();
-            sum_expr2();
-        } else if (ts.peek() == MINUS) {
-            expect(MINUS);
-            product_expr();
-            sum_expr2();
-        } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == ER || ts.peek() == IKKE
-                || ts.peek() == LESSER || ts.peek() == GREATER || ts.peek() == RPAREN) {
-            // Do nothing, empty set
-        } else error("FORVENTEDE + ELLER -");
-    }
-
-    public void product_expr() {
-        not_expr();
-        product_expr2();
-    }
-
-    public void product_expr2() {
-        if (ts.peek() == TIMES) {
-            expect(TIMES);
-            not_expr();
-            product_expr2();
-        } else if (ts.peek() == DIVIDE) {
-            expect(DIVIDE);
-            not_expr();
-            product_expr2();
-        } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == ER
-                || ts.peek() == LESSER || ts.peek() == GREATER || ts.peek() == RPAREN
-                || ts.peek() == PLUS || ts.peek() == MINUS) {
-            // Do nothing (empty set)
-        } else error("FORVENTEDE * ELLER /");
-    }
-
-    public void not_expr() {
+    public AST not_expr() {
         if (ts.peek() == IKKE) {
             expect(IKKE);
             Factor();
@@ -298,9 +367,9 @@ public class ASTParser {
         Token token = ts.advance();
         if (token.getType() != type) {
             throw new Error("Forventede typen " +
-                    token.getType() +
-                    "men fik typen " +
-                    type);
+                    type +
+                    " men fik typen " +
+                    token.getType());
         }
         return token;
     }

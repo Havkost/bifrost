@@ -27,4 +27,13 @@ public class BinaryComputing extends AST {
     }
 
     public void accept(Visitor v) {v.visit(this);}
+
+    @Override
+    public String toString() {
+        return "BinaryComputing{" +
+                "operation='" + operation + '\'' +
+                ", child1=" + child1 +
+                ", child2=" + child2 +
+                '}';
+    }
 }
