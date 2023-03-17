@@ -5,7 +5,7 @@ import ASTVisitor.Parser.Visitor;
 
 public class VarDclNode extends AST {
 
-    private String type;
+    private AST type;
     private String value;
     private String id;
 
@@ -14,13 +14,13 @@ public class VarDclNode extends AST {
 
     }
 
-    public VarDclNode(String type, String value, String id) {
+    public VarDclNode(AST type, String value, String id) {
         this.type = type;
         this.value = value;
         this.id = id;
     }
 
-    public String getType() {
+    public AST getType() {
         return type;
     }
 

@@ -27,52 +27,102 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
-    void visit(IfNode n) {
-        emit("if (" + n.getChild1() + ") {\n");
-        n.getChild2().accept(this);
-        emit("}");
-    }
-
-    @Override
-    void visit(LoopNode n) {
-        emit("gentag");
-        n.getChild1().accept(this);
-        n.getRepeats().accept(this);
-        emit("gange");
-    }
-
     void visit(BoolskLiteral n) {
-        n.getVal().accept(this);
+        emit( " " + n.getVal()  + " ");
     }
 
     @Override
-    void visit(ProgramNode n) {
-        // TODO Auto-generated method stub
-
-        emit("#include <stdio.h>\n\n");
-        emit("int main() {\n");
-        for(AST ast : n.getChild()){
-            ast.accept(this);
-        };
-        emit("return 0;");
-        emit("\n}");
-        System.out.println(code);
-    }
-
-    void visit(FuncNode n) {
-        emit(n.getId() + "();");
+    void visit(DecimaltalLiteral n) {
+        emit(" " + n.getVal() + " ");
     }
 
     @Override
     void visit(FuncDclNode n) {
         emit("void " + n.getId() + "() {\n");
-        emit("  " + n.getChild1() + "\n");
+        emit("    ");
+        n.getChild1().accept(this);
+        emit("\n");
         emit("}\n");
+    }
+    @Override
+    void visit(FuncNode n) {
+        emit(n.getId() + "();");
+    }
+
+    @Override
+    void visit(HeltalLiteral n) {
+        emit(" " + n.getVal() + " ");
+    }
+
+    @Override
+    void visit(IdNode n) {
+        emit(" " + n.getName() + " ");
+    }
+
+    @Override
+    void visit(IfNode n) {
+        emit("if (" );
+        n.getChild1().accept(this);
+        emit( ") {\n");
+        n.getChild2().accept(this);
+        emit("\n}");
+    }
+
+    @Override
+    void visit(LoopNode n) {
+        emit("for(int i = 0; i < " + n.getRepeats() + "; i++) { \n");
+        n.getChild1().accept(this);
+        emit("\n }");
+    }
+
+    void visit(PrintNode n) {
+        // TODO: NÅR VI HAR LAVET SYMBOL TABLE SKAL VI HAVE LAVET DENNE.
+        emit("printf(\"%s\",");
+        n.getId().accept(this);
+        emit(")");
+    }
+
+    @Override
+    void visit(ProgramNode n) {
+        // TODO Auto-generated method stub
+        emit("#include <stdio.h>\n\n");
+        emit("int main() {\n");
+
+        for(AST ast : n.getChild()){
+            ast.accept(this);
+        };
+
+        emit("return 0;");
+        emit("\n}");
+        System.out.println(code);
     }
 
     @Override
     void visit(SymDeclaring n) {
         // TODO Auto-generated method stub
     }
+
+    @Override
+    void visit(TekstLiteral n) {
+        emit(" " + n.getValue() + " ");
+    }
+
+    @Override
+    void visit(TypeNode n) {
+        emit(" " + n.getName() + " ");
+    }
+
+    @Override
+    void visit(UnaryComputing n) {
+        emit("!");
+        n.getChild().accept(this);
+    }
+
+    @Override
+    void visit(VarDclNode n) {
+        n.getType().accept(this);
+        emit(" " + n.getId() + " = " + n.getValue() + ";");
+    }
+
 }
 

@@ -14,8 +14,6 @@ String code = "";
 		emit(n.id + " = ");
 		n.child1.accept(this);
 		emit(";\n");
-		
-
 	}
 
 	@Override
@@ -24,8 +22,6 @@ String code = "";
 		n.child1.accept(this);
 		emit(" " + n.operation + " ");
 		n.child2.accept(this);
-		
-
 	}
 	
 	void visit(ConvertingToFloat n){
