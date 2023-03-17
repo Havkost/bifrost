@@ -12,6 +12,12 @@ public abstract class Visitor {
 	abstract void visit(ProgramNode n);
 	abstract void visit(SymDeclaring n);
 	//abstract void visit(SymReferencing n);
+	abstract void visit(FuncDclNode n);
+
+	abstract void visit(FuncNode n);
+	abstract void visit(IfNode n);
+
+	abstract void visit(LoopNode n);
 
 	abstract void visit(BinaryComputing n);
 	

@@ -5,22 +5,20 @@ import ASTVisitor.Parser.Visitor;
 
 public class LoopNode extends AST {
 
-    private AST body;
+    private AST child1;
     private HeltalLiteral repeats;
 
-
     public LoopNode(AST body, HeltalLiteral repeats) {
-        this.body = body;
+        this.child1 = body;
         this.repeats = repeats;
     }
 
     @Override
     public void accept(Visitor v) {
-
     }
 
-    public AST getBody() {
-        return body;
+    public AST getChild1() {
+        return child1;
     }
 
     public HeltalLiteral getRepeats() {
