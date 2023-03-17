@@ -1,7 +1,7 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
-
+// TODO: Mangler newlines, altså en solid formatting
 public class CCodeGenerator extends Visitor {
 
     private String code = "";
@@ -12,7 +12,6 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(AssignNode n) {
-        // TODO Auto-generated method stub
         emit(n.getId() + " = ");
         n.getVal().accept(this);
         emit(";\n");
@@ -20,7 +19,6 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(BinaryComputing n) {
-        // TODO Auto-generated method stub
         n.getChild1().accept(this);
         emit(" " + n.getOperation() + " ");
         n.getChild2().accept(this);
@@ -39,11 +37,12 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(FuncDclNode n) {
         emit("void " + n.getId() + "() {\n");
-        emit("    ");
+        emit("\t");
         n.getChild1().accept(this);
         emit("\n");
         emit("}\n");
     }
+
     @Override
     void visit(FuncNode n) {
         emit(n.getId() + "();");
@@ -70,16 +69,17 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     void visit(LoopNode n) {
-        emit("for(int i = 0; i < " + n.getRepeats() + "; i++) { \n");
+        // TODO: Overvej hvad variablen skal hedde i forloops
+        emit("for(int __ = 0; __ < " + n.getRepeats() + "; __++) { \n");
         n.getChild1().accept(this);
         emit("\n }");
     }
 
     void visit(PrintNode n) {
         // TODO: NÅR VI HAR LAVET SYMBOL TABLE SKAL VI HAVE LAVET DENNE.
-        emit("printf(\"%s\",");
+        emit("printf(\"%s\", ");
         n.getId().accept(this);
-        emit(")");
+        emit(");");
     }
 
     @Override
@@ -113,6 +113,7 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     void visit(UnaryComputing n) {
+        // TODO: Hvis flere operatorer der er unær, så skriv til en getOperator i stedet.
         emit("!");
         n.getChild().accept(this);
     }
