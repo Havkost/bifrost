@@ -13,10 +13,9 @@ public class CCodeGenerator extends Visitor {
     @Override
     void visit(AssignNode n) {
         // TODO Auto-generated method stub
-        emit(n.d + " = ");
-        n.child1.accept(this);
+        emit(n.getId() + " = ");
+        n.getVal().accept(this);
         emit(";\n");
-
     }
 
     @Override
@@ -25,8 +24,25 @@ public class CCodeGenerator extends Visitor {
         n.getChild1().accept(this);
         emit(" " + n.getOperation() + " ");
         n.getChild2().accept(this);
+    }
 
+    @Override
+    void visit(IfNode n) {
+        emit("if (" + n.getChild1() + ") {\n");
+        n.getChild2().accept(this);
+        emit("}");
+    }
 
+    @Override
+    void visit(LoopNode n) {
+        emit("gentag");
+        n.getChild1().accept(this);
+        n.getRepeats().accept(this);
+        emit("gange");
+    }
+
+    void visit(BoolskLiteral n) {
+        n.getVal().accept(this);
     }
 
     @Override
@@ -40,21 +56,23 @@ public class CCodeGenerator extends Visitor {
         };
         emit("return 0;");
         emit("\n}");
-
         System.out.println(code);
+    }
 
+    void visit(FuncNode n) {
+        emit(n.getId() + "();");
     }
 
     @Override
     void visit(FuncDclNode n) {
-        emit("" + getFuncId);
+        emit("void " + n.getId() + "() {\n");
+        emit("  " + n.getChild1() + "\n");
+        emit("}\n");
     }
 
     @Override
     void visit(SymDeclaring n) {
         // TODO Auto-generated method stub
-
     }
-
 }
 
