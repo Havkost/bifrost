@@ -11,9 +11,9 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
-    void visit(Assigning n) {
+    void visit(AssignNode n) {
         // TODO Auto-generated method stub
-        emit(n.id + " = ");
+        emit(n.d + " = ");
         n.child1.accept(this);
         emit(";\n");
 
@@ -33,8 +33,8 @@ public class CCodeGenerator extends Visitor {
     void visit(ProgramNode n) {
         // TODO Auto-generated method stub
 
-        emit("#include < stdio.h>\n\n");
-        emit("void main()\n{\n");
+        emit("#include <stdio.h>\n\n");
+        emit("int main() {\n");
         for(AST ast : n.getChild()){
             ast.accept(this);
         };
@@ -43,6 +43,11 @@ public class CCodeGenerator extends Visitor {
 
         System.out.println(code);
 
+    }
+
+    @Override
+    void visit(FuncDclNode n) {
+        emit("" + getFuncId);
     }
 
     @Override

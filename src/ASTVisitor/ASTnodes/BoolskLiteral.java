@@ -13,6 +13,9 @@ public class BoolskLiteral extends AST {
 
     @Override
     public void accept(Visitor v) {
+    }
 
+    public String getVal() {
+        return val;
     }
 }

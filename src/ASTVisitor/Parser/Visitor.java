@@ -15,6 +15,6 @@ public abstract class Visitor {
 
 	abstract void visit(BinaryComputing n);
 	
-	abstract void visit(Assigning n);
+	abstract void visit(AssignNode n);
 
 }

@@ -15,4 +15,8 @@ public class TekstLiteral extends AST {
     public void accept(Visitor v) {
 
     }
+
+    public String getValue() {
+        return value;
+    }
 }

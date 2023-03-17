@@ -15,4 +15,8 @@ public class FuncNode extends AST {
     public void accept(Visitor v) {
 
     }
+
+    public String getId() {
+        return id;
+    }
 }
