@@ -11,9 +11,6 @@ public class Main {
 	 * @param args
 	 */
 	
-	
-	
-	
 	public static void main(String[] args) throws Throwable {
 		//
 		// Add more examples to this array
