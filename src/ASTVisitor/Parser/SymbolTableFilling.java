@@ -17,9 +17,29 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
+    void visit(TekstLiteral n) {
+
+    }
+
+    @Override
+    void visit(TypeNode n) {
+
+    }
+
+    @Override
     public void visit(BinaryComputing n) {
         n.getChild1().accept(this);
         n.getChild2().accept(this);
+    }
+
+    @Override
+    void visit(BoolskLiteral n) {
+
+    }
+
+    @Override
+    void visit(DecimaltalLiteral n) {
+
     }
 
     private void error(String message) {
@@ -37,12 +57,27 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
+    void visit(HeltalLiteral n) {
+
+    }
+
+    @Override
+    void visit(IdNode n) {
+
+    }
+
+    @Override
     public void visit(IfNode n) {
 
     }
 
     @Override
     public void visit(LoopNode n) {
+
+    }
+
+    @Override
+    void visit(PrintNode n) {
 
     }
 
@@ -57,7 +92,7 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    public void visit(SymReferencing n) {
+    void visit(VarDclNode n) {
 
     }
 }

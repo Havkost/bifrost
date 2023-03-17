@@ -14,6 +14,16 @@ public class Prettyprinting extends Visitor {
 	}
 
 	@Override
+	void visit(BoolskLiteral n) {
+
+	}
+
+	@Override
+	void visit(DecimaltalLiteral n) {
+
+	}
+
+	@Override
 	public void visit(ProgramNode n) {
 		// TODO Auto-generated method stub
 
@@ -31,12 +41,32 @@ public class Prettyprinting extends Visitor {
 	}
 
 	@Override
+	void visit(TekstLiteral n) {
+
+	}
+
+	@Override
+	void visit(TypeNode n) {
+
+	}
+
+	@Override
 	public void visit(FuncDclNode n) {
 
 	}
 
 	@Override
 	public void visit(FuncNode n) {
+
+	}
+
+	@Override
+	void visit(HeltalLiteral n) {
+
+	}
+
+	@Override
+	void visit(IdNode n) {
 
 	}
 
@@ -51,6 +81,11 @@ public class Prettyprinting extends Visitor {
 	}
 
 	@Override
+	void visit(PrintNode n) {
+
+	}
+
+	@Override
 	public void visit(AssignNode n) {
 
 	}
@@ -61,7 +96,7 @@ public class Prettyprinting extends Visitor {
 	}
 
 	@Override
-	public void visit(SymReferencing n) {
+	void visit(VarDclNode n) {
 
 	}
 }

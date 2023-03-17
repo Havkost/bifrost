@@ -289,24 +289,29 @@ public class ASTParser {
     }
 
     public AST not_expr() {
-        if (ts.peek() == IKKE) {
+        AST expr;
+        if(ts.peek() == IKKE) {
             expect(IKKE);
-            Factor();
-        } else Factor();
-
+            AST factor = factor();
+            expr = new UnaryComputing(IKKE.name(), factor);
+        } else expr = factor();
+        return expr;
     }
 
     //TODO skriv ordentlig fejlbesked
-    public void Factor() {
+    public AST factor() {
+        AST expr = null;
         if (ts.peek() == LPAREN) {
             expect(LPAREN);
-            expr();
+            expr = expr();
             expect(RPAREN);
         } else if (ts.peek() == HELTAL_LIT || ts.peek() == TEKST_LIT || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT) {
-            value();
+            expr = value();
         } else if (ts.peek() == ID) {
-            expect(ID);
+            expr = new IdNode(expect(ID).getVal());
         } else error("FORVENTEDE (, heltal, decimaltal, tekst ELLER boolsk");
+
+        return expr;
     }
 
 
@@ -338,17 +343,13 @@ public class ASTParser {
     private AST value() {
         AST valueAST = null;
         if (ts.peek() == TEKST_LIT) {
-            Token tekstToken = expect(TEKST_LIT);
-            valueAST = new TekstLiteral(tekstToken.getVal());
+            valueAST = new TekstLiteral(expect(TEKST_LIT).getVal());
         } else if (ts.peek() == HELTAL_LIT) {
-            Token heltalToken = expect(HELTAL_LIT);
-            valueAST = new HeltalLiteral(heltalToken.getVal());
+            valueAST = new HeltalLiteral(expect(HELTAL_LIT).getVal());
         } else if (ts.peek() == DECIMALTAL_LIT) {
-            Token decimaltalToken = expect(DECIMALTAL_LIT);
-            valueAST = new TekstLiteral(decimaltalToken.getVal());
+            valueAST = new TekstLiteral(expect(DECIMALTAL_LIT).getVal());
         } else if (ts.peek() == BOOLSK_LIT) {
-            Token boolskToken = expect(BOOLSK_LIT);
-            valueAST = new TekstLiteral(boolskToken.getVal());
+            valueAST = new TekstLiteral(expect(BOOLSK_LIT).getVal());
         }
 
         return valueAST;
