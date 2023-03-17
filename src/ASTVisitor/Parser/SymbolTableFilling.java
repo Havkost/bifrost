@@ -5,28 +5,59 @@ import ASTVisitor.ASTnodes.*;
 import java.util.Base64;
 
 public class SymbolTableFilling extends Visitor {
-    @Override
-    void visit(Assigning n) {
-        n.child1.accept(this);
-    }
 
     @Override
-    void visit(ProgramNode n) {
+    public void visit(ProgramNode n) {
 
     }
 
     @Override
-    void visit(SymDeclaring n) {
+    public void visit(SymDeclaring n) {
 
     }
 
     @Override
-    void visit(BinaryComputing n) {
+    public void visit(BinaryComputing n) {
         n.getChild1().accept(this);
         n.getChild2().accept(this);
     }
 
     private void error(String message) {
         throw new Error(message);
+    }
+
+    @Override
+    public void visit(FuncDclNode n) {
+
+    }
+
+    @Override
+    public void visit(FuncNode n) {
+
+    }
+
+    @Override
+    public void visit(IfNode n) {
+
+    }
+
+    @Override
+    public void visit(LoopNode n) {
+
+    }
+
+    @Override
+    public void visit(AssignNode n) {
+
+    }
+
+    @Override
+    public void visit(UnaryComputing n) {
+
+    }
+
+    @Override
+    public void visit(SymReferencing n) {
+
     }
 }
