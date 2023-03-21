@@ -10,17 +10,26 @@ public class Prettyprinting extends Visitor {
 		n.getChild1().accept(this);
 		System.out.print(" " + n.getOperation() + " ");
 		n.getChild2().accept(this);
-
 	}
 
 	@Override
 	void visit(BoolskLiteral n) {
-
+		System.out.print(n.getVal());
 	}
 
 	@Override
 	void visit(DecimaltalLiteral n) {
+		System.out.print(n.getVal());
+	}
 
+	@Override
+	void visit(TekstLiteral n) {
+		System.out.print(n.getVal());
+	}
+
+	@Override
+	void visit(HeltalLiteral n) {
+		System.out.print(n.getVal());
 	}
 
 	@Override
@@ -41,11 +50,6 @@ public class Prettyprinting extends Visitor {
 	}
 
 	@Override
-	void visit(TekstLiteral n) {
-
-	}
-
-	@Override
 	void visit(TypeNode n) {
 
 	}
@@ -57,11 +61,6 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(FuncNode n) {
-
-	}
-
-	@Override
-	void visit(HeltalLiteral n) {
 
 	}
 
