@@ -137,6 +137,5 @@ public class CCodeGenerator extends Visitor {
     void visit(BoolskDcl n) {
 
     }
-
 }
 
