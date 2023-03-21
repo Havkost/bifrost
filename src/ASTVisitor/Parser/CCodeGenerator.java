@@ -103,7 +103,7 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     void visit(TekstLiteral n) {
-        emit(" " + n.getValue() + " ");
+        emit(" " + n.getVal() + " ");
     }
 
     @Override
@@ -119,9 +119,25 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
-    void visit(VarDclNode n) {
-        n.getType().accept(this);
-        emit(" " + n.getId() + " = " + n.getValue() + ";");
+    void visit(TekstDcl n) {
+
     }
+
+    @Override
+    void visit(HeltalDcl n) {
+
+    }
+
+    @Override
+    void visit(DecimalTalDcl n) {
+
+    }
+
+    @Override
+    void visit(BoolskDcl n) {
+
+    }
+
+
 }
 

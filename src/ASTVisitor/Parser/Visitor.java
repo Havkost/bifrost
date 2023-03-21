@@ -24,7 +24,6 @@ public abstract class Visitor {
 	abstract void visit(TekstLiteral n);
 	abstract void visit(TypeNode n);
 	abstract void visit(UnaryComputing n);
-	abstract void visit(VarDclNode n);
 	abstract void visit(TekstDcl n);
 	abstract void visit(HeltalDcl n);
 	abstract void visit(DecimalTalDcl n);
