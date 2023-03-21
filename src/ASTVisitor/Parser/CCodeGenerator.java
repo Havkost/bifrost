@@ -25,12 +25,12 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
-    void visit(BoolskLiteral n) {
+    public void visit(BoolskLiteral n) {
         emit( " " + n.getVal()  + " ");
     }
 
     @Override
-    void visit(DecimaltalLiteral n) {
+    public void visit(DecimaltalLiteral n) {
         emit(" " + n.getVal() + " ");
     }
 
@@ -44,38 +44,40 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
-    void visit(FuncNode n) {
+    public void visit(FuncNode n) {
         emit(n.getId() + "();");
     }
 
     @Override
-    void visit(HeltalLiteral n) {
+    public void visit(HeltalLiteral n) {
         emit(" " + n.getVal() + " ");
     }
 
     @Override
-    void visit(IdNode n) {
+    public void visit(IdNode n) {
         emit(" " + n.getName() + " ");
     }
 
     @Override
-    void visit(IfNode n) {
+    public void visit(IfNode n) {
         emit("if (" );
-        n.getChild1().accept(this);
+        n.getExpr().accept(this);
         emit( ") {\n");
-        n.getChild2().accept(this);
+        for (AST child : n.getChildren()) {
+            child.accept(this);
+        }
         emit("\n}");
     }
 
     @Override
-    void visit(LoopNode n) {
+    public void visit(LoopNode n) {
         // TODO: Overvej hvad variablen skal hedde i forloops
         emit("for(int __ = 0; __ < " + n.getRepeats() + "; __++) { \n");
         n.getChild1().accept(this);
         emit("\n }");
     }
 
-    void visit(PrintNode n) {
+    public void visit(PrintNode n) {
         // TODO: NÅR VI HAR LAVET SYMBOL TABLE SKAL VI HAVE LAVET DENNE.
         emit("printf(\"%s\", ");
         n.getId().accept(this);
@@ -83,7 +85,7 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
-    void visit(ProgramNode n) {
+    public void visit(ProgramNode n) {
         emit("#include <stdio.h>\n\n");
         emit("int main() {\n");
 
@@ -102,39 +104,44 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
-    void visit(TekstLiteral n) {
+    public void visit(TekstLiteral n) {
         emit(" " + n.getVal() + " ");
     }
 
     @Override
-    void visit(TypeNode n) {
+    public void visit(TypeNode n) {
         emit(" " + n.getName() + " ");
     }
 
     @Override
-    void visit(UnaryComputing n) {
+    public void visit(UnaryComputing n) {
         // TODO: Hvis flere operatorer der er unær, så skriv til en getOperator i stedet.
         emit("!");
         n.getChild().accept(this);
     }
 
     @Override
-    void visit(TekstDcl n) {
+    public void visit(TekstDcl n) {
 
     }
 
     @Override
-    void visit(HeltalDcl n) {
+    public void visit(HeltalDcl n) {
 
     }
 
     @Override
-    void visit(DecimalTalDcl n) {
+    public void visit(DecimaltalDcl n) {
 
     }
 
     @Override
-    void visit(BoolskDcl n) {
+    public void visit(BoolskDcl n) {
+
+    }
+
+    @Override
+    public void visit(SymReferencing n) {
 
     }
 }

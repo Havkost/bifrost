@@ -3,10 +3,12 @@ package ASTVisitor.ASTnodes;
 import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
+import java.util.ArrayList;
+
 public class IfNode extends AST {
 
-    private AST child1;
-    private AST child2;
+    private AST expr;
+    private ArrayList<AST> children;
 
 
     @Override
@@ -14,16 +16,24 @@ public class IfNode extends AST {
 
     }
 
-    public IfNode(AST child1, AST child2) {
-        this.child1 = child1;
-        this.child2 = child2;
+    public IfNode(AST expr, ArrayList<AST> children) {
+        this.expr = expr;
+        this.children = children;
     }
 
-    public AST getChild1() {
-        return child1;
+    public AST getExpr() {
+        return expr;
     }
 
-    public AST getChild2() {
-        return child2;
+    public ArrayList<AST> getChildren() {
+        return children;
+    }
+
+    @Override
+    public String toString() {
+        return "IfNode{" +
+                "expr=" + expr +
+                ", children=" + children +
+                '}';
     }
 }

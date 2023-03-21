@@ -105,11 +105,12 @@ public class ASTParser {
             stmtAST = new FuncNode(idToken.getVal());
         } else if (ts.peek() == HVIS) {
             expect(HVIS);
-            expr();
+            AST ifExpr = expr();
             expect(BLOCKSTART);
             expect(NEWLINE);
-            stmts();
+            ArrayList<AST> stmts = stmts();
             expect(BLOCKSLUT);
+            stmtAST = new IfNode(ifExpr, stmts);
         } else if (ts.peek() == PRINT) {
             expect(PRINT);
             expect(ID);
@@ -123,6 +124,8 @@ public class ASTParser {
                 || ts.peek() == TEKST_LIT || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT) {
             expr = or_expr();
         } else error("Forventede boolsk udtryk.");
+
+        if(expr == null) error("Forventede udtryk. Fik " + ts.peek());
         return expr;
     }
 
@@ -264,7 +267,7 @@ public class ASTParser {
         AST expr;
         AST notExpr = not_expr();
         String op = ts.peek().name();
-        AST prodExpr = sumExpr2();
+        AST prodExpr = productExpr2();
         if(prodExpr != null) expr = new BinaryComputing(op, notExpr, prodExpr);
         else expr = notExpr;
 
@@ -316,28 +319,35 @@ public class ASTParser {
 
 
     private AST varDcl(){
-        AST dclAST = null;
+        AST dclAst = null;
         if(ts.peek() == TEKST_DCL){
             expect(TEKST_DCL);
             AST value = value();
             expect(SOM);
             Token idToken = expect(ID);
+            dclAst = new TekstDcl(value, idToken.getVal());
         } else if(ts.peek() == HELTAL_DCL){
             expect(HELTAL_DCL);
             AST value = value();
             expect(SOM);
             Token idToken = expect(ID);
+            dclAst = new HeltalDcl(value, idToken.getVal());
         } else if(ts.peek() == DECIMALTAL_DCL){
             expect(DECIMALTAL_DCL);
             AST value = value();
             expect(SOM);
-            expect(ID);
+            Token idToken = expect(ID);
+            dclAst = new DecimaltalDcl(value, idToken.getVal());
         } else if (ts.peek() == BOOLSK_DCL) {
             expect(BOOLSK_DCL);
-            expect(BOOLSK_LIT);
+            AST value = value();
             expect(SOM);
+            Token idToken = expect(ID);
+            dclAst = new BoolskDcl(value, idToken.getVal());
         } else error("Forventede type deklaration (tekst, heltal, decimaltal eller boolsk).");
-        return dclAST;
+
+
+        return dclAst;
     }
 
     private AST value() {

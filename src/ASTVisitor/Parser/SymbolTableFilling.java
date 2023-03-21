@@ -17,12 +17,12 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    void visit(TekstLiteral n) {
+    public void visit(TekstLiteral n) {
 
     }
 
     @Override
-    void visit(TypeNode n) {
+    public void visit(TypeNode n) {
 
     }
 
@@ -33,12 +33,12 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    void visit(BoolskLiteral n) {
+    public void visit(BoolskLiteral n) {
 
     }
 
     @Override
-    void visit(DecimaltalLiteral n) {
+    public void visit(DecimaltalLiteral n) {
 
     }
 
@@ -57,12 +57,12 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    void visit(HeltalLiteral n) {
+    public void visit(HeltalLiteral n) {
 
     }
 
     @Override
-    void visit(IdNode n) {
+    public void visit(IdNode n) {
 
     }
 
@@ -77,7 +77,7 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    void visit(PrintNode n) {
+    public void visit(PrintNode n) {
 
     }
 
@@ -92,22 +92,26 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    void visit(TekstDcl n) {
+    public void visit(TekstDcl n) {
 
     }
 
     @Override
-    void visit(HeltalDcl n) {
+    public void visit(HeltalDcl n) {
 
     }
 
     @Override
-    void visit(DecimalTalDcl n) {
+    public void visit(DecimaltalDcl n) {
+
+    }
+    @Override
+    public void visit(SymReferencing n) {
 
     }
 
     @Override
-    void visit(BoolskDcl n) {
+    public void visit(BoolskDcl n) {
 
     }
 

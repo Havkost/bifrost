@@ -32,8 +32,8 @@ public class BinaryComputing extends AST {
     public String toString() {
         return "BinaryComputing{" +
                 "operation='" + operation + '\'' +
-                ", child1=" + child1 +
-                ", child2=" + child2 +
+                ", child1=" + child1.toString() +
+                ", child2=" + child2.toString() +
                 '}';
     }
 }

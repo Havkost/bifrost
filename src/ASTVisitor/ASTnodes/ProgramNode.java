@@ -18,4 +18,11 @@ public class ProgramNode extends AST {
     public void accept(Visitor v) {
         v.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "ProgramNode{" +
+                "child=" + child +
+                '}';
+    }
 }

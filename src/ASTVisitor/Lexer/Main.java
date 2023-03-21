@@ -32,6 +32,8 @@ public class Main {
             ASTParser p = new ASTParser(charStream);
             AST ast = p.prog();
 
+            System.out.println(ast);
+            ast.accept(new Prettyprinting());
             //ast.accept(new CCodeGenerator());
 
 

@@ -6,51 +6,44 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(BinaryComputing n) {
-		// TODO Auto-generated method stub
 		n.getChild1().accept(this);
 		System.out.print(" " + n.getOperation() + " ");
 		n.getChild2().accept(this);
 	}
 
 	@Override
-	void visit(BoolskLiteral n) {
+	public void visit(BoolskLiteral n) {
 		System.out.print(n.getVal());
 	}
 
 	@Override
-	void visit(DecimaltalLiteral n) {
+	public void visit(DecimaltalLiteral n) {
 		System.out.print(n.getVal());
 	}
 
 	@Override
-	void visit(TekstLiteral n) {
+	public void visit(TekstLiteral n) {
 		System.out.print(n.getVal());
 	}
 
 	@Override
-	void visit(HeltalLiteral n) {
+	public void visit(HeltalLiteral n) {
 		System.out.print(n.getVal());
 	}
 
 	@Override
 	public void visit(ProgramNode n) {
-		// TODO Auto-generated method stub
-
 		for(AST ast : n.getChild()){
 			ast.accept(this);
-		};
-		System.out.println();
-
+		}
 	}
 
 	@Override
 	public void visit(SymDeclaring n) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
-	void visit(TypeNode n) {
+	public void visit(TypeNode n) {
 
 	}
 
@@ -65,52 +58,78 @@ public class Prettyprinting extends Visitor {
 	}
 
 	@Override
-	void visit(IdNode n) {
+	public void visit(IdNode n) {
 
 	}
 
 	@Override
 	public void visit(IfNode n) {
-
+		System.out.print("hvis ");
+		n.getExpr().accept(this);
+		System.out.print(" :\n");
+		for (AST child : n.getChildren()) {
+			child.accept(this);
+		}
+		System.out.println(".\n");
 	}
 
 	@Override
 	public void visit(LoopNode n) {
-
+		System.out.println("gentag ");
+		n.getChild1().accept(this);
+		System.out.println(n.getRepeats() + " gange");
 	}
 
 	@Override
-	void visit(PrintNode n) {
-
+	public void visit(PrintNode n) {
+		if(n.getId() != null) {
+			System.out.println("print");
+			n.getId().accept(this);
+		} else if(n.getVal() != null) {
+			System.out.println("print " + n.getVal());
+		}
 	}
+
 
 	@Override
 	public void visit(AssignNode n) {
-
+		System.out.print("sæt " + n.getId() + " til ");
+		n.getVal().accept(this);
 	}
 
 	@Override
 	public void visit(UnaryComputing n) {
-
 	}
 
 	@Override
-	void visit(TekstDcl n) {
-		System.out.print();
+	public void visit(TekstDcl n) {
+		System.out.print("gem tekst ");
+		n.getValue().accept(this);
+		System.out.print(" som " + n.getId());
 	}
 
 	@Override
-	void visit(HeltalDcl n) {
-
+	public void visit(HeltalDcl n) {
+		System.out.print("gem heltal ");
+		n.getValue().accept(this);
+		System.out.print(" som " + n.getId());
 	}
 
 	@Override
-	void visit(DecimalTalDcl n) {
-
+	public void visit(DecimaltalDcl n) {
+		System.out.print("gem decimaltal ");
+		n.getValue().accept(this);
+		System.out.print(" som " + n.getId());
 	}
 
 	@Override
-	void visit(BoolskDcl n) {
+	public void visit(BoolskDcl n) {
+		System.out.print("gem boolsk ");
+		n.getValue().accept(this);
+		System.out.print(" som " + n.getId());
+	}
 
+	@Override
+	public void visit(SymReferencing n) {
 	}
 }

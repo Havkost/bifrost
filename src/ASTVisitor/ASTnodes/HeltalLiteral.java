@@ -19,4 +19,11 @@ public class HeltalLiteral extends AST {
     public String getVal() {
         return val;
     }
+
+    @Override
+    public String toString() {
+        return "HeltalLiteral{" +
+                "val='" + val + '\'' +
+                '}';
+    }
 }
