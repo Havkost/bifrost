@@ -95,7 +95,22 @@ public class Prettyprinting extends Visitor {
 	}
 
 	@Override
-	void visit(VarDclNode n) {
+	void visit(TekstDcl n) {
+		System.out.print();
+	}
+
+	@Override
+	void visit(HeltalDcl n) {
+
+	}
+
+	@Override
+	void visit(DecimalTalDcl n) {
+
+	}
+
+	@Override
+	void visit(BoolskDcl n) {
 
 	}
 }
