@@ -5,9 +5,10 @@ import ASTVisitor.Parser.Visitor;
 
 public class SymDeclaring extends AST {
 
-    private String id;
+    String id;
 
     public void accept(Visitor v) {
         v.visit(this);
     }
+
 }
