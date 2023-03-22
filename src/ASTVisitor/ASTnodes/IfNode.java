@@ -13,7 +13,7 @@ public class IfNode extends AST {
 
     @Override
     public void accept(Visitor v) {
-
+        v.visit(this);
     }
 
     public IfNode(AST expr, ArrayList<AST> children) {

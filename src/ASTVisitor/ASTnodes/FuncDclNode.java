@@ -10,7 +10,7 @@ public class FuncDclNode extends AST {
 
     @Override
     public void accept(Visitor v) {
-
+        v.visit(this);
     }
 
     public FuncDclNode(String id, AST child1) {

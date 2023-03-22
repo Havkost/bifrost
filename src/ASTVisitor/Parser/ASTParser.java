@@ -28,7 +28,6 @@ public class ASTParser {
 
     public ArrayList<AST> lines() {
         ArrayList<AST> linesList = new ArrayList<>();
-        System.out.println(ts.peek());
         if(ts.peek() == GEM || ts.peek() == RUTINE ||
                 ts.peek() == SAET || ts.peek() == GENTAG ||
                 ts.peek() == KOER || ts.peek() == HVIS || ts.peek() == PRINT) {
@@ -71,7 +70,6 @@ public class ASTParser {
         if(ts.peek() == GEM || ts.peek() == RUTINE ||
                 ts.peek() == SAET || ts.peek() == GENTAG ||
                 ts.peek() == KOER || ts.peek() == HVIS) {
-            System.out.println(ts.peek());
             AST stmt = stmt();
             ArrayList<AST> stmts = stmts();
             stmtList.add(stmt);
@@ -113,7 +111,13 @@ public class ASTParser {
             stmtAST = new IfNode(ifExpr, stmts);
         } else if (ts.peek() == PRINT) {
             expect(PRINT);
-            expect(ID);
+            if(ts.peek() == ID) {
+                Token idToken = expect(ID);
+                stmtAST = new PrintNode(new IdNode(idToken.getVal()));
+            } else if (ts.peek() == HELTAL_LIT || ts.peek() == DECIMALTAL_LIT ||
+                    ts.peek() == TEKST_LIT || ts.peek() == BOOLSK_LIT) {
+                stmtAST = value();
+            } else error("Forventede id eller værdi.");
         } else error("Forventede kommando (sæt, gentag, kør eller hvis).");
         return stmtAST;
     }
@@ -187,7 +191,6 @@ public class ASTParser {
         if(eqExpr != null) expr = new BinaryComputing(op, relExpr, eqExpr);
         else expr = relExpr;
 
-        System.out.println(expr);
         return expr;
     }
 

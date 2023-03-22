@@ -15,6 +15,7 @@ public class AssignNode extends AST {
 
     @Override
     public void accept(Visitor v) {
+        v.visit(this);
     }
 
     public String getId() {
@@ -23,5 +24,13 @@ public class AssignNode extends AST {
 
     public AST getVal() {
         return val;
+    }
+
+    @Override
+    public String toString() {
+        return "AssignNode{" +
+                "id='" + id + '\'' +
+                ", val=" + val +
+                '}';
     }
 }

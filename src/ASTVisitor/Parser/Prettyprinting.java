@@ -7,7 +7,7 @@ public class Prettyprinting extends Visitor {
 	@Override
 	public void visit(BinaryComputing n) {
 		n.getChild1().accept(this);
-		System.out.print(" " + n.getOperation() + " ");
+		System.out.print(" " + n.getOperation().toLowerCase() + " ");
 		n.getChild2().accept(this);
 	}
 
@@ -35,6 +35,7 @@ public class Prettyprinting extends Visitor {
 	public void visit(ProgramNode n) {
 		for(AST ast : n.getChild()){
 			ast.accept(this);
+			System.out.println();
 		}
 	}
 
@@ -59,35 +60,32 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(IdNode n) {
-
+		System.out.print(n.getName());
 	}
 
 	@Override
 	public void visit(IfNode n) {
 		System.out.print("hvis ");
 		n.getExpr().accept(this);
-		System.out.print(" :\n");
+		System.out.print(":\n");
 		for (AST child : n.getChildren()) {
+			System.out.print("	");
 			child.accept(this);
 		}
-		System.out.println(".\n");
+		System.out.print(".");
 	}
 
 	@Override
 	public void visit(LoopNode n) {
-		System.out.println("gentag ");
+		System.out.print("gentag ");
 		n.getChild1().accept(this);
-		System.out.println(n.getRepeats() + " gange");
+		System.out.print(n.getRepeats() + " gange");
 	}
 
 	@Override
 	public void visit(PrintNode n) {
-		if(n.getId() != null) {
-			System.out.println("print");
-			n.getId().accept(this);
-		} else if(n.getVal() != null) {
-			System.out.println("print " + n.getVal());
-		}
+		System.out.print("print ");
+		n.getValue().accept(this);
 	}
 
 

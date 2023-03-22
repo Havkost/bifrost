@@ -15,6 +15,7 @@ public class LoopNode extends AST {
 
     @Override
     public void accept(Visitor v) {
+        v.visit(this);
     }
 
     public AST getChild1() {

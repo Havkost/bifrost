@@ -19,7 +19,11 @@ public class Main {
 
 
         try {
-            System.out.println("Get Token stream from: \n" + example + "\n");
+            System.out.println("\n=======================");
+            System.out.println("Input program:");
+            System.out.println("=======================");
+            System.out.println(example);
+
             CharArrayReader reader = new CharArrayReader(example.toCharArray());
             CharStream charStream = new CharStream(reader);
 
@@ -32,9 +36,15 @@ public class Main {
             ASTParser p = new ASTParser(charStream);
             AST ast = p.prog();
 
-            System.out.println(ast);
+            System.out.println("\n=======================");
+            System.out.println("Pretty printing:");
+            System.out.println("=======================");
             ast.accept(new Prettyprinting());
-            //ast.accept(new CCodeGenerator());
+
+            System.out.println("\n=======================");
+            System.out.println("C code:");
+            System.out.println("=======================");
+            ast.accept(new CCodeGenerator());
 
 
         } catch (Throwable e) {

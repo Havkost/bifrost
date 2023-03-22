@@ -13,7 +13,7 @@ public class HeltalLiteral extends AST {
 
     @Override
     public void accept(Visitor v) {
-
+        v.visit(this);
     }
 
     public String getVal() {

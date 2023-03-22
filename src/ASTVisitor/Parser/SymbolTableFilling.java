@@ -1,14 +1,15 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
-
-import java.util.Base64;
+import static ASTVisitor.Parser.AST.DataTypes.*;
 
 public class SymbolTableFilling extends Visitor {
 
     @Override
     public void visit(ProgramNode n) {
-
+        for(AST ast : n.getChild()){
+            ast.accept(this);
+        }
     }
 
     @Override
@@ -88,32 +89,35 @@ public class SymbolTableFilling extends Visitor {
 
     @Override
     public void visit(UnaryComputing n) {
-
+        n.getChild().accept(this);
     }
 
-    @Override
-    public void visit(TekstDcl n) {
-
-    }
-
-    @Override
-    public void visit(HeltalDcl n) {
-
-    }
-
-    @Override
-    public void visit(DecimaltalDcl n) {
-
-    }
     @Override
     public void visit(SymReferencing n) {
 
     }
 
     @Override
-    public void visit(BoolskDcl n) {
-
+    public void visit(TekstDcl n) {
+        if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),TEKST);
+        else error("variable " + n.getId() + " is already declared");
     }
 
+    @Override
+    public void visit(HeltalDcl n) {
+        if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),HELTAL);
+        else error("variable " + n.getId() + " is already declared");
+    }
 
+    @Override
+    public void visit(DecimaltalDcl n) {
+        if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),DECIMALTAL);
+        else error("variable " + n.getId() + " is already declared");
+    }
+
+    @Override
+    public void visit(BoolskDcl n) {
+        if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),BOOLSK);
+        else error("variable " + n.getId() + " is already declared");
+    }
 }

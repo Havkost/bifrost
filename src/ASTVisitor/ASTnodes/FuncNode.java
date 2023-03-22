@@ -13,7 +13,7 @@ public class FuncNode extends AST {
 
     @Override
     public void accept(Visitor v) {
-
+        v.visit(this);
     }
     public String getId() {
         return id;

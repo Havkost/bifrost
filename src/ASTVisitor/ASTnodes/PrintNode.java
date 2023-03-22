@@ -5,24 +5,25 @@ import ASTVisitor.Parser.Visitor;
 
 public class PrintNode extends AST {
 
-    private String val;
+    private AST value;
 
-    private AST id;
-
-    public String getVal() {
-        return val;
+    public AST getValue() {
+        return value;
     }
 
-    public AST getId() {
-        return id;
-    }
-
-    public PrintNode(String val, AST id) {
-        this.val = val;
-        this.id = id;
+    public PrintNode(AST value) {
+        this.value = value;
     }
 
     @Override
     public void accept(Visitor v) {
+        v.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return "PrintNode{" +
+                "value=" + value +
+                '}';
     }
 }
