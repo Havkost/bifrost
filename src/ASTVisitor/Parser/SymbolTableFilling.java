@@ -30,7 +30,8 @@ public class SymbolTableFilling extends Visitor {
 
     @Override
     public void visit(FuncDclNode n) {
-        //if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId())
+        if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(), RUTINE);
+        else error("variable " + n.getId() + " is already declared");
     }
 
     @Override

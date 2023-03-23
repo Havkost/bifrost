@@ -10,6 +10,7 @@ import static ASTVisitor.Parser.AST.DataTypes.*;
 public class CCodeGenerator extends Visitor {
     int blockIndent = 0;
     private String code = "";
+
     Map<String, String> operators = new HashMap<>(Map.ofEntries(
             entry("*","*"),
             entry("/", "/"),
@@ -49,7 +50,7 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(BinaryComputing n) {
         n.getChild1().accept(this);
-        emit(" " + operators.get(n.getOperation()) + " ");
+         emit(" " + operators.get(n.getOperation()) + " ");
         n.getChild2().accept(this);
     }
 
@@ -75,10 +76,15 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(FuncDclNode n) {
+
         emit("void " + n.getId() + "() {\n");
-        emit("\t");
-        n.getChild1().accept(this);
-        emit("\n");
+        blockIndent++;
+        for (AST stmt : n.getBody()) {
+            indent(blockIndent);
+            stmt.accept(this);
+        }
+        blockIndent--;
+        indent(blockIndent);
         emit("}\n");
     }
 
@@ -106,7 +112,7 @@ public class CCodeGenerator extends Visitor {
         blockIndent--;
         emit("\n");
         indent(blockIndent);
-        emit("}");
+        emit("}\n");
     }
 
     @Override
@@ -142,7 +148,8 @@ public class CCodeGenerator extends Visitor {
         emit("#include <stdio.h>\n\n");
 
         AST.getSymbolTable().forEach((id, type) -> {
-            emit(dataTypeString.get(type) + " " + id + ";\n");
+            if(type == RUTINE) emit("void " + id + "();\n");
+            else emit(dataTypeString.get(type) + " " + id + ";\n");
         });
 
         emit("\nint free_memory () {\n");
@@ -159,9 +166,11 @@ public class CCodeGenerator extends Visitor {
         emit("int main() {\n");
         blockIndent++;
         for(AST ast : n.getChild()){
-            indent(blockIndent);
-            ast.accept(this);
-            emit("\n");
+            if(!(ast instanceof FuncDclNode)) {
+                indent(blockIndent);
+                ast.accept(this);
+                emit("\n");
+            }
         }
         indent(blockIndent);
         emit("free_memory();\n");
@@ -170,7 +179,16 @@ public class CCodeGenerator extends Visitor {
         blockIndent--;
         emit("\n");
         indent(blockIndent);
-        emit("}");
+        emit("}\n\n");
+
+        for (AST ast : n.getChild()) {
+            if(ast instanceof FuncDclNode) {
+                indent(blockIndent);
+                ast.accept(this);
+                emit("\n");
+            }
+        }
+
         System.out.println(code);
     }
 
@@ -204,7 +222,6 @@ public class CCodeGenerator extends Visitor {
             n.getValue().accept(this);
             emit(");");
         }
-        emit(";");
     }
 
     @Override

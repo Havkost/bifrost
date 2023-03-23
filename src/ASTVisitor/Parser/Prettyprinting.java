@@ -51,12 +51,20 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(FuncDclNode n) {
-
+		System.out.print("rutine " +  n.getId() + ":\n");
+		blockIndent++;
+		for (AST stmt : n.getBody()) {
+			indent(blockIndent);
+			stmt.accept(this);
+		}
+		blockIndent--;
+		indent(blockIndent);
+		System.out.print("\n.\n");
 	}
 
 	@Override
 	public void visit(FuncNode n) {
-
+		System.out.println("kør " + n.getId());
 	}
 
 	@Override

@@ -9,7 +9,8 @@ public abstract class AST {
         DECIMALTAL,
         HELTAL,
         TEKST,
-        BOOLSK
+        BOOLSK,
+        RUTINE
     }
     public DataTypes type = null;
     public abstract void accept(Visitor v);

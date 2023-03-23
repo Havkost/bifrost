@@ -1,0 +1,20 @@
+gem heltal 3 som a
+
+rutine test:
+    hvis a > 3:
+        sæt a til 2
+    .
+    hvis a < 4:
+        sæt a til 7
+    .
+.
+
+rutine test2:
+    hvis 10 ikke er 10:
+        sæt a til 10
+    .
+.
+
+kør test
+
+print a
