@@ -7,7 +7,6 @@ import java.util.Map;
 import static java.util.Map.entry;
 import static ASTVisitor.Parser.AST.DataTypes.*;
 
-// TODO: Mangler newlines, altså en solid formatting
 public class CCodeGenerator extends Visitor {
     int blockIndent = 0;
     private String code = "";
@@ -16,17 +15,24 @@ public class CCodeGenerator extends Visitor {
             entry("/", "/"),
             entry("+", "+"),
             entry("-", "-"),
-            entry("ELLER", "||"),
-            entry("OG", "&&"),
+            entry("eller", "||"),
+            entry("og", "&&"),
             entry("<", "<"),
             entry(">", ">"),
-            entry("ER", "=="),
-            entry("IKKE ER", "!=")
+            entry("er", "=="),
+            entry("ikke er", "!=")
     ));
 
     Map<AST.DataTypes, String> formatStrings = new HashMap<>(Map.ofEntries(
             entry(HELTAL, "%d"),
-            entry(DECIMALTAL, "%lf")
+            entry(DECIMALTAL, "%lf"),
+            entry(TEKST, "%s")
+    ));
+
+    Map<AST.DataTypes, String> dataTypeString = new HashMap<>(Map.ofEntries(
+            entry(HELTAL, "int"),
+            entry(DECIMALTAL, "double"),
+            entry(TEKST, "char*")
     ));
 
     public void emit(String c){
@@ -54,6 +60,16 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(DecimaltalLiteral n) {
+        emit(n.getVal().replace(',', '.'));
+    }
+
+    @Override
+    public void visit(TekstLiteral n) {
+        emit("\"" + n.getVal() + "\"");
+    }
+
+    @Override
+    public void visit(HeltalLiteral n) {
         emit(n.getVal());
     }
 
@@ -71,10 +87,6 @@ public class CCodeGenerator extends Visitor {
         emit(n.getId() + "();");
     }
 
-    @Override
-    public void visit(HeltalLiteral n) {
-        emit(n.getVal());
-    }
 
     @Override
     public void visit(IdNode n) {
@@ -108,8 +120,8 @@ public class CCodeGenerator extends Visitor {
     public void visit(PrintNode n) {
         emit("printf(\"");
         if(n.getValue() instanceof IdNode) {
-            //emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getName())));
-            emit("%d"); // TODO: Use symbol table to look up type when the table has been constructed
+            emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getName())));
+            //emit("%d"); // TODO: Use symbol table to look up type when the table has been constructed
         } else if (n.getValue() instanceof HeltalLiteral) {
             emit("%d");
         } else if(n.getValue() instanceof DecimaltalLiteral) {
@@ -117,18 +129,33 @@ public class CCodeGenerator extends Visitor {
         } else if (n.getValue() instanceof BoolskLiteral || n.getValue() instanceof TekstLiteral) {
             emit("%s");
         }
-        emit("\", ");
+        emit("\\n\", ");
 
         n.getValue().accept(this);
         emit(");");
-        if(n.getValue() instanceof IdNode) {
-            emit(" // This is a placeholder until symbol table is finished.");
-        }
     }
 
     @Override
     public void visit(ProgramNode n) {
+        emit("#include <string.h>\n");
+        emit("#include <stdlib.h>\n");
         emit("#include <stdio.h>\n\n");
+
+        AST.getSymbolTable().forEach((id, type) -> {
+            emit(dataTypeString.get(type) + " " + id + ";\n");
+        });
+
+        emit("\nint free_memory () {\n");
+        blockIndent++;
+        AST.getSymbolTable().forEach((id, type) -> {
+            if(type == TEKST) {
+                indent(blockIndent);
+                emit("free(" + id + ");\n");
+            }
+        });
+        blockIndent--;
+        emit("}\n\n");
+
         emit("int main() {\n");
         blockIndent++;
         for(AST ast : n.getChild()){
@@ -136,6 +163,8 @@ public class CCodeGenerator extends Visitor {
             ast.accept(this);
             emit("\n");
         }
+        indent(blockIndent);
+        emit("free_memory();\n");
         indent(blockIndent);
         emit("return 0;");
         blockIndent--;
@@ -150,10 +179,7 @@ public class CCodeGenerator extends Visitor {
         // TODO: MAKE THIS
     }
 
-    @Override
-    public void visit(TekstLiteral n) {
-        emit(n.getVal());
-    }
+
 
     @Override
     public void visit(TypeNode n) {
@@ -169,24 +195,39 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(TekstDcl n) {
-
+        if(n.getValue() instanceof TekstLiteral) {
+            emit(n.getId() + " = malloc(" +
+                    (((TekstLiteral) n.getValue()).getVal().length()+1) +
+                    " * sizeof(char));\n");
+            indent(blockIndent);
+            emit("strcpy(" + n.getId() + ", ");
+            n.getValue().accept(this);
+            emit(");");
+        }
+        emit(";");
     }
 
     @Override
     public void visit(HeltalDcl n) {
-        emit("int " + n.getId() + " = ");
+        emit(n.getId() + " = ");
         n.getValue().accept(this);
         emit(";");
     }
 
     @Override
     public void visit(DecimaltalDcl n) {
-
+        emit(n.getId() + " = ");
+        n.getValue().accept(this);
+        emit(";");
     }
 
     @Override
     public void visit(BoolskDcl n) {
-
+        /** We assume here, that we are going to use a boolean library
+        emit ("boolean " + n.getId8) + " = ");
+         n.getValue().accept(this);;
+         emit(";");
+        */
     }
 
     @Override
@@ -198,6 +239,9 @@ public class CCodeGenerator extends Visitor {
         for (int i = 0; i < indents; i++) {
             emit("    ");
         }
+    }
+    @Override
+    public void visit(ConvertToFloat n) {
     }
 }
 

@@ -1,26 +1,31 @@
 package ASTVisitor.Lexer;
 
-import ASTVisitor.Parser.AST;
-import ASTVisitor.Parser.ASTParser;
-import ASTVisitor.Parser.CCodeGenerator;
-import ASTVisitor.Parser.Prettyprinting;
+import ASTVisitor.Parser.*;
 
 import java.io.CharArrayReader;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
 
         String example =
-                "gem heltal 3 som a\n" +
-                "hvis 10 er 10: \n" +
-                "   sæt a til 2. \n" +
-                "print a";
+                """
+                        gem tekst "Hello world" som a
+                        gem heltal 42 som b
+                        gem decimaltal 56,34 som c
+                        hvis 10 er 10:\s
+                            hvis b < 10:
+                                sæt a til "Nej"..\s
+                        print a
+                        print b
+                        print c
+                """;
 
 
         try {
             System.out.println("\n=======================");
-            System.out.println("Input program:");
+            System.out.println("Input program");
             System.out.println("=======================");
             System.out.println(example);
 
@@ -37,15 +42,23 @@ public class Main {
             AST ast = p.prog();
 
             System.out.println("\n=======================");
-            System.out.println("Pretty printing:");
+            System.out.println("Pretty printing");
             System.out.println("=======================");
             ast.accept(new Prettyprinting());
 
+            ast.accept(new SymbolTableFilling());
+
             System.out.println("\n=======================");
-            System.out.println("C code:");
+            System.out.println("C code");
             System.out.println("=======================");
             ast.accept(new CCodeGenerator());
 
+            System.out.println("\n=======================");
+            System.out.println("Symbol table");
+            System.out.println("=======================");
+            for (Map.Entry<String, AST.DataTypes> entry : AST.getSymbolTable().entrySet()) {
+                System.out.println(entry.getKey() + ":" + entry.getValue());
+            }
 
         } catch (Throwable e) {
             System.out.println("Ended with error: " + e);

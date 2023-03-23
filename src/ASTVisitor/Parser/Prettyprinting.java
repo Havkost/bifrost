@@ -4,6 +4,7 @@ import ASTVisitor.ASTnodes.*;
 
 public class Prettyprinting extends Visitor {
 
+	private int blockIndent = 0;
 	@Override
 	public void visit(BinaryComputing n) {
 		n.getChild1().accept(this);
@@ -23,7 +24,7 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(TekstLiteral n) {
-		System.out.print(n.getVal());
+		System.out.print("\"" + n.getVal() + "\"");
 	}
 
 	@Override
@@ -68,11 +69,13 @@ public class Prettyprinting extends Visitor {
 		System.out.print("hvis ");
 		n.getExpr().accept(this);
 		System.out.print(":\n");
+		blockIndent++;
 		for (AST child : n.getChildren()) {
-			System.out.print("	");
+			indent(blockIndent);
 			child.accept(this);
 		}
 		System.out.print(".");
+		blockIndent--;
 	}
 
 	@Override
@@ -129,5 +132,14 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(SymReferencing n) {
+	}
+
+	public void indent(int indents) {
+		for (int i = 0; i < indents; i++) {
+			System.out.print("    ");
+		}
+	}
+	@Override
+	public void visit(ConvertToFloat n) {
 	}
 }

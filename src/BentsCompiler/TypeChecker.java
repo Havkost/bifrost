@@ -26,6 +26,7 @@ public class TypeChecker extends Visitor {
 	void visit(ConvertingToFloat n){
 		n.child.accept(this);
 		n.type = AST.FLTTYPE;
+
 	}
 
 	@Override
@@ -39,7 +40,6 @@ public class TypeChecker extends Visitor {
 	void visit(IntConsting n) {
 		// TODO Auto-generated method stub
 		n.type = AST.INTTYPE;
-
 	}
 
 	@Override
@@ -74,8 +74,6 @@ public class TypeChecker extends Visitor {
 	@Override
 	void visit(IntDcl n) {
 		// TODO Auto-generated method stub
-	
-
 	}
 
 	@Override

@@ -56,11 +56,14 @@ public enum TokenType {
         }
     }
 
-    @Override
-    public String toString() {
-        return name();
+    public String getName() {
+        return name;
     }
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 
     /*public static final Map<String, TokenType> tokenTypeMap = new HashMap<>(Map.ofEntries(
             entry(ID.name, ID),

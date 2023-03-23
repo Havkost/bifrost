@@ -62,17 +62,20 @@ public class CodeScanner {
         StringBuilder num = new StringBuilder();
         TokenType type;
 
-        while(isDigit(charStream.peek())){
+        while(isDigit(charStream.peek())) {
             num.append(charStream.advance());
         }
 
-        if(charStream.peek() != ',') {
+        if(charStream.peek() == ',') {
+            num.append(charStream.advance());
+            while(isDigit(charStream.peek())) {
+                num.append(charStream.advance());
+            }
+            type = DECIMALTAL_LIT;
+        } else {
             type = HELTAL_LIT;
         }
 
-        else {
-            type = DECIMALTAL_LIT;
-        }
         return new Token(type, num.toString());
     }
 

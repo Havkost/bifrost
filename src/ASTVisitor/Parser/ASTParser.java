@@ -186,7 +186,7 @@ public class ASTParser {
     public AST equalityExpr() {
         AST expr;
         AST relExpr = relExpr();
-        String op = ts.peek().name();
+        String op = ts.peek().getName();
         AST eqExpr = equalityExpr2();
         if(eqExpr != null) expr = new BinaryComputing(op, relExpr, eqExpr);
         else expr = relExpr;
@@ -200,7 +200,7 @@ public class ASTParser {
         if (opType == ER || opType == IKKE) {
             expect(opType);
             AST relExpr = relExpr();
-            String op = ts.peek().name();
+            String op = ts.peek().getName();
             AST eqs = equalityExpr2();
             if(eqs != null) eqExpr = new BinaryComputing(op, eqExpr, eqs);
             else eqExpr = relExpr;
@@ -213,7 +213,7 @@ public class ASTParser {
     public AST relExpr() {
         AST expr;
         AST sumExpr = sumExpr();
-        String op = ts.peek().name();
+        String op = ts.peek().getName();
         AST relExpr = relExpr2();
         if(relExpr != null) expr = new BinaryComputing(op, sumExpr, relExpr);
         else expr = sumExpr;
@@ -227,7 +227,7 @@ public class ASTParser {
         if (opType == GREATER || opType == LESSER) {
             expect(opType);
             AST sumExpr = sumExpr();
-            String op = ts.peek().name();
+            String op = ts.peek().getName();
             AST rels = equalityExpr2();
             if(rels != null) relExpr = new BinaryComputing(op, sumExpr, rels);
             else relExpr = sumExpr;
@@ -241,7 +241,7 @@ public class ASTParser {
     public AST sumExpr() {
         AST expr;
         AST prodExpr = productExpr();
-        String op = ts.peek().name();
+        String op = ts.peek().getName();
         AST sumExpr = sumExpr2();
         if(sumExpr != null) expr = new BinaryComputing(op, prodExpr, sumExpr);
         else expr = prodExpr;
@@ -255,7 +255,7 @@ public class ASTParser {
         if (opType == PLUS || opType == MINUS) {
             expect(opType);
             AST prodExpr = productExpr();
-            String op = ts.peek().name();
+            String op = ts.peek().getName();
             AST sums = sumExpr2();
             if(sums != null) sumExpr = new BinaryComputing(op, prodExpr, sums);
             else sumExpr = prodExpr;
@@ -269,7 +269,7 @@ public class ASTParser {
     public AST productExpr() {
         AST expr;
         AST notExpr = not_expr();
-        String op = ts.peek().name();
+        String op = ts.peek().getName();
         AST prodExpr = productExpr2();
         if(prodExpr != null) expr = new BinaryComputing(op, notExpr, prodExpr);
         else expr = notExpr;
@@ -282,7 +282,7 @@ public class ASTParser {
         if (ts.peek() == TIMES || ts.peek() == DIVIDE) {
             expect(ER);
             AST notExpr = not_expr();
-            String op = ts.peek().name();
+            String op = ts.peek().getName();
             AST prods = productExpr2();
             if(prods != null) prodExpr = new BinaryComputing(op, notExpr, prods);
             else prodExpr = notExpr;
@@ -360,7 +360,7 @@ public class ASTParser {
         } else if (ts.peek() == HELTAL_LIT) {
             valueAST = new HeltalLiteral(expect(HELTAL_LIT).getVal());
         } else if (ts.peek() == DECIMALTAL_LIT) {
-            valueAST = new TekstLiteral(expect(DECIMALTAL_LIT).getVal());
+            valueAST = new DecimaltalLiteral(expect(DECIMALTAL_LIT).getVal());
         } else if (ts.peek() == BOOLSK_LIT) {
             valueAST = new TekstLiteral(expect(BOOLSK_LIT).getVal());
         }
