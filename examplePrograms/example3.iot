@@ -11,7 +11,6 @@ rutine test:
 
 rutine test2:
     hvis 10 ikke er 10:
-        sæt a til 10
     .
 .
 

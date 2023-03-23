@@ -59,7 +59,7 @@ public class Prettyprinting extends Visitor {
 		}
 		blockIndent--;
 		indent(blockIndent);
-		System.out.print("\n.\n");
+		System.out.print(".\n");
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class Prettyprinting extends Visitor {
 		blockIndent--;
 		System.out.println();
 		indent(blockIndent);
-		System.out.print(".");
+		System.out.print(".\n");
 	}
 
 	@Override

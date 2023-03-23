@@ -193,15 +193,16 @@ public class ASTParser {
             String op = expect(ER).getType().getName();
             AST relExpr = relExpr();
             AST eqs = equalityExpr2();
-            if(eqs != null) eqExpr = new BinaryComputing(op, eqExpr, eqs);
+            if(eqs != null) eqExpr = new BinaryComputing(op, relExpr, eqs);
             else eqExpr = relExpr;
         } else if (ts.peek() == IKKE) {
             String op = expect(IKKE).getType().getName();
-            op += " " + expect(ER).getType().getName();
+            expect(ER);
             AST relExpr = relExpr();
             AST eqs = equalityExpr2();
-            if(eqs != null) eqExpr = new BinaryComputing(op, eqExpr, eqs);
-            else eqExpr = relExpr;
+            if(eqs != null){
+                eqExpr = new BinaryComputing(op, relExpr, eqs);
+            } else eqExpr = relExpr;
         } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG) {
             // produce nothing
         } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance());

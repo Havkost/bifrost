@@ -21,7 +21,7 @@ public class CCodeGenerator extends Visitor {
             entry("<", "<"),
             entry(">", ">"),
             entry("er", "=="),
-            entry("ikke er", "!=")
+            entry("ikke", "!=")
     ));
 
     Map<AST.DataTypes, String> formatStrings = new HashMap<>(Map.ofEntries(
