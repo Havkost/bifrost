@@ -13,6 +13,10 @@ public class AssignNode extends AST {
         this.val = val;
     }
 
+    public void setVal(AST val) {
+        this.val = val;
+    }
+
     @Override
     public void accept(Visitor v) {
         v.visit(this);

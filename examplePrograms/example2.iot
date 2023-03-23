@@ -1,0 +1,13 @@
+gem tekst "Hello world" som a
+gem heltal 42 som b
+gem decimaltal 56,34 som c
+
+hvis 10 er 10:
+
+    hvis b < 10:
+        sæt a til "Nej"
+    .
+.
+print a
+print b
+print c

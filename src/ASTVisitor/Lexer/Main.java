@@ -12,18 +12,6 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        String example =
-                """
-                        gem tekst "Hello world" som a
-                        gem heltal 42 som b
-                        gem decimaltal 56,34 som c
-                        hvis 10 er 10:\s
-                            hvis b < 10:
-                                sæt a til "Nej"..\s
-                        print a
-                        print b
-                        print c
-                """;
         StringBuilder sourceString = new StringBuilder();
 
         // Read text from source file into sourceString
@@ -35,7 +23,7 @@ public class Main {
                 sourceString.append(scanner.nextLine()).append("\n");
             }
         } catch (FileNotFoundException e) {
-            System.out.println("[FEJL] Kunne ikke finde filen '"+args[0]+"'.");
+            System.out.println("[FEJL] Kunne ikke finde filen '" + args[0] + "'.");
             return;
         } catch (IndexOutOfBoundsException e) {
             System.out.println("[FEJL] Kildefil blev ikke specificeret.");

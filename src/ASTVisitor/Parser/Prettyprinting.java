@@ -74,8 +74,10 @@ public class Prettyprinting extends Visitor {
 			indent(blockIndent);
 			child.accept(this);
 		}
-		System.out.print(".");
 		blockIndent--;
+		System.out.println();
+		indent(blockIndent);
+		System.out.print(".");
 	}
 
 	@Override

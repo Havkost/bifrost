@@ -37,6 +37,9 @@ public class ASTParser {
             linesList.addAll(lines);
         } else if (ts.peek() == EOF) {
             // Do nothing (lambda-production)
+        } else if (ts.peek() == NEWLINE) {
+            expect(NEWLINE);
+            linesList.addAll(lines());
         } else error("Forventede gem, rutine, sæt, gentag, kør eller hvis.");
         return linesList;
     }
@@ -75,9 +78,11 @@ public class ASTParser {
             stmtList.add(stmt);
             if(ts.peek() != BLOCKSLUT) expect(NEWLINE);
             stmtList.addAll(stmts);
+        } else if (ts.peek() == NEWLINE) {
+            // Do nothing
         } else if (ts.peek() == BLOCKSLUT) {
             // Do nothing (lambda-production)
-        } else error("Forventede gem, rutine, sæt, gentag, kør eller hvis.");
+        } else error("Forventede gem, rutine, sæt, gentag, kør eller hvis. Fik " + ts.peek() + ".");
         return stmtList;
     }
 
@@ -105,8 +110,9 @@ public class ASTParser {
             expect(HVIS);
             AST ifExpr = expr();
             expect(BLOCKSTART);
-            expect(NEWLINE);
+            eatNewLines();
             ArrayList<AST> stmts = stmts();
+            eatNewLines();
             expect(BLOCKSLUT);
             stmtAST = new IfNode(ifExpr, stmts);
         } else if (ts.peek() == PRINT) {
@@ -196,14 +202,17 @@ public class ASTParser {
 
     public AST equalityExpr2() {
         AST eqExpr = null;
-        TokenType opType = ts.peek();
-        if (opType == ER || opType == IKKE) {
-            expect(opType);
+        if (ts.peek() == ER) {
+            String op = expect(ER).getType().getName();
             AST relExpr = relExpr();
-            String op = ts.peek().getName();
             AST eqs = equalityExpr2();
             if(eqs != null) eqExpr = new BinaryComputing(op, eqExpr, eqs);
             else eqExpr = relExpr;
+        } else if (ts.peek() == IKKE) {
+            String op = expect(IKKE).getType().getName();
+            op += " " + expect(ER).getType().getName();
+            AST relExpr = relExpr();
+            AST eqs = equalityExpr2();
         } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG) {
             // produce nothing
         } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance());
@@ -375,6 +384,12 @@ public class ASTParser {
     private AST assStmt() {
         expect(ID);
         return null;
+    }
+
+    private void eatNewLines() {
+        while (ts.peek() == NEWLINE) {
+            expect(NEWLINE);
+        }
     }
 
     private Token expect(TokenType type) {

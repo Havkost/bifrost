@@ -14,7 +14,11 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(AssignNode n) {
-
+        n.getVal().accept(this);
+        DataTypes lhs = AST.getSymbolTable().get(n.getId());
+        DataTypes rhs = generalize(n.getVal().type, lhs);
+        n.setVal(convert(n.getVal(), lhs));
+        n.type = rhs;
     }
 
     @Override
@@ -30,6 +34,21 @@ public class TypeChecker extends Visitor{
     @Override
     public void visit(BoolskLiteral n) {
         n.type = DataTypes.BOOLSK;
+    }
+
+    @Override
+    public void visit(HeltalLiteral n) {
+        n.type = DataTypes.HELTAL;
+    }
+
+    @Override
+    public void visit(TekstLiteral n) {
+        n.type = DataTypes.TEKST;
+    }
+
+    @Override
+    public void visit(DecimaltalLiteral n) {
+        n.type = DataTypes.DECIMALTAL;
     }
 
     @Override
@@ -73,25 +92,9 @@ public class TypeChecker extends Visitor{
     }
 
     @Override
-    public void visit(HeltalLiteral n) {
-        n.type = DataTypes.HELTAL;
-    }
-
-    @Override
-    public void visit(TekstLiteral n) {
-        n.type = DataTypes.TEKST;
-    }
-
-    @Override
-    public void visit(DecimaltalLiteral n) {
-        n.type = DataTypes.DECIMALTAL;
-    }
-
-    @Override
     public void visit(TypeNode n) {
 
     }
-
     @Override
     public void visit(UnaryComputing n) {
 
@@ -119,7 +122,7 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(SymReferencing n) {
-
+        n.type = AST.getSymbolTable().get(n.id);
     }
 
     private DataTypes generalize (DataTypes type1, DataTypes type2) {
