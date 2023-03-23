@@ -6,15 +6,15 @@ import ASTVisitor.Parser.Visitor;
 public class AssignNode extends AST {
 
     private String id;
-    private AST val;
+    private AST value;
 
-    public AssignNode(String id, AST val) {
+    public AssignNode(String id, AST value) {
         this.id = id;
-        this.val = val;
+        this.value = value;
     }
 
-    public void setVal(AST val) {
-        this.val = val;
+    public void setValue(AST value) {
+        this.value = value;
     }
 
     @Override
@@ -26,15 +26,15 @@ public class AssignNode extends AST {
         return id;
     }
 
-    public AST getVal() {
-        return val;
+    public AST getValue() {
+        return value;
     }
 
     @Override
     public String toString() {
         return "AssignNode{" +
                 "id='" + id + '\'' +
-                ", val=" + val +
+                ", val=" + value +
                 '}';
     }
 }

@@ -5,12 +5,12 @@ import ASTVisitor.Parser.Visitor;
 
 public class LoopNode extends AST {
 
-    private AST child1;
-    private HeltalLiteral repeats;
+    private String id;
+    private HeltalLiteral repeatCount;
 
-    public LoopNode(AST body, HeltalLiteral repeats) {
-        this.child1 = body;
-        this.repeats = repeats;
+    public LoopNode(String id, HeltalLiteral repeatCount) {
+        this.id = id;
+        this.repeatCount = repeatCount;
     }
 
     @Override
@@ -18,11 +18,11 @@ public class LoopNode extends AST {
         v.visit(this);
     }
 
-    public AST getChild1() {
-        return child1;
+    public String getId() {
+        return id;
     }
 
     public HeltalLiteral getRepeats() {
-        return repeats;
+        return repeatCount;
     }
 }

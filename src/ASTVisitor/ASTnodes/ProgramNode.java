@@ -5,14 +5,14 @@ import ASTVisitor.Parser.*;
 import java.util.ArrayList;
 
 public class ProgramNode extends AST {
-    private ArrayList<AST> child;
+    private ArrayList<AST> children;
 
     public ProgramNode(ArrayList<AST> child) {
-        this.child = child;
+        this.children = child;
     }
 
     public ArrayList<AST> getChild() {
-        return child;
+        return children;
     }
 
     public void accept(Visitor v) {
@@ -22,7 +22,7 @@ public class ProgramNode extends AST {
     @Override
     public String toString() {
         return "ProgramNode{" +
-                "child=" + child +
+                "child=" + children +
                 '}';
     }
 }

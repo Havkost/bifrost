@@ -43,7 +43,7 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(AssignNode n) {
         emit(n.getId() + " = ");
-        n.getVal().accept(this);
+        n.getValue().accept(this);
         emit(";");
     }
 
@@ -118,9 +118,13 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(LoopNode n) {
         // TODO: Overvej hvad variablen skal hedde i for-loops
-        emit("for(int __ = 0; __ < " + n.getRepeats() + "; __++) { \n");
-        n.getChild1().accept(this);
-        emit("\n }");
+        emit("for(int __i = 0; __i < " + n.getRepeats().getVal() + "; __i++) { \n");
+        blockIndent++;
+        indent(blockIndent);
+        emit(n.getId() + "();\n");
+        blockIndent--;
+        indent(blockIndent);
+        emit("}");
     }
 
     public void visit(PrintNode n) {
@@ -256,9 +260,6 @@ public class CCodeGenerator extends Visitor {
         for (int i = 0; i < indents; i++) {
             emit("    ");
         }
-    }
-    @Override
-    public void visit(ConvertToFloat n) {
     }
 }
 

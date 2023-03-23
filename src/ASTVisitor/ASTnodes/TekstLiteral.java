@@ -5,10 +5,10 @@ import ASTVisitor.Parser.Visitor;
 
 public class TekstLiteral extends AST {
 
-    private String val;
+    private String value;
 
     public TekstLiteral(String value) {
-        this.val = value;
+        this.value = value;
     }
 
     @Override
@@ -17,6 +17,6 @@ public class TekstLiteral extends AST {
     }
 
     public String getVal() {
-        return val;
+        return value;
     }
 }

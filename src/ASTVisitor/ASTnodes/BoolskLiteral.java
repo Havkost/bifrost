@@ -5,10 +5,10 @@ import ASTVisitor.Parser.Visitor;
 
 public class BoolskLiteral extends AST {
 
-    private String val;
+    private String value;
 
-    public BoolskLiteral(String val) {
-        this.val = val;
+    public BoolskLiteral(String value) {
+        this.value = value;
     }
 
     @Override
@@ -16,8 +16,7 @@ public class BoolskLiteral extends AST {
         v.visit(this);
     }
 
-
     public String getVal() {
-        return val;
+        return value;
     }
 }

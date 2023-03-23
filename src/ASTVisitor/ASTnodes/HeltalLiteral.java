@@ -5,10 +5,10 @@ import ASTVisitor.Parser.Visitor;
 
 public class HeltalLiteral extends AST {
 
-    private String val;
+    private String value;
 
     public HeltalLiteral(String value) {
-        this.val = value;
+        this.value = value;
     }
 
     @Override
@@ -17,13 +17,13 @@ public class HeltalLiteral extends AST {
     }
 
     public String getVal() {
-        return val;
+        return value;
     }
 
     @Override
     public String toString() {
         return "HeltalLiteral{" +
-                "val='" + val + "'" +
+                "val='" + value + "'" +
                 '}';
     }
 }

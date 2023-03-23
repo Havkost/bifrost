@@ -8,8 +8,7 @@ import java.util.ArrayList;
 public class IfNode extends AST {
 
     private AST expr;
-    private ArrayList<AST> children;
-
+    private ArrayList<AST> body;
 
     @Override
     public void accept(Visitor v) {
@@ -18,7 +17,7 @@ public class IfNode extends AST {
 
     public IfNode(AST expr, ArrayList<AST> children) {
         this.expr = expr;
-        this.children = children;
+        this.body = children;
     }
 
     public AST getExpr() {
@@ -26,14 +25,14 @@ public class IfNode extends AST {
     }
 
     public ArrayList<AST> getChildren() {
-        return children;
+        return body;
     }
 
     @Override
     public String toString() {
         return "IfNode{" +
                 "expr=" + expr +
-                ", children=" + children +
+                ", children=" + body +
                 '}';
     }
 }

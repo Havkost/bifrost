@@ -403,7 +403,7 @@ public class ASTParser {
         Token funcCall = expect(ID);
         Token intToken = expect(HELTAL_LIT);
         expect(GANGE);
-        return new LoopNode(new FuncNode(funcCall.getVal()),
+        return new LoopNode(funcCall.getVal(),
                 new HeltalLiteral(intToken.getVal()));
     }
 

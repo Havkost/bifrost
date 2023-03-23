@@ -5,10 +5,10 @@ import ASTVisitor.Parser.Visitor;
 
 public class DecimaltalLiteral extends AST {
 
-    private String val;
+    private String value;
 
-    public DecimaltalLiteral(String val) {
-        this.val = val;
+    public DecimaltalLiteral(String value) {
+        this.value = value;
     }
 
     @Override
@@ -17,6 +17,6 @@ public class DecimaltalLiteral extends AST {
     }
 
     public String getVal() {
-        return val;
+        return value;
     }
 }

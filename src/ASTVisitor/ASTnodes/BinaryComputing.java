@@ -4,6 +4,7 @@ import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
 public class BinaryComputing extends AST {
+
     private String operation;
     private AST child1;
     private AST child2;

@@ -14,7 +14,7 @@ public class SymbolTableFilling extends Visitor {
 
     @Override
     public void visit(AssignNode n) {
-        n.getVal().accept(this);
+        n.getValue().accept(this);
     }
 
     @Override

@@ -51,7 +51,7 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(FuncDclNode n) {
-		System.out.print("rutine " +  n.getId() + ":\n");
+		System.out.print("\nrutine " +  n.getId() + ":\n");
 		blockIndent++;
 		for (AST stmt : n.getBody()) {
 			indent(blockIndent);
@@ -59,12 +59,12 @@ public class Prettyprinting extends Visitor {
 		}
 		blockIndent--;
 		indent(blockIndent);
-		System.out.print(".\n");
+		System.out.print(".");
 	}
 
 	@Override
 	public void visit(FuncNode n) {
-		System.out.println("kør " + n.getId());
+		System.out.println("\nkør " + n.getId());
 	}
 
 	@Override
@@ -90,9 +90,7 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(LoopNode n) {
-		System.out.print("gentag ");
-		n.getChild1().accept(this);
-		System.out.print(n.getRepeats() + " gange");
+		System.out.print("gentag " + n.getId() + " " + n.getRepeats().getVal() + " gange");
 	}
 
 	@Override
@@ -105,7 +103,7 @@ public class Prettyprinting extends Visitor {
 	@Override
 	public void visit(AssignNode n) {
 		System.out.print("sæt " + n.getId() + " til ");
-		n.getVal().accept(this);
+		n.getValue().accept(this);
 	}
 
 	@Override
@@ -148,8 +146,5 @@ public class Prettyprinting extends Visitor {
 		for (int i = 0; i < indents; i++) {
 			System.out.print("    ");
 		}
-	}
-	@Override
-	public void visit(ConvertToFloat n) {
 	}
 }

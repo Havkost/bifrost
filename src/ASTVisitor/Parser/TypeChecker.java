@@ -14,14 +14,14 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(AssignNode n) {
-        n.getVal().accept(this);
+        n.getValue().accept(this);
         DataTypes lhs = AST.getSymbolTable().get(n.getId());
-        DataTypes rhs = generalize(n.getVal().type, lhs);
+        DataTypes rhs = generalize(n.getValue().type, lhs);
 
         //if (lhs == DataTypes.DECIMALTAL || lhs == ) {
 
         // }
-        n.setVal(convert(n.getVal(), lhs));
+        n.setValue(convert(n.getValue(), lhs));
         n.type = rhs;
     }
 
