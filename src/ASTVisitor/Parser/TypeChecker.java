@@ -17,6 +17,10 @@ public class TypeChecker extends Visitor{
         n.getVal().accept(this);
         DataTypes lhs = AST.getSymbolTable().get(n.getId());
         DataTypes rhs = generalize(n.getVal().type, lhs);
+
+        //if (lhs == DataTypes.DECIMALTAL || lhs == ) {
+
+        // }
         n.setVal(convert(n.getVal(), lhs));
         n.type = rhs;
     }
@@ -78,12 +82,14 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(PrintNode n) {
-
+        //n.type = AST.getSymbolTable().get(n.getValue());
     }
 
     @Override
     public void visit(ProgramNode n) {
-
+        for(AST ast : n.getChild()) {
+            ast.accept(this);
+        }
     }
 
     @Override

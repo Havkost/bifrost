@@ -3,26 +3,28 @@ package ASTVisitor.ASTnodes;
 import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
+import java.util.ArrayList;
+
 public class FuncDclNode extends AST {
 
     private String id;
-    private AST child1;
+    private ArrayList<AST> body;
 
     @Override
     public void accept(Visitor v) {
         v.visit(this);
     }
 
-    public FuncDclNode(String id, AST child1) {
+    public FuncDclNode(String id, ArrayList<AST> body) {
         this.id = id;
-        this.child1 = child1;
+        this.body = body;
     }
 
     public String getId() {
         return id;
     }
 
-    public AST getChild1() {
-        return child1;
+    public ArrayList<AST> getBody() {
+        return body;
     }
 }

@@ -79,7 +79,8 @@ public class ASTParser {
             if(ts.peek() != BLOCKSLUT) expect(NEWLINE);
             stmtList.addAll(stmts);
         } else if (ts.peek() == NEWLINE) {
-            // Do nothing
+            expect(NEWLINE);
+            stmtList.addAll(stmts());
         } else if (ts.peek() == BLOCKSLUT) {
             // Do nothing (lambda-production)
         } else error("Forventede gem, rutine, sæt, gentag, kør eller hvis. Fik " + ts.peek() + ".");
@@ -110,9 +111,7 @@ public class ASTParser {
             expect(HVIS);
             AST ifExpr = expr();
             expect(BLOCKSTART);
-            eatNewLines();
             ArrayList<AST> stmts = stmts();
-            eatNewLines();
             expect(BLOCKSLUT);
             stmtAST = new IfNode(ifExpr, stmts);
         } else if (ts.peek() == PRINT) {
@@ -378,18 +377,18 @@ public class ASTParser {
     }
 
     private AST funcDcl(){
-        return null;
+        expect(RUTINE);
+        Token idToken = expect(ID);
+        expect(BLOCKSTART);
+        ArrayList<AST> body = stmts();
+        expect(BLOCKSLUT);
+
+        return new FuncDclNode(idToken.getVal(), body);
     }
 
     private AST assStmt() {
         expect(ID);
         return null;
-    }
-
-    private void eatNewLines() {
-        while (ts.peek() == NEWLINE) {
-            expect(NEWLINE);
-        }
     }
 
     private Token expect(TokenType type) {
