@@ -67,6 +67,11 @@ public class Main {
                 System.out.println(entry.getKey() + ":" + entry.getValue());
             }
 
+            System.out.println("\n=======================");
+            System.out.println("Typechecker");
+            System.out.println("=======================");
+            ast.accept(new TypeChecker());
+
         } catch (Throwable e) {
             System.out.println("[FEJL]: " + e);
             System.out.println("Stack trace:\n");

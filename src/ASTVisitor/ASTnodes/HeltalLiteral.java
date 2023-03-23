@@ -22,8 +22,6 @@ public class HeltalLiteral extends AST {
 
     @Override
     public String toString() {
-        return "HeltalLiteral{" +
-                "val='" + val + "'" +
-                '}';
+        return val;
     }
 }

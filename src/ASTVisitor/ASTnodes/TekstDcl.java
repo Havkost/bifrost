@@ -13,5 +13,4 @@ public class TekstDcl extends SymDeclaring {
     public void accept(Visitor v) {
         v.visit(this);
     }
-
 }

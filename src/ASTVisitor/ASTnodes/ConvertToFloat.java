@@ -18,4 +18,9 @@ public class ConvertToFloat extends AST {
     public AST getChild() {
         return child;
     }
+
+    @Override
+    public String toString() {
+        return child.toString();
+    }
 }
