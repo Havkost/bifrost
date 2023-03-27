@@ -1,4 +1,5 @@
 gem heltal 3 som a
+gem tekst "Hello world" som b
 
 rutine test:
     hvis a er 5:
@@ -11,5 +12,5 @@ rutine test:
         sæt a til 4
     .
     print a
-.
+
 gentag test 3 gange

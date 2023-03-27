@@ -83,6 +83,7 @@ public class CCodeGenerator extends Visitor {
             indent(blockIndent);
             stmt.accept(this);
         }
+        emit("\n");
         blockIndent--;
         indent(blockIndent);
         emit("}\n");
