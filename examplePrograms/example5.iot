@@ -12,5 +12,5 @@ rutine test:
         sæt a til 4
     .
     print a
-
+.
 gentag test 3 gange
