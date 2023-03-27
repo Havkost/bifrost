@@ -105,12 +105,6 @@ public class SymbolTableFilling extends Visitor {
     @Override
     public void visit(TekstLiteral n) {
     }
-
-    @Override
-    public void visit(ConvertToFloat n) {
-        n.getChild().accept(this);
-    }
-
     private void error(String message) {
         throw new Error(message);
     }

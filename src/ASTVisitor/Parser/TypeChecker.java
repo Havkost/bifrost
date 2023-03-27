@@ -7,12 +7,6 @@ import static ASTVisitor.Parser.AST.*;
 public class TypeChecker extends Visitor{
 
     @Override
-    public void visit(ConvertToFloat n) {
-        n.getChild().accept(this);
-        n.type = DataTypes.DECIMALTAL;
-    }
-
-    @Override
     public void visit(AssignNode n) {
         n.getValue().accept(this);
         DataTypes lhs = AST.getSymbolTable().get(n.getId());
@@ -141,7 +135,6 @@ public class TypeChecker extends Visitor{
         if (n.type == DataTypes.DECIMALTAL && type == DataTypes.HELTAL) {
             error("Ikke muligt at konvertere decimaltal til integer");
         } else if (n.type == DataTypes.HELTAL && type == DataTypes.DECIMALTAL){
-            return new ConvertToFloat(n);
         }
         return n;
     }
