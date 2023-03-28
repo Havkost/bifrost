@@ -29,6 +29,14 @@ public class IfNode extends AST {
         return children;
     }
 
+    public void setExpr(AST expr) {
+        this.expr = expr;
+    }
+
+    public void setChildren(ArrayList<AST> children) {
+        this.children = children;
+    }
+
     @Override
     public String toString() {
         return "IfNode{" +

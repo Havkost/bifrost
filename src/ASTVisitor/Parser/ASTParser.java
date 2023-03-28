@@ -360,7 +360,7 @@ public class ASTParser {
         } else if (ts.peek() == DECIMALTAL_LIT) {
             valueAST = new DecimaltalLiteral(expect(DECIMALTAL_LIT).getVal());
         } else if (ts.peek() == BOOLSK_LIT) {
-            valueAST = new TekstLiteral(expect(BOOLSK_LIT).getVal());
+            valueAST = new BoolskLiteral(expect(BOOLSK_LIT).getVal());
         }
 
         return valueAST;

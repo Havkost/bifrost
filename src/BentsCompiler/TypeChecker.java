@@ -80,7 +80,6 @@ public class TypeChecker extends Visitor {
 	void visit(SymReferencing n) {
 		// TODO Auto-generated method stub
 		n.type = AST.SymbolTable.get(n.id);
-
 	}
 	
 	private void error(String message) {

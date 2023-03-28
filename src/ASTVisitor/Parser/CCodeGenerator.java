@@ -33,7 +33,8 @@ public class CCodeGenerator extends Visitor {
     Map<AST.DataTypes, String> dataTypeString = new HashMap<>(Map.ofEntries(
             entry(HELTAL, "int"),
             entry(DECIMALTAL, "double"),
-            entry(TEKST, "char*")
+            entry(TEKST, "char*"),
+            entry(BOOLSK, "boolean")
     ));
 
     public void emit(String c){

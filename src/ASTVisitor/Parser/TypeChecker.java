@@ -3,6 +3,8 @@ package ASTVisitor.Parser;
 import ASTVisitor.ASTnodes.*;
 
 
+import javax.xml.crypto.Data;
+
 import static ASTVisitor.Parser.AST.*;
 
 public class TypeChecker extends Visitor{
@@ -20,7 +22,6 @@ public class TypeChecker extends Visitor{
         DataTypes rhsType = generalize(n.getVal().type, lhsType);
         n.setVal(convert(n.getVal(), lhsType));
         n.type = rhsType;
-        System.out.println(n.type + " " + n.getVal().toString());
     }
 
     @Override
@@ -31,6 +32,7 @@ public class TypeChecker extends Visitor{
         n.setChild1(convert(n.getChild1(), type));
         n.setChild2(convert(n.getChild2(), type));
         n.type = type;
+        System.out.println("Type der kommer ud af binary computing:" + n.type);
     }
 
     @Override
@@ -55,22 +57,24 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(FuncDclNode n) {
-
     }
 
     @Override
     public void visit(FuncNode n) {
-
     }
 
     @Override
     public void visit(IdNode n) {
-
+        n.type = AST.getSymbolTable().get(n.getName());
     }
 
     @Override
     public void visit(IfNode n) {
         n.getExpr().accept(this);
+        // Så vil gerne generalize mellem 2 typer, som kommer fra expr (som er en binary computing), så vi får fejl på typerne
+        for(AST ast : n.getChildren()) {
+            ast.accept(this);
+        }
     }
 
     @Override
@@ -124,7 +128,7 @@ public class TypeChecker extends Visitor{
     public void visit(DecimaltalDcl n) {
         n.getValue().accept(this);
         if (n.getValue().type != DataTypes.DECIMALTAL) {
-            error("Værdien " + n.getValue().toString() + " er ikke af typen " + DataTypes.DECIMALTAL);
+            error("Værdien " + n.getValue().type.toString() + " er ikke af typen " + DataTypes.DECIMALTAL);
         }
     }
 
@@ -132,7 +136,7 @@ public class TypeChecker extends Visitor{
     public void visit(BoolskDcl n) {
         n.getValue().accept(this);
         if (n.getValue().type != DataTypes.BOOLSK) {
-            error("Værdien " + n.getValue().toString() + " er ikke af typen " + DataTypes.BOOLSK);
+            error("Værdien " + n.getValue() + " er af typen: " + n.getValue().type + ", og det skulle have været af typen " + DataTypes.BOOLSK);
         }
     }
 
@@ -141,9 +145,18 @@ public class TypeChecker extends Visitor{
         n.type = AST.getSymbolTable().get(n.id);
     }
 
+    // TODO: de her if statements er ret grimme, så måske lige fix
     private DataTypes generalize (DataTypes type1, DataTypes type2) {
-        if (type1 == DataTypes.DECIMALTAL || type2 == DataTypes.DECIMALTAL) {
-            return DataTypes.DECIMALTAL;
+        if (type1 == DataTypes.DECIMALTAL) {
+            if (type2 == DataTypes.DECIMALTAL || type2 == DataTypes.HELTAL) {
+                return DataTypes.DECIMALTAL;
+            } else {
+                error("Ugyldig operation mellem type " + type1.toString() + " og type " + type2.toString());
+            }
+        } else if(type2 == DataTypes.DECIMALTAL) {
+          if (type1 == DataTypes.HELTAL) {
+              return DataTypes.DECIMALTAL;
+          } else { error("Ugyldig operation mellem type " + type1.toString() + " og type " + type2.toString());}
         } else if (type1 == DataTypes.HELTAL && type2 == DataTypes.HELTAL) {
             return DataTypes.HELTAL;
         } else if (type1 == DataTypes.TEKST && type2 == DataTypes.TEKST) {
@@ -151,7 +164,7 @@ public class TypeChecker extends Visitor{
         } else if (type1 == DataTypes.BOOLSK && type2 == DataTypes.BOOLSK) {
             return DataTypes.BOOLSK;
         } else {
-            error("Ugyldig operation mellem type" + type1.toString() + "og type" + type2.toString());
+            error("Ugyldig operation mellem type " + type1.toString() + " og type " + type2.toString());
         }
         return null;
     }
