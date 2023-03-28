@@ -5,6 +5,10 @@ import ASTVisitor.ASTnodes.*;
 
 import javax.xml.crypto.Data;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 import static ASTVisitor.Parser.AST.*;
 
 public class TypeChecker extends Visitor{
@@ -29,10 +33,9 @@ public class TypeChecker extends Visitor{
         n.getChild1().accept(this);
         n.getChild2().accept(this);
         DataTypes type = generalize(n.getChild1().type, n.getChild2().type);
-        n.setChild1(convert(n.getChild1(), type));
-        n.setChild2(convert(n.getChild2(), type));
-        n.type = type;
-        System.out.println("Type der kommer ud af binary computing:" + n.type);
+        if (type != null) {
+            n.type = type;
+        } else error("The type from generalize returned: " + type);
     }
 
     @Override
@@ -71,7 +74,6 @@ public class TypeChecker extends Visitor{
     @Override
     public void visit(IfNode n) {
         n.getExpr().accept(this);
-        // Så vil gerne generalize mellem 2 typer, som kommer fra expr (som er en binary computing), så vi får fejl på typerne
         for(AST ast : n.getChildren()) {
             ast.accept(this);
         }
@@ -147,31 +149,18 @@ public class TypeChecker extends Visitor{
 
     // TODO: de her if statements er ret grimme, så måske lige fix
     private DataTypes generalize (DataTypes type1, DataTypes type2) {
-        if (type1 == DataTypes.DECIMALTAL) {
-            if (type2 == DataTypes.DECIMALTAL || type2 == DataTypes.HELTAL) {
-                return DataTypes.DECIMALTAL;
-            } else {
-                error("Ugyldig operation mellem type " + type1.toString() + " og type " + type2.toString());
-            }
-        } else if(type2 == DataTypes.DECIMALTAL) {
-          if (type1 == DataTypes.HELTAL) {
-              return DataTypes.DECIMALTAL;
-          } else { error("Ugyldig operation mellem type " + type1.toString() + " og type " + type2.toString());}
-        } else if (type1 == DataTypes.HELTAL && type2 == DataTypes.HELTAL) {
-            return DataTypes.HELTAL;
-        } else if (type1 == DataTypes.TEKST && type2 == DataTypes.TEKST) {
-            return DataTypes.TEKST;
-        } else if (type1 == DataTypes.BOOLSK && type2 == DataTypes.BOOLSK) {
-            return DataTypes.BOOLSK;
-        } else {
-            error("Ugyldig operation mellem type " + type1.toString() + " og type " + type2.toString());
-        }
+        ArrayList<DataTypes> types = new ArrayList<>(List.of(type1, type2));
+        if (type1 == type2) {
+            return type1;
+        } else if (types.contains(DataTypes.DECIMALTAL) && types.contains(DataTypes.HELTAL)){
+            return DataTypes.DECIMALTAL;
+        } else error("Ugyldig operation mellem type " + type1.toString() + " og type " + type2.toString());
         return null;
     }
 
     private AST convert(AST n, DataTypes type) {
         if (n.type == DataTypes.DECIMALTAL && type == DataTypes.HELTAL) {
-            error("Ikke muligt at konvertere decimaltal til integer");
+            error("Ikke muligt at konvertere decimaltal til heltal");
         } else if (n.type == DataTypes.HELTAL && type == DataTypes.DECIMALTAL){
             return new ConvertToFloat(n);
         }

@@ -3,7 +3,7 @@ gem heltal 42 som b
 gem decimaltal 56,34 som c
 
 hvis 10 er 10:
-    hvis a < c:
+    hvis c < b:
         sæt a til "Nej"
     .
 .
