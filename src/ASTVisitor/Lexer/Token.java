@@ -1,8 +1,5 @@
 package ASTVisitor.Lexer;
 
-
-import java.util.Objects;
-
 public class Token {
 
     private final TokenType type;

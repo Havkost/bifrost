@@ -12,9 +12,6 @@ public class TypeChecker extends Visitor{
         DataTypes lhs = AST.getSymbolTable().get(n.getId());
         DataTypes rhs = generalize(n.getValue().type, lhs);
 
-        //if (lhs == DataTypes.DECIMALTAL || lhs == ) {
-
-        // }
         n.setValue(convert(n.getValue(), lhs));
         n.type = rhs;
     }

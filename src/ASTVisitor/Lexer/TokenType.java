@@ -2,7 +2,6 @@ package ASTVisitor.Lexer;
 
 import java.util.HashMap;
 import java.util.Map;
-import static java.util.Map.entry;
 
 // TODO: Vi blander engelsk og dansk i vores enum, kan vi gøre det konsekvent?
 
@@ -64,45 +63,5 @@ public enum TokenType {
     public String toString() {
         return super.toString();
     }
-
-    /*public static final Map<String, TokenType> tokenTypeMap = new HashMap<>(Map.ofEntries(
-            entry(ID.name, ID),
-            entry(GEM.name, GEM),
-            entry(SOM.name, SOM),
-            entry(RUTINE.name, RUTINE),
-            entry(BLOCKSTART.name, BLOCKSTART),
-            entry(BLOCKSLUT.name, BLOCKSLUT),
-            entry(NEWLINE.name, NEWLINE),
-            entry(SAET.name, SAET),
-            entry(TIL.name, TIL),
-            entry(GENTAG.name, GENTAG),
-            entry(GANGE.name, GANGE),
-            entry(KOER.name, KOER),
-            entry(HVIS.name, HVIS),
-            entry(ELLER.name, ELLER),
-            entry(OG.name, OG),
-            entry(IKKE.name, IKKE),
-            entry(ER.name, ER),
-            entry(TEKST_DCL.name, TEKST_DCL),
-            entry(HELTAL_DCL.name, HELTAL_DCL),
-            entry(DECIMALTAL_DCL.name, DECIMALTAL_DCL),
-            entry(BOOLSK_DCL.name, BOOLSK_DCL),
-            entry(TEKST_LIT.name, TEKST_LIT),
-            entry(HELTAL_LIT.name, HELTAL_LIT),
-            entry(DECIMALTAL_LIT.name, DECIMALTAL_LIT),
-            entry(BOOLSK_LIT.name, BOOLSK_LIT),
-            entry(GREATER.name, GREATER),
-            entry(LESSER.name, LESSER),
-            entry(PLUS.name, PLUS),
-            entry(MINUS.name, MINUS),
-            entry(TIMES.name, TIMES),
-            entry(DIVIDE.name, DIVIDE),
-            entry(LPAREN.name, LPAREN),
-            entry(RPAREN.name, RPAREN),
-            entry(EOF.name, EOF)
-    ));*/
-
-
-
 }
 

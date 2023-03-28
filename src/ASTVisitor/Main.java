@@ -1,5 +1,7 @@
-package ASTVisitor.Lexer;
+package ASTVisitor;
 
+import ASTVisitor.Lexer.CharStream;
+import ASTVisitor.Lexer.CodeScanner;
 import ASTVisitor.Parser.*;
 
 import java.io.CharArrayReader;
@@ -40,10 +42,6 @@ public class Main {
             CharStream charStream = new CharStream(reader);
 
             CodeScanner.initialize(charStream);
-
-            /*while(!charStream.getEOF()) {
-                System.out.println(CodeScanner.scan());
-            }*/
 
             ASTParser p = new ASTParser(charStream);
             AST ast = p.prog();

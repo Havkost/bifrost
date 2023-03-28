@@ -5,8 +5,6 @@ import ASTVisitor.Lexer.TokenStream;
 import static ASTVisitor.Lexer.TokenType.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import ASTVisitor.Lexer.*;
 

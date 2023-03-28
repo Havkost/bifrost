@@ -407,11 +407,6 @@ public class ASTParser {
                 new HeltalLiteral(intToken.getVal()));
     }
 
-    private AST assStmt() {
-        expect(ID);
-        return null;
-    }
-
     private Token expect(TokenType type) {
         Token token = ts.advance();
         if (token.getType() != type) {

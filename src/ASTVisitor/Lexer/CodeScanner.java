@@ -58,7 +58,7 @@ public class CodeScanner {
         return res.toString();
     }
 
-    private static Token scanDigits() {
+    public static Token scanDigits() {
         StringBuilder num = new StringBuilder();
         TokenType type;
 
@@ -79,7 +79,7 @@ public class CodeScanner {
         return new Token(type, num.toString());
     }
 
-    private static Token scanString() {
+    public static Token scanString() {
         StringBuilder val = new StringBuilder();
         char quoteType = charStream.advance();
         char nextC;
@@ -89,7 +89,7 @@ public class CodeScanner {
         return new Token(TEKST_LIT, val.toString());
     }
 
-    private static boolean isDigit(char in) {
+    public static boolean isDigit(char in) {
         return '0' <= in && in <= '9';
     }
 
