@@ -87,7 +87,13 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(LoopNode n) {
-
+        n.getRepeats().accept(this);
+        if(n.getType() != AST.getSymbolTable().get(n.getType())) {
+            error("Id'et: " + n.getId() + " er ikke af typen: " + DataTypes.RUTINE);
+        }
+        if(n.getRepeats().type != DataTypes.HELTAL) {
+            error("Værdien: " + n.getRepeats() + " er ikke af typen: " + DataTypes.HELTAL);
+        }
     }
 
     @Override
@@ -153,7 +159,6 @@ public class TypeChecker extends Visitor{
         n.type = AST.getSymbolTable().get(n.id);
     }
 
-    // TODO: de her if statements er ret grimme, så måske lige fix
     private DataTypes generalize (DataTypes type1, DataTypes type2) {
         ArrayList<DataTypes> types = new ArrayList<>(List.of(type1, type2));
         if (type1 == type2) {

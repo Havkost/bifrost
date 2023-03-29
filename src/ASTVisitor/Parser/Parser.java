@@ -236,8 +236,7 @@ public class Parser {
         } else Factor();
 
     }
-
-    //TODO skriv ordentlig fejlbesked
+    
     public void Factor() {
         if (ts.peek() == LPAREN) {
             expect(LPAREN);
