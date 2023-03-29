@@ -1,11 +1,18 @@
-gem tekst "Hello world" som a
+gem boolsk falsk som a
 gem heltal 42 som b
 gem decimaltal 56,34 som c
 
-hvis 10 er 10:
 
-    hvis b < 10:
-        sæt a til "Nej"
+rutine test:
+    hvis a < 4:
+        sæt b til 7
+    .
+.
+
+gentag test 3 gange
+
+hvis 10 er 10:
+    hvis c < b:
     .
 .
 print a

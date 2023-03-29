@@ -2,28 +2,43 @@ package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
 
+
+import javax.xml.crypto.Data;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 import static ASTVisitor.Parser.AST.*;
 
 public class TypeChecker extends Visitor{
 
     @Override
+    public void visit(ConvertToFloat n) {
+        n.getChild().accept(this);
+        n.type = DataTypes.DECIMALTAL;
+    }
+
+    @Override
     public void visit(AssignNode n) {
         n.getValue().accept(this);
-        DataTypes lhs = AST.getSymbolTable().get(n.getId());
-        DataTypes rhs = generalize(n.getValue().type, lhs);
-
-        n.setValue(convert(n.getValue(), lhs));
-        n.type = rhs;
+        DataTypes lhsType = AST.getSymbolTable().get(n.getId());
+        DataTypes rhsType = generalize(n.getValue().type, lhsType);
+        n.setValue(convert(n.getValue(), lhsType));
+        n.type = rhsType;
     }
 
     @Override
     public void visit(BinaryComputing n) {
+        ArrayList<String> booleanOperators = new ArrayList<>(List.of("<", ">", "er", "eller", "og", "ikke er"));
         n.getChild1().accept(this);
         n.getChild2().accept(this);
         DataTypes type = generalize(n.getChild1().type, n.getChild2().type);
-        n.setChild1(convert(n.getChild1(), type));
-        n.setChild2(convert(n.getChild2(), type));
-        n.type = type;
+        if (type != null) {
+            if (booleanOperators.contains(n.getOperation())) {
+                n.type = DataTypes.BOOLSK;
+            } else n.type = type;
+        } else error("Der opstod en fejl, din computationstype er: " + type);
     }
 
     @Override
@@ -48,27 +63,37 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(FuncDclNode n) {
-
     }
 
     @Override
     public void visit(FuncNode n) {
-
     }
 
     @Override
     public void visit(IdNode n) {
-
+        n.type = AST.getSymbolTable().get(n.getName());
     }
 
     @Override
     public void visit(IfNode n) {
-
+        n.getExpr().accept(this);
+        if (n.getExpr().type != DataTypes.BOOLSK) {
+            error("Typen på expression skal være boolsk, og må ikke være " + n.getExpr().type);
+        }
+        for(AST ast : n.getBody()) {
+            ast.accept(this);
+        }
     }
 
     @Override
     public void visit(LoopNode n) {
-
+        n.getRepeats().accept(this);
+        if(n.getType() != AST.getSymbolTable().get(n.getType())) {
+            error("Id'et: " + n.getId() + " er ikke af typen: " + DataTypes.RUTINE);
+        }
+        if(n.getRepeats().type != DataTypes.HELTAL) {
+            error("Værdien: " + n.getRepeats() + " er ikke af typen: " + DataTypes.HELTAL);
+        }
     }
 
     @Override
@@ -99,22 +124,34 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(TekstDcl n) {
-
+        n.getValue().accept(this);
+        if (n.getValue().type != DataTypes.TEKST) {
+            error("Værdien " + n.getValue().toString() + " er ikke af typen " + DataTypes.TEKST);
+        }
     }
 
     @Override
     public void visit(HeltalDcl n) {
-
+        n.getValue().accept(this);
+        if (n.getValue().type != DataTypes.HELTAL) {
+            error("Værdien " + n.getValue().toString() + " er ikke af typen " + DataTypes.HELTAL);
+        }
     }
 
     @Override
     public void visit(DecimaltalDcl n) {
-
+        n.getValue().accept(this);
+        if (n.getValue().type != DataTypes.DECIMALTAL) {
+            error("Værdien " + n.getValue().type.toString() + " er ikke af typen " + DataTypes.DECIMALTAL);
+        }
     }
 
     @Override
     public void visit(BoolskDcl n) {
-
+        n.getValue().accept(this);
+        if (n.getValue().type != DataTypes.BOOLSK) {
+            error("Værdien " + n.getValue() + " er af typen: " + n.getValue().type + ", og det skulle have været af typen " + DataTypes.BOOLSK);
+        }
     }
 
     @Override
@@ -123,15 +160,20 @@ public class TypeChecker extends Visitor{
     }
 
     private DataTypes generalize (DataTypes type1, DataTypes type2) {
-        if (type1 == DataTypes.DECIMALTAL || type2 == DataTypes.DECIMALTAL) {
+        ArrayList<DataTypes> types = new ArrayList<>(List.of(type1, type2));
+        if (type1 == type2) {
+            return type1;
+        } else if (types.contains(DataTypes.DECIMALTAL) && types.contains(DataTypes.HELTAL)){
             return DataTypes.DECIMALTAL;
-        } else return DataTypes.HELTAL;
+        } else error("Ugyldig operation mellem type " + type1.toString() + " og type " + type2.toString());
+        return null;
     }
 
     private AST convert(AST n, DataTypes type) {
         if (n.type == DataTypes.DECIMALTAL && type == DataTypes.HELTAL) {
-            error("Ikke muligt at konvertere decimaltal til integer");
+            error("Ikke muligt at konvertere decimaltal til heltal");
         } else if (n.type == DataTypes.HELTAL && type == DataTypes.DECIMALTAL){
+            return new ConvertToFloat(n);
         }
         return n;
     }

@@ -22,12 +22,16 @@ public class BoolskLiteral extends AST {
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof BoolskLiteral)) return false;
+        if (!(obj instanceof BoolskLiteral)) return false;
         BoolskLiteral object = (BoolskLiteral) obj;
         if (this.value.equals(object.getValue())) {
             return true;
         }
 
         return false;
+    }
+
+    public String toString() {
+        return value;
     }
 }

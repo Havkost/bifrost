@@ -142,6 +142,11 @@ public class Prettyprinting extends Visitor {
 	public void visit(SymReferencing n) {
 	}
 
+	@Override
+	public void visit(ConvertToFloat n) {
+
+	}
+
 	public void indent(int indents) {
 		for (int i = 0; i < indents; i++) {
 			System.out.print("    ");

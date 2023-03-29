@@ -22,14 +22,12 @@ public class HeltalLiteral extends AST {
 
     @Override
     public String toString() {
-        return "HeltalLiteral{" +
-                "val='" + value + "'" +
-                '}';
+        return value;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof HeltalLiteral)) return false;
+         if(!(obj instanceof HeltalLiteral)) return false;
         HeltalLiteral object = (HeltalLiteral) obj;
         if(this.value.equals(object.getValue())) return true;
 

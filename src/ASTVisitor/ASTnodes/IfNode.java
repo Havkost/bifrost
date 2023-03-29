@@ -28,6 +28,14 @@ public class IfNode extends AST {
         return body;
     }
 
+    public void setExpr(AST expr) {
+        this.expr = expr;
+    }
+
+    public void setBody(ArrayList<AST> body) {
+        this.body = body;
+    }
+
     @Override
     public String toString() {
         return "IfNode{" +

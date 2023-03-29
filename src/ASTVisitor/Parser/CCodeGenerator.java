@@ -27,13 +27,15 @@ public class CCodeGenerator extends Visitor {
     Map<AST.DataTypes, String> formatStrings = new HashMap<>(Map.ofEntries(
             entry(HELTAL, "%d"),
             entry(DECIMALTAL, "%lf"),
-            entry(TEKST, "%s")
+            entry(TEKST, "%s"),
+            entry(BOOLSK, "%s")
     ));
 
     Map<AST.DataTypes, String> dataTypeString = new HashMap<>(Map.ofEntries(
             entry(HELTAL, "int"),
             entry(DECIMALTAL, "double"),
-            entry(TEKST, "char*")
+            entry(TEKST, "char*"),
+            entry(BOOLSK, "boolean")
     ));
 
     public void emit(String c){
@@ -129,20 +131,18 @@ public class CCodeGenerator extends Visitor {
     }
 
     public void visit(PrintNode n) {
+        // TODO: Vi kan stadig ikke printe
         emit("printf(\"");
         if(n.getValue() instanceof IdNode) {
             emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getName())));
             //emit("%d"); // TODO: Use symbol table to look up type when the table has been constructed
-        } else if (n.getValue() instanceof HeltalLiteral) {
-            emit("%d");
-        } else if(n.getValue() instanceof DecimaltalLiteral) {
-            emit("%lf");
-        } else if (n.getValue() instanceof BoolskLiteral || n.getValue() instanceof TekstLiteral) {
-            emit("%s");
+        } else {
+            emit(formatStrings.get(n.type));
         }
         emit("\\n\", ");
 
         n.getValue().accept(this);
+        if(n.getValue().type == BOOLSK) emit("?\"Sandt\":\"Falsk\"");
         emit(");");
     }
 
@@ -254,6 +254,11 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(SymReferencing n) {
+
+    }
+
+    @Override
+    public void visit(ConvertToFloat n) {
 
     }
 
