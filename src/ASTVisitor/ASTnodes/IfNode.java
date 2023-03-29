@@ -24,7 +24,7 @@ public class IfNode extends AST {
         return expr;
     }
 
-    public ArrayList<AST> getChildren() {
+    public ArrayList<AST> getBody() {
         return body;
     }
 
@@ -32,8 +32,8 @@ public class IfNode extends AST {
         this.expr = expr;
     }
 
-    public void setChildren(ArrayList<AST> children) {
-        this.children = children;
+    public void setBody(ArrayList<AST> body) {
+        this.body = body;
     }
 
     @Override

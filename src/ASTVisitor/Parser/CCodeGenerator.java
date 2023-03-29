@@ -108,7 +108,7 @@ public class CCodeGenerator extends Visitor {
         n.getExpr().accept(this);
         emit( ") {\n");
         blockIndent++;
-        for (AST child : n.getChildren()) {
+        for (AST child : n.getBody()) {
             indent(blockIndent);
             child.accept(this);
         }
@@ -254,6 +254,11 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(SymReferencing n) {
+
+    }
+
+    @Override
+    public void visit(ConvertToFloat n) {
 
     }
 

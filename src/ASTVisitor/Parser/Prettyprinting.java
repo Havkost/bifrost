@@ -78,7 +78,7 @@ public class Prettyprinting extends Visitor {
 		n.getExpr().accept(this);
 		System.out.print(":\n");
 		blockIndent++;
-		for (AST child : n.getChildren()) {
+		for (AST child : n.getBody()) {
 			indent(blockIndent);
 			child.accept(this);
 		}
@@ -140,6 +140,11 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(SymReferencing n) {
+	}
+
+	@Override
+	public void visit(ConvertToFloat n) {
+
 	}
 
 	public void indent(int indents) {

@@ -21,10 +21,10 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(AssignNode n) {
-        n.getVal().accept(this);
+        n.getValue().accept(this);
         DataTypes lhsType = AST.getSymbolTable().get(n.getId());
-        DataTypes rhsType = generalize(n.getVal().type, lhsType);
-        n.setVal(convert(n.getVal(), lhsType));
+        DataTypes rhsType = generalize(n.getValue().type, lhsType);
+        n.setValue(convert(n.getValue(), lhsType));
         n.type = rhsType;
     }
 
@@ -80,7 +80,7 @@ public class TypeChecker extends Visitor{
         if (n.getExpr().type != DataTypes.BOOLSK) {
             error("Typen på expression skal være boolsk, og må ikke være " + n.getExpr().type);
         }
-        for(AST ast : n.getChildren()) {
+        for(AST ast : n.getBody()) {
             ast.accept(this);
         }
     }

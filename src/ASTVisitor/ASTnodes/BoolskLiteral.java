@@ -22,6 +22,6 @@ public class BoolskLiteral extends AST {
 
     @Override
     public String toString() {
-        return val;
+        return value;
     }
 }
