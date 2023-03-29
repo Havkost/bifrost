@@ -19,4 +19,9 @@ public class BoolskLiteral extends AST {
     public String getVal() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return val;
+    }
 }

@@ -80,7 +80,6 @@ public class TypeChecker extends Visitor {
 	void visit(SymReferencing n) {
 		// TODO Auto-generated method stub
 		n.type = AST.SymbolTable.get(n.id);
-
 	}
 	
 	private void error(String message) {
@@ -96,7 +95,8 @@ public class TypeChecker extends Visitor {
 	}*/
 	
 	private int generalize(int t1, int t2){
-		if (t1 == AST.FLTTYPE || t2 == AST.FLTTYPE) return AST.FLTTYPE; else return AST.INTTYPE;
+		if (t1 == AST.FLTTYPE || t2 == AST.FLTTYPE) return AST.FLTTYPE;
+		else return AST.INTTYPE;
 	}
 	
 	private AST convert(AST n, int t){
