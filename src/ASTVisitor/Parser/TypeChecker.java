@@ -30,12 +30,15 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(BinaryComputing n) {
+        ArrayList<String> booleanOperators = new ArrayList<>(List.of("<", ">", "er", "eller", "og", "ikke er"));
         n.getChild1().accept(this);
         n.getChild2().accept(this);
         DataTypes type = generalize(n.getChild1().type, n.getChild2().type);
         if (type != null) {
-            n.type = type;
-        } else error("The type from generalize returned: " + type);
+            if (booleanOperators.contains(n.getOperation())) {
+                n.type = DataTypes.BOOLSK;
+            } else n.type = type;
+        } else error("Der opstod en fejl, din computationstype er: " + type);
     }
 
     @Override
@@ -74,6 +77,9 @@ public class TypeChecker extends Visitor{
     @Override
     public void visit(IfNode n) {
         n.getExpr().accept(this);
+        if (n.getExpr().type != DataTypes.BOOLSK) {
+            error("Typen på expression skal være boolsk, og må ikke være " + n.getExpr().type);
+        }
         for(AST ast : n.getChildren()) {
             ast.accept(this);
         }

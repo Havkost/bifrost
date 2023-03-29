@@ -2,9 +2,12 @@ gem boolsk falsk som a
 gem heltal 42 som b
 gem decimaltal 56,34 som c
 
+hvis 5 > 5:
+    sæt a til "Nej"
+.
+
 hvis 10 er 10:
     hvis c < b:
-        sæt a til "Nej"
     .
 .
 print a
