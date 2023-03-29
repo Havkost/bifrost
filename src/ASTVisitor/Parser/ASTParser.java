@@ -421,4 +421,9 @@ public class ASTParser {
     private void error(String message) {
         throw new Error(message);
     }
+
+    public TokenStream getTs() {
+        return ts;
+    }
 }
+

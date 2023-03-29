@@ -21,4 +21,15 @@ public class HeltalDcl extends SymDeclaring {
                 ", value=" + value +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof HeltalDcl)) return false;
+        HeltalDcl object = (HeltalDcl) obj;
+        if (this.id.equals(object.getId()) && this.value.equals(object.getValue())) {
+            return true;
+        }
+
+        return false;
+    }
 }

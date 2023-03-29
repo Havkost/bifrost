@@ -56,12 +56,12 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(BoolskLiteral n) {
-        emit(n.getVal());
+        emit(n.getValue());
     }
 
     @Override
     public void visit(DecimaltalLiteral n) {
-        emit(n.getVal().replace(',', '.'));
+        emit(n.getValue().replace(',', '.'));
     }
 
     @Override
@@ -71,7 +71,7 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(HeltalLiteral n) {
-        emit(n.getVal());
+        emit(n.getValue());
     }
 
     @Override
@@ -106,7 +106,7 @@ public class CCodeGenerator extends Visitor {
         n.getExpr().accept(this);
         emit( ") {\n");
         blockIndent++;
-        for (AST child : n.getChildren()) {
+        for (AST child : n.getBody()) {
             indent(blockIndent);
             child.accept(this);
         }
@@ -119,7 +119,7 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(LoopNode n) {
         // TODO: Overvej hvad variablen skal hedde i for-loops
-        emit("for(int __i = 0; __i < " + n.getRepeats().getVal() + "; __i++) { \n");
+        emit("for(int __i = 0; __i < " + n.getRepeats().getValue() + "; __i++) { \n");
         blockIndent++;
         indent(blockIndent);
         emit(n.getId() + "();\n");

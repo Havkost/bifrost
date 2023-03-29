@@ -1,5 +1,8 @@
 package ASTVisitor.Lexer;
 
+import lombok.Getter;
+import lombok.ToString;
+
 public class Token {
 
     private final TokenType type;
@@ -23,10 +26,6 @@ public class Token {
     }
 
     public String toString() {
-        if (type == TokenType.NEWLINE) {
-            return "Token{" +
-                    "type=" + type + "}\n";
-        }
         if(!val.equals("")) {
             return "Token{" +
                     "type=" + type + ", " +

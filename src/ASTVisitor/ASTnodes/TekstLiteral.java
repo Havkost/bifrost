@@ -19,4 +19,14 @@ public class TekstLiteral extends AST {
     public String getVal() {
         return value;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof TekstLiteral)) return false;
+        TekstLiteral object = (TekstLiteral) obj;
+        if (this.value.equals(object.getVal())) {
+            return true;
+        }
+        return false;
+    }
 }

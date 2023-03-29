@@ -23,4 +23,14 @@ public class UnaryComputing extends AST {
     public AST getChild() {
         return child;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof UnaryComputing)) return false;
+        UnaryComputing object = (UnaryComputing) obj;
+        if (this.operation.equals(object.getOperation()) && this.child.equals(object.getChild())) {
+            return true;
+        }
+        return false;
+    }
 }

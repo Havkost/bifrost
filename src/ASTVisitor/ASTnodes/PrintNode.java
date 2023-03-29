@@ -26,4 +26,14 @@ public class PrintNode extends AST {
                 "value=" + value +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof PrintNode)) return false;
+        PrintNode object = (PrintNode) obj;
+        if (this.value.equals(object.getValue())) {
+            return true;
+        }
+        return false;
+    }
 }

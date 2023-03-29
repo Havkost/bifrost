@@ -14,12 +14,12 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(BoolskLiteral n) {
-		System.out.print(n.getVal());
+		System.out.print(n.getValue());
 	}
 
 	@Override
 	public void visit(DecimaltalLiteral n) {
-		System.out.print(n.getVal());
+		System.out.print(n.getValue());
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(HeltalLiteral n) {
-		System.out.print(n.getVal());
+		System.out.print(n.getValue());
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class Prettyprinting extends Visitor {
 		n.getExpr().accept(this);
 		System.out.print(":\n");
 		blockIndent++;
-		for (AST child : n.getChildren()) {
+		for (AST child : n.getBody()) {
 			indent(blockIndent);
 			child.accept(this);
 		}
@@ -90,7 +90,7 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(LoopNode n) {
-		System.out.print("gentag " + n.getId() + " " + n.getRepeats().getVal() + " gange");
+		System.out.print("gentag " + n.getId() + " " + n.getRepeats().getValue() + " gange");
 	}
 
 	@Override

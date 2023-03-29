@@ -160,6 +160,16 @@ public class TestCodeScanner
     }
 
     @Test
+    public void testScanDigitsIntLeadingZeros() {
+        CharArrayReader reader = new CharArrayReader("007".toCharArray());
+        CharStream charStream = new CharStream(reader);
+        CodeScanner.initialize(charStream);
+        Token token = CodeScanner.scanDigits();
+        assertEquals(HELTAL_LIT, token.getType());
+        assertEquals("007", token.getVal());
+    }
+
+    @Test
     public void testScanDigitsDbl() {
         CharArrayReader reader = new CharArrayReader("123879,328".toCharArray());
         CharStream charStream = new CharStream(reader);

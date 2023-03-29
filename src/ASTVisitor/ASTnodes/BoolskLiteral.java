@@ -16,7 +16,18 @@ public class BoolskLiteral extends AST {
         v.visit(this);
     }
 
-    public String getVal() {
+    public String getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof BoolskLiteral)) return false;
+        BoolskLiteral object = (BoolskLiteral) obj;
+        if (this.value.equals(object.getValue())) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -49,4 +49,16 @@ public class BinaryComputing extends AST {
                 ", child2=" + child2.toString() +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof BinaryComputing)) return false;
+        BinaryComputing object = (BinaryComputing) obj;
+        if (this.operation.equals(object.getOperation()) && this.child1.equals(object.getChild1())
+            && this.child2.equals(object.getChild2())) {
+            return true;
+        }
+
+        return false;
+    }
 }

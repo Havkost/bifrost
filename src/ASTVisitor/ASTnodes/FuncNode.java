@@ -18,4 +18,15 @@ public class FuncNode extends AST {
     public String getId() {
         return id;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof FuncNode)) return false;
+        FuncNode object = (FuncNode) obj;
+        if (this.id.equals(object.getId())) {
+            return true;
+        }
+
+        return false;
+    }
 }

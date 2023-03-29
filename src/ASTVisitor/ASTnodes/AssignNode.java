@@ -37,4 +37,15 @@ public class AssignNode extends AST {
                 ", val=" + value +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof AssignNode)) return false;
+        AssignNode object = (AssignNode) obj;
+        if (this.id.equals(object.getId()) && this.value.equals(object.getValue())) {
+            return true;
+        }
+
+        return false;
+    }
 }

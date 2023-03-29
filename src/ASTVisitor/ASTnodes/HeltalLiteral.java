@@ -16,7 +16,7 @@ public class HeltalLiteral extends AST {
         v.visit(this);
     }
 
-    public String getVal() {
+    public String getValue() {
         return value;
     }
 
@@ -25,5 +25,14 @@ public class HeltalLiteral extends AST {
         return "HeltalLiteral{" +
                 "val='" + value + "'" +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof HeltalLiteral)) return false;
+        HeltalLiteral object = (HeltalLiteral) obj;
+        if(this.value.equals(object.getValue())) return true;
+
+        return false;
     }
 }

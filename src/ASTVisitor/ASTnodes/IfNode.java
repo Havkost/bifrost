@@ -24,7 +24,7 @@ public class IfNode extends AST {
         return expr;
     }
 
-    public ArrayList<AST> getChildren() {
+    public ArrayList<AST> getBody() {
         return body;
     }
 
@@ -34,5 +34,16 @@ public class IfNode extends AST {
                 "expr=" + expr +
                 ", children=" + body +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof IfNode)) return false;
+        IfNode object = (IfNode) obj;
+        if (this.expr.equals(object.getExpr()) && this.body.equals(object.getBody())) {
+            return true;
+        }
+
+        return false;
     }
 }
