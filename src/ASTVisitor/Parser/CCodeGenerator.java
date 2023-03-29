@@ -68,7 +68,7 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(TekstLiteral n) {
-        emit("\"" + n.getVal() + "\"");
+        emit("\"" + n.getValue() + "\"");
     }
 
     @Override
@@ -220,7 +220,7 @@ public class CCodeGenerator extends Visitor {
     public void visit(TekstDcl n) {
         if(n.getValue() instanceof TekstLiteral) {
             emit(n.getId() + " = malloc(" +
-                    (((TekstLiteral) n.getValue()).getVal().length()+1) +
+                    (((TekstLiteral) n.getValue()).getValue().length()+1) +
                     " * sizeof(char));\n");
             indent(blockIndent);
             emit("strcpy(" + n.getId() + ", ");

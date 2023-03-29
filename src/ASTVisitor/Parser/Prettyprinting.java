@@ -24,7 +24,7 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(TekstLiteral n) {
-		System.out.print("\"" + n.getVal() + "\"");
+		System.out.print("\"" + n.getValue() + "\"");
 	}
 
 	@Override

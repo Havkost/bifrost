@@ -26,4 +26,5 @@ hs_err_pid*
 # .idea files
 **/.idea/workspace.xml
 **/.idea/tasks.xml
+*/out
 
