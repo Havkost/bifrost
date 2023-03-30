@@ -101,5 +101,18 @@ public class TestTypechecker {
         );
     }
 
+    // BINARY COMPUTING
+
+    /* //TODO FIX DENNE
+    @Test
+    public void testBinaryComputing() {
+        HeltalDcl dcl = new HeltalDcl(new HeltalLiteral("1"), "a");
+        HeltalDcl dcl1 = new HeltalDcl(new HeltalLiteral("2"),"b");
+        BinaryComputing bin = new BinaryComputing(">", dcl, dcl1);
+        ProgramNode ast = new ProgramNode(asList(bin));
+        assertDoesNotThrow(() ->
+                ast.accept(new TypeChecker())
+        );
+    } */
 
 }
