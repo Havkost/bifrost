@@ -1,0 +1,6 @@
+gem heltal 2 som x
+hvis ikke (x < (3 + (10-5) * 2) / 2 eller y > x og x ikke er 10):
+    sæt x til 3
+.
+
+print x

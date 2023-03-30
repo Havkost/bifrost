@@ -40,11 +40,11 @@ public class ASTParser {
         } else if (ts.peek() == NEWLINE) {
             expect(NEWLINE);
             linesList.addAll(lines());
-        } else error("Forventede gem, rutine, sæt, gentag, kør eller hvis.");
+        } else error("Forventede gem, rutine, sæt, gentag, kør eller hvis. :(");
         return linesList;
     }
 
-    private AST line() {
+    public AST line() {
         AST lineAST = null;
         if(ts.peek() == GEM || ts.peek() == RUTINE) {
             lineAST = dcl();
@@ -56,7 +56,7 @@ public class ASTParser {
         return lineAST;
     }
 
-    private AST dcl() {
+    public AST dcl() {
         AST dclAST = null;
         if(ts.peek() == GEM){
             expect(GEM);
@@ -67,7 +67,7 @@ public class ASTParser {
         return dclAST;
     }
 
-    private AST assign() {
+    public AST assign() {
         expect(SAET);
         Token idToken = expect(ID);
         expect(TIL);
@@ -75,7 +75,7 @@ public class ASTParser {
         return new AssignNode(idToken.getVal(), value);
     }
 
-    private ArrayList<AST> stmts() {
+    public ArrayList<AST> stmts() {
         ArrayList<AST> stmtList = new ArrayList<>();
         if(ts.peek() == GEM || ts.peek() == RUTINE ||
                 ts.peek() == SAET || ts.peek() == GENTAG ||
@@ -94,7 +94,7 @@ public class ASTParser {
         return stmtList;
     }
 
-    private AST stmt() {
+    public AST stmt() {
         AST stmtAST = null;
         if(ts.peek() == SAET) {
             stmtAST = assign();
@@ -117,10 +117,10 @@ public class ASTParser {
 
     public AST expr() {
         AST expr = null;
-        if (ts.peek() == ID || ts.peek() == HELTAL_LIT || ts.peek() == IKKE || ts.peek() == LPAREN
-                || ts.peek() == TEKST_LIT || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT) {
+        if (ts.peek() == ID || ts.peek() == HELTAL_LIT || ts.peek() == IKKE ||
+                ts.peek() == LPAREN || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT) {
             expr = or_expr();
-        } else error("Forventede boolsk udtryk.");
+        } else error("Forventede boolsk udtryk. Fik " + ts.peek());
 
         if(expr == null) error("Forventede udtryk. Fik " + ts.peek());
         return expr;
@@ -205,7 +205,7 @@ public class ASTParser {
             } else eqExpr = relExpr;
         } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG) {
             // produce nothing
-        } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance());
+        } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance() + " (eq)");
         return eqExpr;
     }
 
@@ -278,8 +278,9 @@ public class ASTParser {
 
     public AST productExpr2() {
         AST prodExpr = null;
-        if (ts.peek() == TIMES || ts.peek() == DIVIDE) {
-            expect(ER);
+        TokenType opType = ts.peek();
+        if (opType == TIMES || opType == DIVIDE) {
+            expect(opType);
             AST notExpr = not_expr();
             String op = ts.peek().getName();
             AST prods = productExpr2();
@@ -310,7 +311,7 @@ public class ASTParser {
             expect(LPAREN);
             expr = expr();
             expect(RPAREN);
-        } else if (ts.peek() == HELTAL_LIT || ts.peek() == TEKST_LIT || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT) {
+        } else if (ts.peek() == HELTAL_LIT || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT) {
             expr = value();
         } else if (ts.peek() == ID) {
             expr = new IdNode(expect(ID).getVal());

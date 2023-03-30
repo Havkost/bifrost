@@ -2,20 +2,19 @@ package ASTVisitor.ASTnodes;
 
 import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
-
-import java.util.ArrayList;
+import java.util.List;
 
 public class FuncDclNode extends AST {
 
     private String id;
-    private ArrayList<AST> body;
+    private List<AST> body;
 
     @Override
     public void accept(Visitor v) {
         v.visit(this);
     }
 
-    public FuncDclNode(String id, ArrayList<AST> body) {
+    public FuncDclNode(String id, List<AST> body) {
         this.id = id;
         this.body = body;
     }
@@ -24,7 +23,7 @@ public class FuncDclNode extends AST {
         return id;
     }
 
-    public ArrayList<AST> getBody() {
+    public List<AST> getBody() {
         return body;
     }
 
