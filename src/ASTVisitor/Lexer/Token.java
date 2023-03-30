@@ -1,8 +1,5 @@
 package ASTVisitor.Lexer;
 
-import lombok.Getter;
-import lombok.ToString;
-
 public class Token {
 
     private final TokenType type;
