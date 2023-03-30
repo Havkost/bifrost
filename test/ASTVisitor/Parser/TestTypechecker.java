@@ -103,16 +103,39 @@ public class TestTypechecker {
 
     // BINARY COMPUTING
 
-    /* //TODO FIX DENNE
+    //TODO FIX DENNE
     @Test
-    public void testBinaryComputing() {
-        HeltalDcl dcl = new HeltalDcl(new HeltalLiteral("1"), "a");
+    public void testBinaryComputingDecimalWithHeltal() {
+        DecimaltalDcl dcl = new DecimaltalDcl(new DecimaltalLiteral("1,5"), "a");
         HeltalDcl dcl1 = new HeltalDcl(new HeltalLiteral("2"),"b");
-        BinaryComputing bin = new BinaryComputing(">", dcl, dcl1);
+        BinaryComputing bin = new BinaryComputing(">", dcl.getValue(), dcl1.getValue());
         ProgramNode ast = new ProgramNode(asList(bin));
         assertDoesNotThrow(() ->
                 ast.accept(new TypeChecker())
         );
-    } */
+    }
+
+    @Test
+    public void testBinaryComputingHeltalWithHeltal() {
+        HeltalDcl dcl = new HeltalDcl(new HeltalLiteral("1"), "a");
+        HeltalDcl dcl1 = new HeltalDcl(new HeltalLiteral("2"),"b");
+        BinaryComputing bin = new BinaryComputing(">", dcl.getValue(), dcl1.getValue());
+        ProgramNode ast = new ProgramNode(asList(bin));
+        assertDoesNotThrow(() ->
+                ast.accept(new TypeChecker())
+        );
+    }
+
+    @Test
+    public void testBinaryComputingThrows() {
+        BoolskDcl dcl = new BoolskDcl(new BoolskLiteral("sandt"), "a");
+        HeltalDcl dcl1 = new HeltalDcl(new HeltalLiteral("2"), "b");
+        BinaryComputing bin = new BinaryComputing(">", dcl.getValue(), dcl1.getValue());
+        ProgramNode ast = new ProgramNode(asList(bin));
+        assertThrows(Error.class, () ->
+                ast.accept(new TypeChecker())
+        );
+    }
+
 
 }
