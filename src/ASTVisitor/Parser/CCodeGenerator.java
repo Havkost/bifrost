@@ -21,7 +21,9 @@ public class CCodeGenerator extends Visitor {
             entry("<", "<"),
             entry(">", ">"),
             entry("er", "=="),
-            entry("ikke", "!=")
+            entry("ikke er", "!="),
+            entry("ikke", "!")
+
     ));
 
     Map<AST.DataTypes, String> formatStrings = new HashMap<>(Map.ofEntries(
@@ -96,7 +98,6 @@ public class CCodeGenerator extends Visitor {
         emit(n.getId() + "();");
     }
 
-
     @Override
     public void visit(IdNode n) {
         emit(n.getName());
@@ -120,7 +121,6 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(LoopNode n) {
-        // TODO: Overvej hvad variablen skal hedde i for-loops
         emit("for(int __i = 0; __i < " + n.getRepeats().getValue() + "; __i++) { \n");
         blockIndent++;
         indent(blockIndent);
@@ -131,7 +131,7 @@ public class CCodeGenerator extends Visitor {
     }
 
     public void visit(PrintNode n) {
-        // TODO: Vi kan stadig ikke printe
+        // TODO: Vi kan stadig ikke printe forskellige values
         emit("printf(\"");
         if(n.getValue() instanceof IdNode) {
             emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getName())));
@@ -199,7 +199,6 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(SymDeclaring n) {
-        // TODO: MAKE THIS
     }
 
 
@@ -211,8 +210,8 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(UnaryComputing n) {
-        // TODO: Hvis flere operatorer der er unær, så skriv til en getOperator i stedet.
         emit("!");
+        //emit(operators.get(n.getOperation()));
         n.getChild().accept(this);
     }
 
@@ -245,8 +244,9 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(BoolskDcl n) {
+        // TODO: It already does this, but how? - Jack
         /** We assume here, that we are going to use a boolean library
-        emit ("boolean " + n.getId8) + " = ");
+        emit ("boolean " + n.getId) + " = ");
          n.getValue().accept(this);;
          emit(";");
         */
@@ -254,12 +254,10 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(SymReferencing n) {
-
     }
 
     @Override
     public void visit(ConvertToFloat n) {
-
     }
 
     public void indent(int indents) {

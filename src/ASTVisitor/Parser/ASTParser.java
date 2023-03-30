@@ -126,7 +126,6 @@ public class ASTParser {
         return expr;
     }
 
-    // TODO: Kigge på or_expr og resten af expression-delene
     public AST or_expr() {
         AST expr;
         AST andExpr = and_expr();
@@ -303,7 +302,6 @@ public class ASTParser {
         return expr;
     }
 
-    //TODO skriv ordentlig fejlbesked
     public AST factor() {
         AST expr = null;
         if (ts.peek() == LPAREN) {
@@ -420,10 +418,6 @@ public class ASTParser {
 
     private void error(String message) {
         throw new Error(message);
-    }
-
-    public TokenStream getTs() {
-        return ts;
     }
 }
 
