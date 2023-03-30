@@ -27,4 +27,15 @@ public class FuncDclNode extends AST {
     public ArrayList<AST> getBody() {
         return body;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof FuncDclNode)) return false;
+        FuncDclNode object = (FuncDclNode) obj;
+        if (this.id.equals(object.getId()) && this.body.equals(object.getBody())) {
+            return true;
+        }
+
+        return false;
+    }
 }

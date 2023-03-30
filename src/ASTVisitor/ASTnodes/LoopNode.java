@@ -25,4 +25,14 @@ public class LoopNode extends AST {
     public HeltalLiteral getRepeats() {
         return repeatCount;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof LoopNode)) return false;
+        LoopNode object = (LoopNode) obj;
+        if (this.id.equals(object.getId()) && this.repeatCount.equals(object.getRepeats())) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -27,7 +27,7 @@ public class CodeScanner {
         if (isQuote(charStream.peek())) return scanString();
 
         // Read whole word
-        String nextWord = getNextWord();
+        String nextWord = getNextWord().toLowerCase();
 
         if (nextWord.equals("sandt") || nextWord.equals("falsk")) {
             return new Token(BOOLSK_LIT, nextWord);

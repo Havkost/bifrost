@@ -10,5 +10,18 @@ public class DecimaltalDcl extends SymDeclaring {
         this.value = value;
     }
 
-    public void accept(Visitor v){v.visit(this);}
+    public void accept(Visitor v){
+        v.visit(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof DecimaltalDcl)) return false;
+        DecimaltalDcl object = (DecimaltalDcl) obj;
+        if (this.id.equals(object.getId()) && this.value.equals(object.getValue())) {
+            return true;
+        }
+
+        return false;
+    }
 }

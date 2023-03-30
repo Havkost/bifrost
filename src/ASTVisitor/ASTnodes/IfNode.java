@@ -43,4 +43,15 @@ public class IfNode extends AST {
                 ", children=" + body +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof IfNode)) return false;
+        IfNode object = (IfNode) obj;
+        if (this.expr.equals(object.getExpr()) && this.body.equals(object.getBody())) {
+            return true;
+        }
+
+        return false;
+    }
 }

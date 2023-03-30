@@ -126,7 +126,6 @@ public class ASTParser {
         return expr;
     }
 
-    // TODO: Kigge på or_expr og resten af expression-delene
     public AST or_expr() {
         AST expr;
         AST andExpr = and_expr();
@@ -303,7 +302,6 @@ public class ASTParser {
         return expr;
     }
 
-    //TODO skriv ordentlig fejlbesked
     public AST factor() {
         AST expr = null;
         if (ts.peek() == LPAREN) {
@@ -422,3 +420,4 @@ public class ASTParser {
         throw new Error(message);
     }
 }
+

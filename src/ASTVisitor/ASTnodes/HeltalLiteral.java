@@ -5,10 +5,10 @@ import ASTVisitor.Parser.Visitor;
 
 public class HeltalLiteral extends AST {
 
-    private String val;
+    private String value;
 
     public HeltalLiteral(String value) {
-        this.val = value;
+        this.value = value;
     }
 
     @Override
@@ -16,12 +16,21 @@ public class HeltalLiteral extends AST {
         v.visit(this);
     }
 
-    public String getVal() {
-        return val;
+    public String getValue() {
+        return value;
     }
 
     @Override
     public String toString() {
-        return val;
+        return value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+         if(!(obj instanceof HeltalLiteral)) return false;
+        HeltalLiteral object = (HeltalLiteral) obj;
+        if(this.value.equals(object.getValue())) return true;
+
+        return false;
     }
 }

@@ -16,11 +16,20 @@ public class DecimaltalLiteral extends AST {
         v.visit(this);
     }
 
-    public String getVal() {
+    public String getValue() {
         return value;
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DecimaltalLiteral)) return false;
+        DecimaltalLiteral object = (DecimaltalLiteral) obj;
+        if (this.value.equals(object.getValue())) {
+            return true;
+        }
+
+        return false;
+    }
     public String toString() {
         return value;
     }

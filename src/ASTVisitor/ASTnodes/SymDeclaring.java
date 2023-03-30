@@ -19,4 +19,14 @@ public class SymDeclaring extends AST {
     public AST getValue() {
         return value;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SymDeclaring)) return false;
+        SymDeclaring object = (SymDeclaring) obj;
+        if (this.id.equals(object.getId()) && this.value.equals(object.getValue())) {
+            return true;
+        }
+        return false;
+    }
 }
