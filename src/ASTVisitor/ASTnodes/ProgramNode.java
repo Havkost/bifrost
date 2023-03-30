@@ -3,15 +3,16 @@ package ASTVisitor.ASTnodes;
 import ASTVisitor.Parser.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProgramNode extends AST {
-    private ArrayList<AST> children;
+    private List<AST> children;
 
-    public ProgramNode(ArrayList<AST> child) {
+    public ProgramNode(List<AST> child) {
         this.children = child;
     }
 
-    public ArrayList<AST> getChild() {
+    public List<AST> getChild() {
         return children;
     }
 
