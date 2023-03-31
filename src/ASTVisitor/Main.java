@@ -3,6 +3,7 @@ package ASTVisitor;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.CodeScanner;
 import ASTVisitor.Parser.*;
+import com.sun.source.tree.Tree;
 
 import java.io.CharArrayReader;
 import java.util.Map;
@@ -70,6 +71,9 @@ public class Main {
             for (Map.Entry<String, AST.DataTypes> entry : AST.getSymbolTable().entrySet()) {
                 System.out.println(entry.getKey() + ":" + entry.getValue());
             }
+
+            TreeDrawing panel = new TreeDrawing(ast);
+            panel.draw();
 
 
 

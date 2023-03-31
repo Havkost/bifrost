@@ -4,15 +4,16 @@ gem decimaltal 56,34 som c
 
 
 rutine test:
-    hvis a < 4:
+    hvis b < 4:
         sæt b til 7
+        sæt a til sandt
     .
 .
 
 gentag test 3 gange
 
 hvis 10 er 10:
-    hvis c < b:
+    hvis ikke a:
     .
 .
 print a
