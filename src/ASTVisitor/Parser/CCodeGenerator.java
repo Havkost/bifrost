@@ -12,21 +12,6 @@ public class CCodeGenerator extends Visitor {
     int blockIndent = 0;
     private String code = "";
 
-    Map<Operators, String> operatorsToC = new HashMap<>(Map.ofEntries(
-            entry(Operators.TIMES,"*"),
-            entry(Operators.DIVISION, "/"),
-            entry(Operators.PLUS, "+"),
-            entry(Operators.MINUS, "-"),
-            entry(Operators.OR, "||"),
-            entry(Operators.AND, "&&"),
-            entry(Operators.LESS_THAN, "<"),
-            entry(Operators.GREATER_THAN, ">"),
-            entry(Operators.EQUALS, "=="),
-            entry(Operators.NOT_EQUALS, "!="),
-            entry(Operators.NOT, "!")
-
-    ));
-
     Map<AST.DataTypes, String> formatStrings = new HashMap<>(Map.ofEntries(
             entry(HELTAL, "%d"),
             entry(DECIMALTAL, "%lf"),
@@ -55,13 +40,13 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(BinaryComputing n) {
         n.getChild1().accept(this);
-         emit(" " + operatorsToC.get(n.getOperation()) + " ");
+         emit(" " + n.getOperation().Cversion + " ");
         n.getChild2().accept(this);
     }
 
     @Override
     public void visit(BoolskLiteral n) {
-        emit(n.getValue());
+        emit(n.getValue().equals("sandt") ? "true" : "false");
     }
 
     @Override
@@ -132,13 +117,12 @@ public class CCodeGenerator extends Visitor {
     }
 
     public void visit(PrintNode n) {
-        // TODO: Vi kan stadig ikke printe forskellige values
         emit("printf(\"");
         if(n.getValue() instanceof IdNode) {
             emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getName())));
             //emit("%d"); // TODO: Use symbol table to look up type when the table has been constructed
         } else {
-            emit(formatStrings.get(n.type));
+           emit(formatStrings.get(n.getValue().type));
         }
         emit("\\n\", ");
 

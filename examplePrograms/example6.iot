@@ -2,7 +2,8 @@ gem tekst "tjek" som TEKSTtest
 gem heltal 30 som HELTALtest
 gem decimaltal 30,0 som DECIMALtest
 gem boolsk sandt som SANDTtest
-gem boolsk falsk som FALSKtest
+gem boolsk falsk som testaffalsk
+gem tekst "untjek" som TEKST2test
 
 gem heltal 1 som a
 gem heltal 2 som b
@@ -16,6 +17,11 @@ hvis a > b:
     sæt a til 3
 .
 
-hvis TEKSTtest er b:
-    sæt a til 4
-.
+print a
+print b
+print testaffalsk
+Print TEKSTtest
+print "tekst"
+print 30
+print 31,30
+print sandt

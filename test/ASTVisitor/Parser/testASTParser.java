@@ -2,11 +2,12 @@ package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
 import ASTVisitor.ASTnodes.ProgramNode;
+import ASTVisitor.Exceptions.UnexpectedLineStart;
+import ASTVisitor.Exceptions.UnexpectedTokenException;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.CodeScanner;
-import org.junit.Before;
+import ASTVisitor.Lexer.Token;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 
 import java.io.CharArrayReader;
@@ -18,47 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class testASTParser {
-
-    CharArrayReader reader;
-    CharStream charStream;
-    ASTParser p;
-
-    String inputString = """
-            gem heltal 3 som x
-            gem decimaltal 5,5 som y
-            gem tekst "test" som eksempel
-            gem boolsk falsk som livsLyst
-            
-            hvis x er 3:
-                sæt x til 1
-                print eksempel
-            .
-            
-            hvis y > 5:
-                kør test
-                sæt y til 8
-            .
-            
-            hvis y < 5:
-                gentag test 2 gange
-                sæt y til 2
-            .
-            
-            hvis livsLyst ikke er falsk:
-                sæt y til 3
-                sæt x til 9
-            .    
-            
-            hvis livsLyst er falsk:
-                gentag test 2 gange
-            .
-            
-            
-            rutine test:
-                print x
-                print y
-            .
-            """;
 
     public ASTParser makeASTParser(String str){
         CharArrayReader reader = new CharArrayReader(str.toCharArray());
@@ -103,7 +63,7 @@ public class testASTParser {
     public void testLinesIllegal() {
         ASTParser parser = makeASTParser("x er 2");
 
-        assertThrows(Error.class, parser::lines);
+        assertThrows(UnexpectedLineStart.class, parser::lines);
     }
 
     @Test
@@ -134,15 +94,27 @@ public class testASTParser {
                                              sæt tekstTest til "holy"
                                              sæt tekstTest til "grail"
                                              print tekstTest
-                                             
-                                             
+                                             gentag is 3 gange
+                                             hvis 3 > 3:
+                                                sæt x til 3.
+                                             kør test
                                              .
                                              """);
         AST dcl = new AssignNode("tekstTest", new TekstLiteral("holy"));
         AST ass = new AssignNode("tekstTest", new TekstLiteral("grail"));
         AST print = new PrintNode(new IdNode("tekstTest"));
+        AST gentag = new LoopNode("is", new HeltalLiteral("3"));
+        AST hvis = new IfNode(new BinaryComputing(">", new HeltalLiteral("3"),
+                new HeltalLiteral("3")),
+                Arrays.asList(new AssignNode("x", new HeltalLiteral("3"))));
+        AST func = new FuncNode("test");
+        assertEquals(Arrays.asList(dcl, ass, print, gentag, hvis, func), parser.stmts());
+    }
 
-        assertEquals(Arrays.asList(dcl, ass, print), parser.stmts());
+    @Test
+    public void testStmtsIllegal() {
+        ASTParser parser = makeASTParser("gem heltal 3 som x");
+        assertThrows(Error.class, parser::stmts);
     }
 
     @Test
@@ -152,6 +124,14 @@ public class testASTParser {
                                              """);
         AST dcl = new AssignNode( "x", new HeltalLiteral("5"));
         assertEquals(dcl, parser.stmt());
+    }
+
+    @Test
+    public void testStmtIllegal(){
+        ASTParser parser = makeASTParser("""
+                                             gem heltal 3 som x     
+                                             """);
+        assertThrows(Error.class, parser::stmt);
     }
 
     @Test
@@ -174,6 +154,12 @@ public class testASTParser {
         AST er = new BinaryComputing("er", not, new BoolskLiteral("falsk"));
 
         assertEquals(er, parser.expr());
+    }
+
+    @Test
+    public void testExprIllegal() {
+        ASTParser parser = makeASTParser("gem");
+        assertThrows(Error.class, parser::expr);
     }
 
     @Test
@@ -237,5 +223,122 @@ public class testASTParser {
         ASTParser parser = makeASTParser("""
                                              """);
         assertThrows(Error.class, parser::factor);
+    }
+
+    @Test
+    public void testVarDclStr() {
+        ASTParser parser = makeASTParser("tekst \"test\" som testTekst");
+        AST dcl = new TekstDcl(new TekstLiteral("test"), "testTekst");
+        assertEquals(dcl, parser.varDcl());
+    }
+
+    @Test
+    public void testVarDclStrIllegal1() {
+        ASTParser parser = makeASTParser("\"test\" om testTekst");
+        assertThrows(Error.class, parser::varDcl);
+    }
+
+    @Test
+    public void testVarDclInt() {
+        ASTParser parser = makeASTParser("heltal 56 som number");
+        AST dcl = new HeltalDcl(new HeltalLiteral("56"), "number");
+        assertEquals(dcl, parser.varDcl());
+    }
+
+    @Test
+    public void testVarDclIntIllegal() {
+        ASTParser parser = makeASTParser("hetal 56 som number");
+        assertThrows(Error.class, parser::varDcl);
+    }
+
+    @Test
+    public void testVarDclFlt() {
+        ASTParser parser = makeASTParser("decimaltal 56,132 som number");
+        AST dcl = new DecimaltalDcl(new DecimaltalLiteral("56,132"), "number");
+        assertEquals(dcl, parser.varDcl());
+    }
+
+    @Test
+    public void testVarDclFltIllegal() {
+        ASTParser parser = makeASTParser("decimaltl 56,45 som number");
+        assertThrows(Error.class, parser::varDcl);
+    }
+
+    @Test
+    public void testVarDclBool() {
+        ASTParser parser = makeASTParser("boolsk falsk som val");
+        AST dcl = new BoolskDcl(new BoolskLiteral("falsk"), "val");
+        assertEquals(dcl, parser.varDcl());
+    }
+
+    @Test
+    public void testVarDclBoolIllegal() {
+        ASTParser parser = makeASTParser("boolsk nej som test");
+        assertThrows(UnexpectedTokenException.class, parser::varDcl);
+    }
+
+    @Test
+    public void testFunc() {
+        ASTParser parser = makeASTParser("kør oogaBooga");
+        AST func = new FuncNode("oogaBooga");
+        assertEquals(func, parser.func());
+    }
+
+    @Test
+    public void testFuncIllegal() {
+        ASTParser parser = makeASTParser("kør oogaBooga s");
+        assertThrows(Error.class, parser::varDcl);
+    }
+
+    @Test
+    public void testPrintId() {
+        ASTParser parser = makeASTParser("print hast");
+        AST print = new PrintNode(new IdNode("hast"));
+
+        assertEquals(print, parser.print());
+
+    }
+
+    @Test
+    public void testPrintLit() {
+        ASTParser parser = makeASTParser("print \"hast\"");
+        AST print = new PrintNode(new TekstLiteral("hast"));
+
+        assertEquals(print, parser.print());
+    }
+
+    @Test
+    public void testPrintIllegal() {
+        ASTParser parser = makeASTParser("print gem");
+
+        assertThrows(Error.class, parser::print);
+    }
+
+    @Test
+    public void testRepeat() {
+        ASTParser parser = makeASTParser("gentag test 4 gange");
+        AST gentag = new LoopNode("test", new HeltalLiteral("4"));
+        assertEquals(gentag, parser.repeat());
+    }
+
+    @Test
+    public void testRepeatIllegal() {
+        ASTParser parser = makeASTParser("test 4 gange");
+
+        assertThrows(UnexpectedTokenException.class, parser::repeat);
+    }
+
+    @Test
+    public void testExpect() {
+        ASTParser parser = makeASTParser("gem heltal 3 som x");
+        Token token = new Token(GEM);
+        assertEquals(token, parser.expect(GEM));
+    }
+
+    @Test
+    public void testExpectIllegal() {
+        ASTParser parser = makeASTParser("gem heltal 3 som x");
+
+        assertThrows(UnexpectedTokenException.class, () -> parser.expect(SAET));
     }
 }

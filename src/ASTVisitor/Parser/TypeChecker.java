@@ -131,8 +131,10 @@ public class TypeChecker extends Visitor{
     public void visit(UnaryComputing n) {
         // Refactor if other unary operations are introduced
         n.getChild().accept(this);
-        if(n.type != DataTypes.BOOLSK) error("Kan kun bruge 'ikke'-operator på boolske værdier.");
-    }
+        DataTypes resultType = getOperationResultType(n.getOperation(), n.getChild().type);
+        if(resultType != null) {
+            n.setType(resultType);
+        } else error("Kan ikke bruge operatoren '" + n.getOperation() + "' på typen " + n.getChild().type);    }
 
     @Override
     public void visit(TekstDcl n) {

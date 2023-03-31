@@ -4,19 +4,24 @@ import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
 public class UnaryComputing extends AST {
-    private String operation;
+    private Operators operation;
     private AST child;
 
     public UnaryComputing(String operation, AST child) {
-        this.operation = operation;
         this.child = child;
+        for(Operators operator : Operators.values()) {
+            if(operator.textual.equals(operation.toLowerCase())) {
+                this.operation = operator;
+                return;
+            }
+        }
     }
 
     public void accept(Visitor v) {
         v.visit(this);
     }
 
-    public String getOperation() {
+    public Operators getOperation() {
         return operation;
     }
 

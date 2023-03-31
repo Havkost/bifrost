@@ -14,24 +14,27 @@ public abstract class AST {
         RUTINE
     }
     public enum Operators {
-        PLUS("+"),
-        MINUS("-"),
-        TIMES("*"),
-        DIVISION("/"),
-        OR("eller"),
-        AND("og"),
-        LESS_THAN("<"),
-        GREATER_THAN(">"),
-        EQUALS("er"),
-        NOT_EQUALS("ikke er"),
-        NOT("ikke");
+        PLUS("+", "+"),
+        MINUS("-", "-"),
+        TIMES("*", "*"),
+        DIVISION("/", "/"),
+        OR("eller", "||"),
+        AND("og", "&&"),
+        LESS_THAN("<", "<"),
+        GREATER_THAN(">", ">"),
+        EQUALS("er", "=="),
+        NOT_EQUALS("ikke er", "!="),
+        NOT("ikke", "!");
 
         public String textual;
+        public String Cversion;
 
-        Operators(String textual){
+        Operators(String textual, String Cversion){
             this.textual = textual;
+            this.Cversion = Cversion;
         }
     }
+
     public DataTypes type = null;
 
     private static final DataTypes[][] operationResultType;
