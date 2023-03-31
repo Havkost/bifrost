@@ -4,18 +4,19 @@ import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class IfNode extends AST {
 
     private AST expr;
-    private ArrayList<AST> body;
+    private List<AST> body;
 
     @Override
     public void accept(Visitor v) {
         v.visit(this);
     }
 
-    public IfNode(AST expr, ArrayList<AST> children) {
+    public IfNode(AST expr, List<AST> children) {
         this.expr = expr;
         this.body = children;
     }
@@ -24,7 +25,7 @@ public class IfNode extends AST {
         return expr;
     }
 
-    public ArrayList<AST> getBody() {
+    public List<AST> getBody() {
         return body;
     }
 
@@ -32,7 +33,7 @@ public class IfNode extends AST {
         this.expr = expr;
     }
 
-    public void setBody(ArrayList<AST> body) {
+    public void setBody(List<AST> body) {
         this.body = body;
     }
 
