@@ -3,8 +3,8 @@ package ASTVisitor.Parser;
 import ASTVisitor.ASTnodes.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-
-
+import java.util.ArrayList;
+import java.util.List;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestTypechecker {
 
     // TYPE DCLS
-
     @Test
     public void testHeltalDclTypecheck() {
 
@@ -105,15 +104,66 @@ public class TestTypechecker {
 
     //TODO FIX DENNE
     @Test
-    public void testBinaryComputingDecimalWithHeltal() {
-        DecimaltalDcl dcl = new DecimaltalDcl(new DecimaltalLiteral("1,5"), "a");
-        HeltalDcl dcl1 = new HeltalDcl(new HeltalLiteral("2"),"b");
-        BinaryComputing bin = new BinaryComputing(">", dcl.getValue(), dcl1.getValue());
-        ProgramNode ast = new ProgramNode(asList(bin));
-        assertDoesNotThrow(() ->
-                ast.accept(new TypeChecker())
-        );
+    public void testBinaryComputing() {
+        DecimaltalDcl dec = new DecimaltalDcl(new DecimaltalLiteral("1,5"), "a");
+        HeltalDcl heltal = new HeltalDcl(new HeltalLiteral("2"), "b");
+        TekstDcl tekst = new TekstDcl(new TekstLiteral("\"hej\""), "c");
+        BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), "d");
+        BinaryComputing bin = null;
+        for (AST.Operators op : AST.Operators.values()) {
+            for (AST.DataTypes type : AST.DataTypes.values()) {
+                if (type == AST.DataTypes.HELTAL) {
+                    bin = new BinaryComputing(op.textual, heltal.getValue(), heltal.getValue());
+                    ProgramNode ast = new ProgramNode(asList(bin));
+                    if (AST.getOperationResultType(op, type) == null) {
+                        assertThrows(Error.class, () ->
+                                ast.accept(new TypeChecker()));
+                    } else {
+                        assertDoesNotThrow(() ->
+                                ast.accept(new TypeChecker())
+                        );
+                    }
+                } else if (type == AST.DataTypes.DECIMALTAL) {
+                    bin = new BinaryComputing(op.textual, dec.getValue(), dec.getValue());
+                    ProgramNode ast = new ProgramNode(asList(bin));
+                    if (AST.getOperationResultType(op, type) == null) {
+                        assertThrows(Error.class, () ->
+                                ast.accept(new TypeChecker()));
+                    } else {
+                        assertDoesNotThrow(() ->
+                                ast.accept(new TypeChecker())
+                        );
+                    }
+                } else if (type == AST.DataTypes.BOOLSK) {
+                    bin = new BinaryComputing(op.textual, bool.getValue(), bool.getValue());
+                    ProgramNode ast = new ProgramNode(asList(bin));
+                    if (AST.getOperationResultType(op, type) == null) {
+                        assertThrows(Error.class, () ->
+                                ast.accept(new TypeChecker()));
+                    } else {
+                        assertDoesNotThrow(() ->
+                                ast.accept(new TypeChecker())
+                        );
+                    }
+                } else if (type == AST.DataTypes.TEKST) {
+                    bin = new BinaryComputing(op.textual, tekst.getValue(), tekst.getValue());
+                    ProgramNode ast = new ProgramNode(asList(bin));
+                    if (AST.getOperationResultType(op, type) == null) {
+                        assertThrows(Error.class, () ->
+                                ast.accept(new TypeChecker()));
+                    } else {
+                        assertDoesNotThrow(() ->
+                                ast.accept(new TypeChecker())
+                        );
+                    }
+                } else if (type == AST.DataTypes.RUTINE) {
+                    //TODO lav case for denne 
+                    System.out.println("FEJL, DER ER INGEN CASE FOR RUTINE!!");
+                }
+            }
+        }
     }
+
 
     @Test
     public void testBinaryComputingHeltalWithHeltal() {
@@ -127,7 +177,29 @@ public class TestTypechecker {
     }
 
     @Test
-    public void testBinaryComputingThrows() {
+    public void testBinaryComputingTekstWithTekstThrows() {
+        TekstDcl dcl = new TekstDcl(new TekstLiteral("\"hej\""), "a");
+        TekstDcl dcl1 = new TekstDcl(new TekstLiteral("\"med dig\""), "b");
+        BinaryComputing bin = new BinaryComputing(">", dcl.getValue(), dcl1.getValue());
+        ProgramNode ast = new ProgramNode(asList(bin));
+        assertThrows(Error.class, () ->
+                ast.accept(new TypeChecker())
+        );
+    }
+
+    @Test
+    public void testBinaryComputingTekstWithTekst() {
+        TekstDcl dcl = new TekstDcl(new TekstLiteral("\"hej\""), "a");
+        TekstDcl dcl1 = new TekstDcl(new TekstLiteral("\"med dig\""), "b");
+        BinaryComputing bin = new BinaryComputing("er", dcl.getValue(), dcl1.getValue());
+        ProgramNode ast = new ProgramNode(asList(bin));
+        assertDoesNotThrow(() ->
+                ast.accept(new TypeChecker())
+        );
+    }
+
+    @Test
+    public void testBinaryComputingBoolskWithBoolskThrows() {
         BoolskDcl dcl = new BoolskDcl(new BoolskLiteral("sandt"), "a");
         HeltalDcl dcl1 = new HeltalDcl(new HeltalLiteral("2"), "b");
         BinaryComputing bin = new BinaryComputing(">", dcl.getValue(), dcl1.getValue());
@@ -137,5 +209,34 @@ public class TestTypechecker {
         );
     }
 
+    @Test
+    public void testBinaryComputingBoolskWithBoolsk() {
+        TekstDcl dcl = new TekstDcl(new TekstLiteral("\"hej\""), "a");
+        TekstDcl dcl1 = new TekstDcl(new TekstLiteral("\"med dig\""), "b");
+        BinaryComputing bin = new BinaryComputing("er", dcl.getValue(), dcl1.getValue());
+        ProgramNode ast = new ProgramNode(asList(bin));
+        assertDoesNotThrow(() ->
+                ast.accept(new TypeChecker())
+        );
+    }
 
+    /*
+    @Test
+    public void testAssignNode() {
+        TekstDcl dcl = new TekstDcl(new TekstLiteral("\"Yoyo\""), "a");
+        TekstDcl dcl1 = new TekstDcl(new TekstLiteral("\"bøf\""), "b");
+        AssignNode ass = new AssignNode(dcl.getId(), dcl1.getValue());
+        ProgramNode ast = new ProgramNode(asList(ass));
+        assertDoesNotThrow(() ->
+            ast.accept(new TypeChecker())
+        );
+    }
+    */
+
+
+    /*
+    @Test
+    public void testAssignNodeThrows() {
+        //TODO
+    }*/
 }
