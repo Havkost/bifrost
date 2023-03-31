@@ -68,7 +68,7 @@ public class Main {
             System.out.println("\n=======================");
             System.out.println("Typechecker");
             System.out.println("=======================");
-            ast.accept(new TypeChecker());
+            //ast.accept(new TypeChecker());
 
         } catch (Throwable e) {
             System.out.println("[FEJL]: " + e);

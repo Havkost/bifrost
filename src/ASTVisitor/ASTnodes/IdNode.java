@@ -30,4 +30,11 @@ public class IdNode extends AST {
 
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "IdNode{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

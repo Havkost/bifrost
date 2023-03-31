@@ -27,15 +27,15 @@ public class CodeScanner {
         if (isQuote(charStream.peek())) return scanString();
 
         // Read whole word
-        String nextWord = getNextWord().toLowerCase();
+        String nextWord = getNextWord();
 
-        if (nextWord.equals("sandt") || nextWord.equals("falsk")) {
-            return new Token(BOOLSK_LIT, nextWord);
+        if (nextWord.toLowerCase().equals("sandt") || nextWord.toLowerCase().equals("falsk")) {
+            return new Token(BOOLSK_LIT, nextWord.toLowerCase());
         }
 
         // Match keywords
-        if(tokenTypeMap.get(nextWord) != null) {
-            return new Token(tokenTypeMap.get(nextWord));
+        if(tokenTypeMap.get(nextWord.toLowerCase()) != null) {
+            return new Token(tokenTypeMap.get(nextWord.toLowerCase()));
         }
 
         // Nextword must be identifier

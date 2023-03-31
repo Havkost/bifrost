@@ -33,4 +33,12 @@ public class UnaryComputing extends AST {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "UnaryComputing{" +
+                "operation='" + operation + '\'' +
+                ", child=" + child.toString() +
+                '}';
+    }
 }

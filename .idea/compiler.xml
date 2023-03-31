@@ -4,5 +4,8 @@
     <excludeFromCompile>
       <directory url="file://$PROJECT_DIR$/src/BentsCompiler" includeSubdirectories="true" />
     </excludeFromCompile>
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+    </annotationProcessing>
   </component>
 </project>
