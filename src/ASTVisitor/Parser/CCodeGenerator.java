@@ -2,6 +2,7 @@ package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
 
+import ASTVisitor.Parser.AST.Operators;
 import java.util.HashMap;
 import java.util.Map;
 import static java.util.Map.entry;
@@ -11,18 +12,18 @@ public class CCodeGenerator extends Visitor {
     int blockIndent = 0;
     private String code = "";
 
-    Map<String, String> operators = new HashMap<>(Map.ofEntries(
-            entry("*","*"),
-            entry("/", "/"),
-            entry("+", "+"),
-            entry("-", "-"),
-            entry("eller", "||"),
-            entry("og", "&&"),
-            entry("<", "<"),
-            entry(">", ">"),
-            entry("er", "=="),
-            entry("ikke er", "!="),
-            entry("ikke", "!")
+    Map<Operators, String> operatorsToC = new HashMap<>(Map.ofEntries(
+            entry(Operators.TIMES,"*"),
+            entry(Operators.DIVISION, "/"),
+            entry(Operators.PLUS, "+"),
+            entry(Operators.MINUS, "-"),
+            entry(Operators.OR, "||"),
+            entry(Operators.AND, "&&"),
+            entry(Operators.LESS_THAN, "<"),
+            entry(Operators.GREATER_THAN, ">"),
+            entry(Operators.EQUALS, "=="),
+            entry(Operators.NOT_EQUALS, "!="),
+            entry(Operators.NOT, "!")
 
     ));
 
@@ -54,7 +55,7 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(BinaryComputing n) {
         n.getChild1().accept(this);
-         emit(" " + operators.get(n.getOperation()) + " ");
+         emit(" " + operatorsToC.get(n.getOperation()) + " ");
         n.getChild2().accept(this);
     }
 

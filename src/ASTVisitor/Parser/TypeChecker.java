@@ -7,12 +7,16 @@ import javax.xml.crypto.Data;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static ASTVisitor.Parser.AST.*;
 
 public class TypeChecker extends Visitor{
 
+
+    // TODO: Bliver ikke brugt, skal den bruges i 2. iteration?
     @Override
     public void visit(ConvertToFloat n) {
         n.getChild().accept(this);
@@ -22,22 +26,21 @@ public class TypeChecker extends Visitor{
     @Override
     public void visit(AssignNode n) {
         n.getValue().accept(this);
-        DataTypes lhsType = AST.getSymbolTable().get(n.getId());
-        DataTypes rhsType = generalize(n.getValue().type, lhsType);
-        n.setValue(convert(n.getValue(), lhsType));
-        n.type = rhsType;
+        if (AST.getSymbolTable().get(n.getId()) != n.getValue().getType()){
+            error("Kan ikke sætte typen: "+ AST.getSymbolTable().get(n.getId()) + " på ID: " + n.getId() + " til at have værdien: " +  n.getValue().getType());
+        }
     }
 
     @Override
     public void visit(BinaryComputing n) {
-        ArrayList<String> booleanOperators = new ArrayList<>(List.of("<", ">", "er", "eller", "og", "ikke er"));
         n.getChild1().accept(this);
         n.getChild2().accept(this);
         DataTypes type = generalize(n.getChild1().type, n.getChild2().type);
         if (type != null) {
-            if (booleanOperators.contains(n.getOperation())) {
-                n.type = DataTypes.BOOLSK;
-            } else n.type = type;
+            DataTypes resultType = getOperationResultType(n.getOperation(), type);
+            if(resultType != null) {
+                n.setType(resultType);
+            } else error("Kan ikke bruge operatoren '" + n.getOperation() + "' på typen " + type);
         } else error("Der opstod en fejl, din computationstype er: " + type);
     }
 
@@ -63,10 +66,16 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(FuncDclNode n) {
+        for(AST ast : n.getBody()) {
+            ast.accept(this);
+        }
     }
 
     @Override
     public void visit(FuncNode n) {
+        if (AST.getSymbolTable().get(n.getId()) != DataTypes.RUTINE){
+            error("Rutine kaldet med navn: " + n.getId() + " er ikke en rutine");
+        }
     }
 
     @Override
@@ -98,7 +107,7 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(PrintNode n) {
-        //n.type = AST.getSymbolTable().get(n.getValue());
+        n.getValue().accept(this);
     }
 
     @Override
@@ -110,16 +119,19 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(SymDeclaring n) {
-
     }
 
+    // TODO Skal slettes!
     @Override
     public void visit(TypeNode n) {
 
     }
+
     @Override
     public void visit(UnaryComputing n) {
-
+        // Refactor if other unary operations are introduced
+        n.getChild().accept(this);
+        if(n.type != DataTypes.BOOLSK) error("Kan kun bruge 'ikke'-operator på boolske værdier.");
     }
 
     @Override
@@ -150,7 +162,7 @@ public class TypeChecker extends Visitor{
     public void visit(BoolskDcl n) {
         n.getValue().accept(this);
         if (n.getValue().type != DataTypes.BOOLSK) {
-            error("Værdien " + n.getValue() + " er af typen: " + n.getValue().type + ", og det skulle have været af typen " + DataTypes.BOOLSK);
+            error("Værdien " + n.getValue().type.toString() + " er ikke af typen " + DataTypes.BOOLSK);
         }
     }
 
@@ -159,16 +171,18 @@ public class TypeChecker extends Visitor{
         n.type = AST.getSymbolTable().get(n.id);
     }
 
+    // TODO: Better name please + include operator in error msg (perhaps move this code back into BinaryComputing?
     private DataTypes generalize (DataTypes type1, DataTypes type2) {
         ArrayList<DataTypes> types = new ArrayList<>(List.of(type1, type2));
         if (type1 == type2) {
             return type1;
         } else if (types.contains(DataTypes.DECIMALTAL) && types.contains(DataTypes.HELTAL)){
             return DataTypes.DECIMALTAL;
-        } else error("Ugyldig operation mellem type " + type1.toString() + " og type " + type2.toString());
+        } else error("Ugyldig operation mellem type " + type1 + " og type " + type2);
         return null;
     }
 
+    // TODO: Bliver ikke brugt, skal den bruges i 2. iteration?
     private AST convert(AST n, DataTypes type) {
         if (n.type == DataTypes.DECIMALTAL && type == DataTypes.HELTAL) {
             error("Ikke muligt at konvertere decimaltal til heltal");

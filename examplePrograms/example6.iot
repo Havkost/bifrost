@@ -1,0 +1,21 @@
+gem tekst "tjek" som TEKSTtest
+gem heltal 30 som HELTALtest
+gem decimaltal 30,0 som DECIMALtest
+gem boolsk sandt som SANDTtest
+gem boolsk falsk som FALSKtest
+
+gem heltal 1 som a
+gem heltal 2 som b
+
+sæt TEKSTtest til "tjek"
+sæt HELTALtest til 30
+sæt DECIMALtest til 30,15
+sæt SANDTtest til sandt
+
+hvis a > b:
+    sæt a til 3
+.
+
+hvis TEKSTtest er b:
+    sæt a til 4
+.
