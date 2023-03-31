@@ -391,7 +391,7 @@ public class ASTParser {
             printAST = new PrintNode(new IdNode(idToken.getVal()));
         } else if (ts.peek() == HELTAL_LIT || ts.peek() == DECIMALTAL_LIT ||
                 ts.peek() == TEKST_LIT || ts.peek() == BOOLSK_LIT) {
-            printAST = value();
+            printAST = new PrintNode(value());
         } else error("Forventede id eller værdi.");
         return printAST;
     }
