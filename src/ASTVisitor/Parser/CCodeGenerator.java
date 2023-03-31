@@ -250,5 +250,9 @@ public class CCodeGenerator extends Visitor {
             emit("    ");
         }
     }
+
+    public String getCode() {
+        return code;
+    }
 }
 

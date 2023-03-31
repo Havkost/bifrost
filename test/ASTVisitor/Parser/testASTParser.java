@@ -141,7 +141,7 @@ public class testASTParser {
                                              """);
         AST neq = new BinaryComputing("ikke", new IdNode("x"), new BoolskLiteral("sandt"));
         AST gt = new BinaryComputing(">", new IdNode("y"), new IdNode("x"));
-        AST og = new BinaryComputing("OG", gt, neq);
+        AST og = new BinaryComputing("og", gt, neq);
 
         AST minus = new BinaryComputing("-", new HeltalLiteral("10"), new HeltalLiteral("5"));
         AST times = new BinaryComputing("*", minus, new HeltalLiteral("2"));
@@ -149,8 +149,8 @@ public class testASTParser {
         AST div = new BinaryComputing("/", plus, new DecimaltalLiteral("2,5"));
         AST lt = new BinaryComputing("<", new IdNode("x"), div);
 
-        AST eller = new BinaryComputing("ELLER", lt, og);
-        AST not = new UnaryComputing("IKKE", eller);
+        AST eller = new BinaryComputing("eller", lt, og);
+        AST not = new UnaryComputing("ikke", eller);
         AST er = new BinaryComputing("er", not, new BoolskLiteral("falsk"));
 
         assertEquals(er, parser.expr());

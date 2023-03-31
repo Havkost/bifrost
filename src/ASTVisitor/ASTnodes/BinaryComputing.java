@@ -13,7 +13,7 @@ public class BinaryComputing extends AST {
         this.child1 = child1;
         this.child2 = child2;
         for(Operators operator : Operators.values()) {
-            if(operator.textual.equals(operation)) {
+            if(operator.textual.equals(operation.toLowerCase())) {
                 this.operation = operator;
                 return;
             }
