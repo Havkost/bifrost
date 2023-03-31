@@ -1,6 +1,8 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
+import ASTVisitor.Exceptions.UnexpectedLineStart;
+import ASTVisitor.Exceptions.UnexpectedTokenException;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.Token;
 import ASTVisitor.Lexer.TokenStream;
@@ -40,7 +42,7 @@ public class ASTParser {
         } else if (ts.peek() == NEWLINE) {
             expect(NEWLINE);
             linesList.addAll(lines());
-        } else error("Forventede gem, rutine, sæt, gentag, kør eller hvis. :(");
+        } else throw new UnexpectedLineStart(ts.peek());
         return linesList;
     }
 
@@ -77,8 +79,7 @@ public class ASTParser {
 
     public ArrayList<AST> stmts() {
         ArrayList<AST> stmtList = new ArrayList<>();
-        if(ts.peek() == GEM || ts.peek() == RUTINE ||
-                ts.peek() == SAET || ts.peek() == GENTAG ||
+        if(ts.peek() == SAET || ts.peek() == GENTAG ||
                 ts.peek() == KOER || ts.peek() == HVIS || ts.peek() == PRINT) {
             AST stmt = stmt();
             ArrayList<AST> stmts = stmts();
@@ -199,9 +200,8 @@ public class ASTParser {
             expect(ER);
             AST relExpr = relExpr();
             AST eqs = equalityExpr2();
-            if(eqs != null){
-                eqExpr = new BinaryComputing(op, relExpr, eqs);
-            } else eqExpr = relExpr;
+            if(eqs != null) eqExpr = new BinaryComputing(op, relExpr, eqs);
+            else eqExpr = relExpr;
         } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG) {
             // produce nothing
         } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance() + " (eq)");
@@ -319,7 +319,7 @@ public class ASTParser {
     }
 
 
-    private AST varDcl(){
+    public AST varDcl(){
         AST dclAst = null;
         if(ts.peek() == TEKST_DCL){
             expect(TEKST_DCL);
@@ -345,7 +345,7 @@ public class ASTParser {
             expect(SOM);
             Token idToken = expect(ID);
             dclAst = new BoolskDcl(value, idToken.getVal());
-        } else error("Forventede type deklaration (tekst, heltal, decimaltal eller boolsk).");
+        } else error("Forventede type deklaration (tekst, heltal, decimaltal eller boolsk). Fik: " + ts.peek());
 
 
         return dclAst;
@@ -376,14 +376,14 @@ public class ASTParser {
         return new FuncDclNode(idToken.getVal(), body);
     }
 
-    private AST func() {
+    public AST func() {
         expect(KOER);
         Token idToken = expect(ID);
 
         return new FuncNode(idToken.getVal());
     }
 
-    private AST print() {
+    public AST print() {
         AST printAST = null;
         expect(PRINT);
         if(ts.peek() == ID) {
@@ -396,7 +396,7 @@ public class ASTParser {
         return printAST;
     }
 
-    private AST repeat() {
+    public AST repeat() {
         expect(GENTAG);
         // func call
         Token funcCall = expect(ID);
@@ -406,13 +406,10 @@ public class ASTParser {
                 new HeltalLiteral(intToken.getVal()));
     }
 
-    private Token expect(TokenType type) {
+    public Token expect(TokenType type) {
         Token token = ts.advance();
         if (token.getType() != type) {
-            throw new Error("Forventede typen " +
-                    type +
-                    " men fik typen " +
-                    token.getType());
+            throw new UnexpectedTokenException(type, token.getType());
         }
         return token;
     }
