@@ -46,7 +46,7 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(BoolskLiteral n) {
-        emit(n.getValue());
+        emit(n.getValue().equals("sandt") ? "true" : "false");
     }
 
     @Override
