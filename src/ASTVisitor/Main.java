@@ -54,6 +54,12 @@ public class Main {
             ast.accept(new SymbolTableFilling());
 
             System.out.println("\n=======================");
+            System.out.println("Typechecker");
+            System.out.println("=======================");
+            ast.accept(new TypeChecker());
+
+
+            System.out.println("\n=======================");
             System.out.println("C code");
             System.out.println("=======================");
             ast.accept(new CCodeGenerator());
@@ -65,10 +71,7 @@ public class Main {
                 System.out.println(entry.getKey() + ":" + entry.getValue());
             }
 
-            System.out.println("\n=======================");
-            System.out.println("Typechecker");
-            System.out.println("=======================");
-            //ast.accept(new TypeChecker());
+
 
         } catch (Throwable e) {
             System.out.println("[FEJL]: " + e);

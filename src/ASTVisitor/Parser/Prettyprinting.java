@@ -8,7 +8,7 @@ public class Prettyprinting extends Visitor {
 	@Override
 	public void visit(BinaryComputing n) {
 		n.getChild1().accept(this);
-		System.out.print(" " + n.getOperation().toLowerCase() + " ");
+		System.out.print(" " + n.getOperation().textual + " ");
 		n.getChild2().accept(this);
 	}
 

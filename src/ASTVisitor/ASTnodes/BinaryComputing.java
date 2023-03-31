@@ -5,17 +5,22 @@ import ASTVisitor.Parser.Visitor;
 
 public class BinaryComputing extends AST {
 
-    private String operation;
+    private Operators operation;
     private AST child1;
     private AST child2;
 
     public BinaryComputing(String operation, AST child1, AST child2) {
-        this.operation = operation;
         this.child1 = child1;
         this.child2 = child2;
+        for(Operators operator : Operators.values()) {
+            if(operator.textual.equals(operation)) {
+                this.operation = operator;
+                return;
+            }
+        }
     }
 
-    public String getOperation() {
+    public Operators getOperation() {
         return operation;
     }
 
@@ -27,7 +32,7 @@ public class BinaryComputing extends AST {
         return child2;
     }
 
-    public void setOperation(String operation) {
+    public void setOperation(Operators operation) {
         this.operation = operation;
     }
 

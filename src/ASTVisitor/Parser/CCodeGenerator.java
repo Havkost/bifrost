@@ -2,6 +2,7 @@ package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
 
+import ASTVisitor.Parser.AST.Operators;
 import java.util.HashMap;
 import java.util.Map;
 import static java.util.Map.entry;
@@ -10,21 +11,6 @@ import static ASTVisitor.Parser.AST.DataTypes.*;
 public class CCodeGenerator extends Visitor {
     int blockIndent = 0;
     private String code = "";
-
-    Map<String, String> operators = new HashMap<>(Map.ofEntries(
-            entry("*","*"),
-            entry("/", "/"),
-            entry("+", "+"),
-            entry("-", "-"),
-            entry("eller", "||"),
-            entry("og", "&&"),
-            entry("<", "<"),
-            entry(">", ">"),
-            entry("er", "=="),
-            entry("ikke er", "!="),
-            entry("ikke", "!")
-
-    ));
 
     Map<AST.DataTypes, String> formatStrings = new HashMap<>(Map.ofEntries(
             entry(HELTAL, "%d"),
@@ -54,7 +40,7 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(BinaryComputing n) {
         n.getChild1().accept(this);
-         emit(" " + operators.get(n.getOperation()) + " ");
+         emit(" " + n.getOperation().Cversion + " ");
         n.getChild2().accept(this);
     }
 
@@ -131,13 +117,12 @@ public class CCodeGenerator extends Visitor {
     }
 
     public void visit(PrintNode n) {
-        // TODO: Vi kan stadig ikke printe forskellige values
         emit("printf(\"");
         if(n.getValue() instanceof IdNode) {
             emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getName())));
             //emit("%d"); // TODO: Use symbol table to look up type when the table has been constructed
         } else {
-            emit(formatStrings.get(n.type));
+           emit(formatStrings.get(n.getValue().type));
         }
         emit("\\n\", ");
 
