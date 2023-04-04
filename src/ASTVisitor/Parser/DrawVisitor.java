@@ -50,6 +50,7 @@ public class DrawVisitor extends Visitor {
     @Override
     public void visit(BinaryComputing n) {
         drawCircle("BinCom");
+        graphics.drawString(n.getOperation().textual, xCoord+23-(n.getOperation().textual.length() * 2), yCoord+30);
         int temp = xCoord;
         incrementY();
         xCoord -= xJump/2;
@@ -64,11 +65,13 @@ public class DrawVisitor extends Visitor {
     @Override
     public void visit(BoolskLiteral n) {
         drawCircle("BoolskLit");
+        graphics.drawString(n.getValue(), xCoord+25-(n.getValue().length() * 3), yCoord+30);
     }
 
     @Override
     public void visit(DecimaltalLiteral n) {
         drawCircle("DecLit");
+        graphics.drawString(n.getValue(), xCoord+23-(n.getValue().length() * 3), yCoord+30);
     }
 
     @Override
@@ -97,11 +100,13 @@ public class DrawVisitor extends Visitor {
     @Override
     public void visit(HeltalLiteral n) {
         drawCircle("HeltalLit");
+        graphics.drawString(n.getValue(), xCoord+23-(n.getValue().length() * 3), yCoord+30);
     }
 
     @Override
     public void visit(IdNode n) {
         drawCircle("IdNode");
+        graphics.drawString(n.getName(), xCoord+23-(n.getName().length() * 3), yCoord+30);
     }
 
     @Override
@@ -132,11 +137,17 @@ public class DrawVisitor extends Visitor {
     @Override
     public void visit(LoopNode n) {
         drawCircle("LoopNode");
+        graphics.drawString(n.getId(), xCoord+23-(n.getId().length() * 3), yCoord+20);
+        graphics.drawString(n.getRepeats().getValue(), xCoord+23-(n.getRepeats().getValue().length() * 2), yCoord+40);
     }
 
     @Override
     public void visit(PrintNode n) {
         drawCircle("PrintNode");
+        incrementY();
+        graphics.drawLine(xCoord+25, yCoord, xCoord+25, yCoord - 50);
+        n.getValue().accept(this);
+        decrementY();
     }
 
     @Override
@@ -169,6 +180,7 @@ public class DrawVisitor extends Visitor {
     @Override
     public void visit(TekstLiteral n) {
         drawCircle("TekstLiteral");
+        graphics.drawString(n.getValue(), xCoord+25, yCoord+30);
     }
 
     @Override
@@ -179,6 +191,7 @@ public class DrawVisitor extends Visitor {
     @Override
     public void visit(UnaryComputing n) {
         drawCircle("UnaryComputing");
+        graphics.drawString(n.getOperation().textual, xCoord+23-(n.getOperation().textual.length() * 3), yCoord+30);
         incrementY();
         graphics.drawLine(xCoord+25, yCoord, xCoord+25, yCoord - 50);
         n.getChild().accept(this);
