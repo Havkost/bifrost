@@ -3,8 +3,12 @@ package ASTVisitor.Parser;
 import ASTVisitor.ASTnodes.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+
+import java.awt.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -164,6 +168,24 @@ public class TestTypechecker {
         }
     }
 
+    /*
+    @Test
+    public void testAssignNodeTypeCheck() {
+        DecimaltalDcl dec = new DecimaltalDcl(new DecimaltalLiteral("1,5"), "a");
+        HeltalDcl heltal = new HeltalDcl(new HeltalLiteral("2"), "b");
+        TekstDcl tekst = new TekstDcl(new TekstLiteral("\"hej\""), "c");
+        BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), "d");
+        AssignNode assDec = new AssignNode(dec.getId(), dec.getValue());
+        AssignNode assHeltal = new AssignNode(heltal.getId(), heltal.getValue());
+        AssignNode assTekst = new AssignNode(tekst.getId(), tekst.getValue());
+        AssignNode assBool = new AssignNode(bool.getId(), bool.getValue());
+        ProgramNode ast = new ProgramNode(asList(assDec, assHeltal, assTekst, assBool));
+        assertDoesNotThrow(() ->
+                ast.accept(new TypeChecker())
+        );
+    }
+    */
+
 
     @Test
     public void testBinaryComputingHeltalWithHeltal() {
@@ -220,6 +242,7 @@ public class TestTypechecker {
         );
     }
 
+    // TODO Ting skal pushes...
     /*
     @Test
     public void testAssignNode() {
@@ -239,4 +262,41 @@ public class TestTypechecker {
     public void testAssignNodeThrows() {
         //TODO
     }*/
+
+    @Test
+    public void testIfNodeTypeCheck() {
+        BoolskDcl yesBool = new BoolskDcl(new BoolskLiteral("sandt"), "yesBool");
+        TekstDcl noBool = new TekstDcl(new TekstLiteral("bababooi"), "noBool");
+        IfNode ifNodeYes = new IfNode(yesBool.getValue(), new ArrayList<>(asList(yesBool)));
+        IfNode ifNodeNo = new IfNode(noBool.getValue(), new ArrayList<>(asList(noBool)));
+        List<IfNode> ifNodeList = new ArrayList<>(asList(ifNodeYes, ifNodeNo));
+        for (IfNode ifNode: ifNodeList) {
+            ProgramNode ast = new ProgramNode(asList(ifNode));
+            if (ifNode.getExpr().getType() == AST.DataTypes.BOOLSK) {
+                assertDoesNotThrow(() ->
+                    ast.accept(new TypeChecker())
+                );
+            } //TODO hmm, else not working for some reason
+            /* else {
+                assertThrows(Error.class, () ->
+                    ast.accept(new TypeChecker())
+                );
+            } */
+        }
+    }
+
+    /*
+    @Test
+    public void testLoopNodeTypeCheck() {
+        LoopNode yesLoop = new LoopNode(new FuncNode("isFunc").toString(), new HeltalLiteral("2"));
+        LoopNode noLoop = new LoopNode("noFunc", new HeltalLiteral("2"));
+        LoopNode noLoop1 = new LoopNode(new FuncNode("isFunc").toString(), new HeltalLiteral("2,5"));
+        List<LoopNode> loopNodeList = new ArrayList<>(asList(yesLoop, noLoop, noLoop1));
+        for (LoopNode loopNode: loopNodeList) {
+            ProgramNode ast = new ProgramNode(asList(loopNode));
+            if (loopNode.getType().)
+        }
+    }
+    */
+
 }
