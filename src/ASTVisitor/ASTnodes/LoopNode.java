@@ -6,9 +6,9 @@ import ASTVisitor.Parser.Visitor;
 public class LoopNode extends AST {
 
     private String id;
-    private HeltalLiteral repeatCount;
+    private AST repeatCount;
 
-    public LoopNode(String id, HeltalLiteral repeatCount) {
+    public LoopNode(String id, AST repeatCount) {
         this.id = id;
         this.repeatCount = repeatCount;
     }
@@ -22,7 +22,7 @@ public class LoopNode extends AST {
         return id;
     }
 
-    public HeltalLiteral getRepeats() {
+    public AST getRepeats() {
         return repeatCount;
     }
 

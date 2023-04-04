@@ -51,13 +51,15 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(FuncDclNode n) {
-		System.out.print("\nrutine " +  n.getId() + ":\n");
+		System.out.print("\nrutine " +  n.getId() + ":");
 		blockIndent++;
 		for (AST stmt : n.getBody()) {
+			System.out.print("\n");
 			indent(blockIndent);
 			stmt.accept(this);
 		}
 		blockIndent--;
+		System.out.print("\n");
 		indent(blockIndent);
 		System.out.print(".");
 	}
@@ -76,21 +78,24 @@ public class Prettyprinting extends Visitor {
 	public void visit(IfNode n) {
 		System.out.print("hvis ");
 		n.getExpr().accept(this);
-		System.out.print(":\n");
+		System.out.print(":");
 		blockIndent++;
 		for (AST child : n.getBody()) {
+			System.out.print("\n");
 			indent(blockIndent);
 			child.accept(this);
 		}
 		blockIndent--;
-		System.out.println();
+		System.out.print("\n");
 		indent(blockIndent);
-		System.out.print(".\n");
+		System.out.print(".");
 	}
 
 	@Override
 	public void visit(LoopNode n) {
-		System.out.print("gentag " + n.getId() + " " + n.getRepeats().getValue() + " gange");
+		System.out.print("gentag " + n.getId() + " ");
+		n.getRepeats().accept(this);
+		System.out.print(" gange");
 	}
 
 	@Override
@@ -138,10 +143,6 @@ public class Prettyprinting extends Visitor {
 		System.out.print("gem boolsk ");
 		n.getValue().accept(this);
 		System.out.print(" som " + n.getId());
-	}
-
-	@Override
-	public void visit(SymReferencing n) {
 	}
 
 	@Override
