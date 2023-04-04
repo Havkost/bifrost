@@ -138,7 +138,11 @@ public class DrawVisitor extends Visitor {
     public void visit(LoopNode n) {
         drawCircle("LoopNode");
         graphics.drawString(n.getId(), xCoord+23-(n.getId().length() * 3), yCoord+20);
-        graphics.drawString(n.getRepeats().getValue(), xCoord+23-(n.getRepeats().getValue().length() * 2), yCoord+40);
+        //graphics.drawString(n.getRepeats().getValue(), xCoord+23-(n.getRepeats().getValue().length() * 2), yCoord+40);
+        incrementY();
+        graphics.drawLine(xCoord+25, yCoord, xCoord+25, yCoord - 50);
+        n.getRepeats().accept(this);
+        decrementY();
     }
 
     @Override
@@ -232,11 +236,6 @@ public class DrawVisitor extends Visitor {
         graphics.drawLine(xCoord+25, yCoord, xCoord+25, yCoord - 50);
         n.getValue().accept(this);
         decrementY();
-    }
-
-    @Override
-    public void visit(SymReferencing n) {
-        drawCircle("SymRef");
     }
 
     @Override

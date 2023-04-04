@@ -73,7 +73,7 @@ public class ASTParser {
         expect(SAET);
         Token idToken = expect(ID);
         expect(TIL);
-        AST value = value();
+        AST value = expr();
         return new AssignNode(idToken.getVal(), value);
     }
 
@@ -119,7 +119,7 @@ public class ASTParser {
     public AST expr() {
         AST expr = null;
         if (ts.peek() == ID || ts.peek() == HELTAL_LIT || ts.peek() == IKKE ||
-                ts.peek() == LPAREN || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT) {
+                ts.peek() == LPAREN || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT || ts.peek() == TEKST_LIT) {
             expr = or_expr();
         } else error("Forventede boolsk udtryk. Fik " + ts.peek());
 
@@ -146,9 +146,7 @@ public class ASTParser {
             AST ors = or_expr2();
             if(ors != null) orExpr = new BinaryComputing(ELLER.name(), andExpr, ors);
             else orExpr = andExpr;
-        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART) {
-            // produce nothing
-        } else error("Forventede udtryk eller kolon. Fandt " + ts.advance());
+        }
         return orExpr;
     }
 
@@ -170,9 +168,7 @@ public class ASTParser {
             AST ands = and_expr2();
             if(ands != null) andExpr = new BinaryComputing(OG.name(), eqExpr, ands);
             else andExpr = eqExpr;
-        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER) {
-            // produce nothing
-        } else error("Forventede eller, udtryk eller kolon. Fandt " + ts.advance());
+        }
         return andExpr;
     }
 
@@ -202,9 +198,7 @@ public class ASTParser {
             AST eqs = equalityExpr2();
             if(eqs != null) eqExpr = new BinaryComputing(op, relExpr, eqs);
             else eqExpr = relExpr;
-        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG) {
-            // produce nothing
-        } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance() + " (eq)");
+        }
         return eqExpr;
     }
 
@@ -229,10 +223,7 @@ public class ASTParser {
             AST rels = equalityExpr2();
             if(rels != null) relExpr = new BinaryComputing(op, sumExpr, rels);
             else relExpr = sumExpr;
-        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG
-                    || ts.peek() == ER || ts.peek() == IKKE) {
-            // produce nothing
-        } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance());
+        }
         return relExpr;
     }
 
@@ -257,10 +248,7 @@ public class ASTParser {
             AST sums = sumExpr2();
             if(sums != null) sumExpr = new BinaryComputing(op, prodExpr, sums);
             else sumExpr = prodExpr;
-        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG
-                    || ts.peek() == ER || ts.peek() == IKKE || ts.peek() == LESSER || ts.peek() == GREATER) {
-            // produce nothing
-        } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance());
+        }
         return sumExpr;
     }
 
@@ -285,11 +273,7 @@ public class ASTParser {
             AST prods = productExpr2();
             if(prods != null) prodExpr = new BinaryComputing(op, notExpr, prods);
             else prodExpr = notExpr;
-        } else if (ts.peek() == RPAREN || ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG
-                || ts.peek() == ER || ts.peek() == IKKE || ts.peek() == LESSER || ts.peek() == GREATER ||
-                ts.peek() == PLUS || ts.peek() == MINUS) {
-            // produce nothing
-        } else error("Forventede og, eller, udtryk eller kolon. Fandt " + ts.advance());
+        }
         return prodExpr;
     }
 
@@ -309,7 +293,7 @@ public class ASTParser {
             expect(LPAREN);
             expr = expr();
             expect(RPAREN);
-        } else if (ts.peek() == HELTAL_LIT || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT) {
+        } else if (ts.peek() == HELTAL_LIT || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT || ts.peek() == TEKST_LIT) {
             expr = value();
         } else if (ts.peek() == ID) {
             expr = new IdNode(expect(ID).getVal());
@@ -318,35 +302,33 @@ public class ASTParser {
         return expr;
     }
 
-
     public AST varDcl(){
         AST dclAst = null;
         if(ts.peek() == TEKST_DCL){
             expect(TEKST_DCL);
-            AST value = value();
+            AST value = expr();
             expect(SOM);
             Token idToken = expect(ID);
             dclAst = new TekstDcl(value, idToken.getVal());
         } else if(ts.peek() == HELTAL_DCL){
             expect(HELTAL_DCL);
-            AST value = value();
+            AST value = expr();
             expect(SOM);
             Token idToken = expect(ID);
             dclAst = new HeltalDcl(value, idToken.getVal());
         } else if(ts.peek() == DECIMALTAL_DCL){
             expect(DECIMALTAL_DCL);
-            AST value = value();
+            AST value = expr();
             expect(SOM);
             Token idToken = expect(ID);
             dclAst = new DecimaltalDcl(value, idToken.getVal());
         } else if (ts.peek() == BOOLSK_DCL) {
             expect(BOOLSK_DCL);
-            AST value = value();
+            AST value = expr();
             expect(SOM);
             Token idToken = expect(ID);
             dclAst = new BoolskDcl(value, idToken.getVal());
         } else error("Forventede type deklaration (tekst, heltal, decimaltal eller boolsk). Fik: " + ts.peek());
-
 
         return dclAst;
     }
@@ -384,26 +366,20 @@ public class ASTParser {
     }
 
     public AST print() {
-        AST printAST = null;
         expect(PRINT);
-        if(ts.peek() == ID) {
-            Token idToken = expect(ID);
-            printAST = new PrintNode(new IdNode(idToken.getVal()));
-        } else if (ts.peek() == HELTAL_LIT || ts.peek() == DECIMALTAL_LIT ||
-                ts.peek() == TEKST_LIT || ts.peek() == BOOLSK_LIT) {
-            printAST = new PrintNode(value());
-        } else error("Forventede id eller værdi.");
-        return printAST;
+        AST value = expr();
+
+        return new PrintNode(value);
     }
 
     public AST repeat() {
         expect(GENTAG);
         // func call
         Token funcCall = expect(ID);
-        Token intToken = expect(HELTAL_LIT);
+        AST repeatCount = expr();
         expect(GANGE);
-        return new LoopNode(funcCall.getVal(),
-                new HeltalLiteral(intToken.getVal()));
+
+        return new LoopNode(funcCall.getVal(), repeatCount);
     }
 
     public Token expect(TokenType type) {

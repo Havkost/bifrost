@@ -168,11 +168,6 @@ public class TypeChecker extends Visitor{
         }
     }
 
-    @Override
-    public void visit(SymReferencing n) {
-        n.type = AST.getSymbolTable().get(n.id);
-    }
-
     // TODO: Better name please + include operator in error msg (perhaps move this code back into BinaryComputing?
     private DataTypes generalize (DataTypes type1, DataTypes type2) {
         ArrayList<DataTypes> types = new ArrayList<>(List.of(type1, type2));

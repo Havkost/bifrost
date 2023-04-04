@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-
 public class Main {
 
     public static void main(String[] args) {
@@ -59,7 +58,6 @@ public class Main {
             System.out.println("=======================");
             ast.accept(new TypeChecker());
 
-
             System.out.println("\n=======================");
             System.out.println("C code");
             System.out.println("=======================");
@@ -72,11 +70,8 @@ public class Main {
                 System.out.println(entry.getKey() + ":" + entry.getValue());
             }
 
-            TreeDrawing panel = new TreeDrawing(ast);
-            panel.draw();
-
-
-
+            //TreeDrawing panel = new TreeDrawing(ast);
+            //panel.draw();
         } catch (Throwable e) {
             System.out.println("[FEJL]: " + e);
             System.out.println("Stack trace:\n");

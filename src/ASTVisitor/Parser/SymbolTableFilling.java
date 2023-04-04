@@ -59,10 +59,6 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    public void visit(SymReferencing n) {
-    }
-
-    @Override
     public void visit(ConvertToFloat n) {
 
     }

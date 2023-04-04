@@ -67,16 +67,17 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(FuncDclNode n) {
 
-        emit("void " + n.getId() + "() {\n");
+        emit("void " + n.getId() + "() {");
         blockIndent++;
         for (AST stmt : n.getBody()) {
+            emit("\n");
             indent(blockIndent);
             stmt.accept(this);
         }
         emit("\n");
         blockIndent--;
         indent(blockIndent);
-        emit("}\n");
+        emit("}");
     }
 
     @Override
@@ -93,21 +94,24 @@ public class CCodeGenerator extends Visitor {
     public void visit(IfNode n) {
         emit("if (" );
         n.getExpr().accept(this);
-        emit( ") {\n");
+        emit( ") {");
         blockIndent++;
         for (AST child : n.getBody()) {
+            emit("\n");
             indent(blockIndent);
             child.accept(this);
         }
         blockIndent--;
         emit("\n");
         indent(blockIndent);
-        emit("}\n");
+        emit("}");
     }
 
     @Override
     public void visit(LoopNode n) {
-        emit("for(int __i = 0; __i < " + n.getRepeats().getValue() + "; __i++) { \n");
+        emit("for(int __i = 0; __i < (");
+        n.getRepeats().accept(this);
+        emit("); __i++) {\n");
         blockIndent++;
         indent(blockIndent);
         emit(n.getId() + "();\n");
@@ -124,10 +128,10 @@ public class CCodeGenerator extends Visitor {
         } else {
            emit(formatStrings.get(n.getValue().type));
         }
-        emit("\\n\", ");
+        emit("\\n\", (");
 
         n.getValue().accept(this);
-        if(n.getValue().type == BOOLSK) emit("?\"Sandt\":\"Falsk\"");
+        if(n.getValue().type == BOOLSK) emit(")? \"Sandt\" : \"Falsk\"");
         emit(");");
     }
 
@@ -235,10 +239,6 @@ public class CCodeGenerator extends Visitor {
          n.getValue().accept(this);;
          emit(";");
         */
-    }
-
-    @Override
-    public void visit(SymReferencing n) {
     }
 
     @Override
