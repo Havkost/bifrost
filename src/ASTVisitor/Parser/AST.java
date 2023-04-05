@@ -99,6 +99,10 @@ public abstract class AST {
         return operationResultType[operator.ordinal()][type.ordinal()];
     }
 
+    public static void clearSymbolTable() {
+        setSymbolTable(new HashMap<String, DataTypes>());
+    }
+
     @Override
     public String toString() {
         return "AST{" +

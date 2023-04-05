@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.CharArrayReader;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,6 +46,14 @@ public class TestCCodeGenerator {
     }
 
     @Test
+    void testExpr3() {
+        UnaryComputing expr = new UnaryComputing("ikke",
+                new BoolskLiteral("falsk"));
+        generator.visit(expr);
+        assertEquals("!false", generator.getCode());
+    }
+
+    @Test
     void testStrings() {
         String str = """
                       gem tekst "Haj" som a
@@ -56,19 +65,23 @@ public class TestCCodeGenerator {
                       print b
                       """;
 
-        CharArrayReader reader = new CharArrayReader(str.toCharArray());
-        CharStream charStream = new CharStream(reader);
+        TekstDcl line1 = new TekstDcl(new TekstLiteral("Haj"), "a");
+        TekstDcl line2 = new TekstDcl(new TekstLiteral("hallo"), "b");
 
-        CodeScanner.initialize(charStream);
+        AssignNode line3 = new AssignNode("a", new TekstLiteral("hej"));
 
-        ASTParser p = new ASTParser(charStream);
+        PrintNode line4 = new PrintNode(new IdNode("a"));
+        PrintNode line5 = new PrintNode(new IdNode("b"));
 
-        AST program = p.prog();
+        ProgramNode prog = new ProgramNode(Arrays.asList(line1, line2, line3, line4, line5));
 
-        program.accept(new SymbolTableFilling());
-        program.accept(new TypeChecker());
+        System.out.println(AST.getSymbolTable());
 
-        program.accept(generator);
+        prog.accept(new SymbolTableFilling());
+        prog.accept(new TypeChecker());
+
+        prog.accept(generator);
+
         assertEquals("""
                     #include <string.h>
                     #include <stdlib.h>
@@ -107,4 +120,42 @@ public class TestCCodeGenerator {
         assertEquals("printf(\"%d\\n\", 3);", generator.getCode());
     }
 
+    @Test
+    void testDcls() {
+        HeltalDcl dcl1 = new HeltalDcl(new HeltalLiteral("3"), "a");
+        TekstDcl dcl2 = new TekstDcl(new TekstLiteral("test"), "b");
+        DecimaltalDcl dcl3 = new DecimaltalDcl(new DecimaltalLiteral("11,5"), "c");
+        BoolskDcl dcl4 = new BoolskDcl(new BoolskLiteral("falsk"), "d");
+
+        ProgramNode prog = new ProgramNode(Arrays.asList(dcl1, dcl2, dcl3, dcl4));
+
+        prog.accept(new SymbolTableFilling());
+        prog.accept(new TypeChecker());
+        generator.visit(prog);
+        assertEquals("""
+                    #include <string.h>
+                    #include <stdlib.h>
+                    #include <stdio.h>
+                                         
+                    int a;
+                    char* b;
+                    double c;
+                    boolean d;
+                                         
+                    int free_memory () {
+                        free(b);
+                    }
+                                         
+                    int main() {
+                        a = 3;
+                        b = malloc(5 * sizeof(char));
+                        strcpy(b, "test");
+                        c = 11.5;
+                       \s
+                        free_memory();
+                        return 0;
+                    }
+                    
+                     """, generator.getCode());
+    }
 }

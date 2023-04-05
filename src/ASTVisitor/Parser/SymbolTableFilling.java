@@ -5,6 +5,10 @@ import static ASTVisitor.Parser.AST.DataTypes.*;
 
 public class SymbolTableFilling extends Visitor {
 
+    public SymbolTableFilling() {
+        AST.clearSymbolTable();
+    }
+
     @Override
     public void visit(ProgramNode n) {
         for(AST ast : n.getChild()){
