@@ -27,7 +27,6 @@ public class DecimaltalLiteral extends AST {
         if (this.value.equals(object.getValue())) {
             return true;
         }
-
         return false;
     }
     public String toString() {

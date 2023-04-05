@@ -32,18 +32,6 @@ public class BinaryComputing extends AST {
         return child2;
     }
 
-    public void setOperation(Operators operation) {
-        this.operation = operation;
-    }
-
-    public void setChild1(AST child1) {
-        this.child1 = child1;
-    }
-
-    public void setChild2(AST child2) {
-        this.child2 = child2;
-    }
-
     public void accept(Visitor v) {v.visit(this);}
 
     @Override

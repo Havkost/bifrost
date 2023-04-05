@@ -15,9 +15,7 @@ public abstract class Visitor {
 	public abstract void visit(LoopNode n);
 	public abstract void visit(PrintNode n);
 	public abstract void visit(ProgramNode n);
-	public abstract void visit(SymDeclaring n);
 	public abstract void visit(TekstLiteral n);
-	public abstract void visit(TypeNode n);
 	public abstract void visit(UnaryComputing n);
 	public abstract void visit(TekstDcl n);
 	public abstract void visit(HeltalDcl n);

@@ -2,7 +2,6 @@ package ASTVisitor.ASTnodes;
 
 import ASTVisitor.Parser.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProgramNode extends AST {
@@ -34,7 +33,6 @@ public class ProgramNode extends AST {
         for (int i = 0; i < this.children.size(); i++) {
             if (!this.children.get(i).equals(object.children.get(i))) return false;
         }
-
         return true;
     }
 }

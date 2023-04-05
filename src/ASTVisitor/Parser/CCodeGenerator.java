@@ -186,17 +186,6 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
-    public void visit(SymDeclaring n) {
-    }
-
-
-
-    @Override
-    public void visit(TypeNode n) {
-        emit(n.getName());
-    }
-
-    @Override
     public void visit(UnaryComputing n) {
         if (n.getOperation().equals(Operators.PAREN)) {
             emit("(");

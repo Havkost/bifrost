@@ -26,7 +26,6 @@ public class FuncNode extends AST {
         if (this.id.equals(object.getId())) {
             return true;
         }
-
         return false;
     }
 }

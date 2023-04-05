@@ -3,7 +3,10 @@ package ASTVisitor.ASTnodes;
 import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
-public class TekstDcl extends SymDeclaring {
+public class TekstDcl extends AST {
+
+    private String id;
+    private AST value;
 
     public TekstDcl(AST value, String id) {
         this.id = id;
@@ -12,6 +15,14 @@ public class TekstDcl extends SymDeclaring {
 
     public void accept(Visitor v) {
         v.visit(this);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public AST getValue() {
+        return value;
     }
 
     @Override

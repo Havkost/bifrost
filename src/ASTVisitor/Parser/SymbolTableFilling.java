@@ -39,10 +39,6 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    public void visit(TypeNode n) {
-    }
-
-    @Override
     public void visit(IdNode n) {
     }
 
@@ -61,10 +57,6 @@ public class SymbolTableFilling extends Visitor {
     @Override
     public void visit(ConvertToFloat n) {
 
-    }
-
-    @Override
-    public void visit(SymDeclaring n) {
     }
 
     @Override

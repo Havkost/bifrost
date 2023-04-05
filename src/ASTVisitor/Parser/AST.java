@@ -72,6 +72,10 @@ public abstract class AST {
         operationResultType[Operators.NOT_EQUALS.ordinal()][DataTypes.BOOLSK.ordinal()] = DataTypes.BOOLSK;
         // Not operations mapped to the datatype result
         operationResultType[Operators.NOT.ordinal()][DataTypes.BOOLSK.ordinal()] = DataTypes.BOOLSK;
+        // Or operations mapped to the datatype result
+        operationResultType[Operators.OR.ordinal()][DataTypes.BOOLSK.ordinal()] = DataTypes.BOOLSK;
+        // And operations mapped to the datatype result
+        operationResultType[Operators.AND.ordinal()][DataTypes.BOOLSK.ordinal()] = DataTypes.BOOLSK;
     }
     public abstract void accept(Visitor v);
 

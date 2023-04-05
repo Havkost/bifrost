@@ -1,0 +1,5 @@
+hvis 3*(5+2)/7 er 3:
+    hvis (sandt er falsk) eller (sandt og falsk) eller (sandt og sandt):
+        print "success"
+    .
+.
