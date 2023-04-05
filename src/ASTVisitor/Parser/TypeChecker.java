@@ -10,6 +10,8 @@ import static ASTVisitor.Parser.AST.*;
 
 public class TypeChecker extends Visitor{
 
+    // TODO: Check at parenteser bliver checket korrekt
+
 
 
     @Override
@@ -112,7 +114,8 @@ public class TypeChecker extends Visitor{
         DataTypes resultType = getOperationResultType(n.getOperation(), n.getChild().type);
         if(resultType != null) {
             n.setType(resultType);
-        } else error("Kan ikke bruge operatoren '" + n.getOperation() + "' på typen " + n.getChild().type);    }
+        } else error("Kan ikke bruge operatoren '" + n.getOperation() + "' på typen " + n.getChild().type);
+    }
 
     @Override
     public void visit(TekstDcl n) {
