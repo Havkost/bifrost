@@ -29,7 +29,7 @@ public class CodeScanner {
         // Read whole word
         String nextWord = getNextWord();
 
-        if (nextWord.toLowerCase().equals("sandt") || nextWord.toLowerCase().equals("falsk")) {
+        if (nextWord.equalsIgnoreCase("sandt") || nextWord.equalsIgnoreCase("falsk")) {
             return new Token(BOOLSK_LIT, nextWord.toLowerCase());
         }
 

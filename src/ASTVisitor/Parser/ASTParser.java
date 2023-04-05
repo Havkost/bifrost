@@ -216,7 +216,7 @@ public class ASTParser {
     public AST relExpr2() {
         AST relExpr = null;
         TokenType opType = ts.peek();
-        if (opType == GREATER || opType == LESSER) {
+        if (opType == GREATER_THAN || opType == LESS_THAN) {
             expect(opType);
             AST sumExpr = sumExpr();
             String op = ts.peek().getName();
@@ -374,7 +374,6 @@ public class ASTParser {
 
     public AST repeat() {
         expect(GENTAG);
-        // func call
         Token funcCall = expect(ID);
         AST repeatCount = expr();
         expect(GANGE);

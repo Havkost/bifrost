@@ -1,13 +1,7 @@
 package ASTVisitor.Lexer;
 
-//import java.io.InputStream;
 import java.io.Reader;
 
-/**
- * Provides peek, EOF, and advance for the chapter 2 scanner
- * @author cytron
- *
- */
 public class CharStream {
 
     private final Reader reader;

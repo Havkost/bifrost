@@ -176,11 +176,11 @@ public class Parser {
     }
 
     public void Rel_expr2() {
-        if (ts.peek() == LESSER) {
-            expect(LESSER);
+        if (ts.peek() == LESS_THAN) {
+            expect(LESS_THAN);
             Sum_expr();
-        } else if (ts.peek() == GREATER) {
-            expect(GREATER);
+        } else if (ts.peek() == GREATER_THAN) {
+            expect(GREATER_THAN);
             Sum_expr();
         } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG
                 || ts.peek() == RPAREN || ts.peek() == ER || ts.peek() == IKKE) {
@@ -203,7 +203,7 @@ public class Parser {
             Product_expr();
             Sum_expr2();
         } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == ER || ts.peek() == IKKE
-                || ts.peek() == LESSER || ts.peek() == GREATER || ts.peek() == RPAREN) {
+                || ts.peek() == LESS_THAN || ts.peek() == GREATER_THAN || ts.peek() == RPAREN) {
             // Do nothing, empty set
         } else error("FORVENTEDE + ELLER -");
     }
@@ -223,7 +223,7 @@ public class Parser {
             Not_expr();
             Product_expr2();
         } else if (ts.peek() == BLOCKSTART || ts.peek() == ELLER || ts.peek() == OG || ts.peek() == ER
-                || ts.peek() == LESSER || ts.peek() == GREATER || ts.peek() == RPAREN
+                || ts.peek() == LESS_THAN || ts.peek() == GREATER_THAN || ts.peek() == RPAREN
                 || ts.peek() == PLUS || ts.peek() == MINUS) {
             // Do nothing (empty set)
         } else error("FORVENTEDE * ELLER /");

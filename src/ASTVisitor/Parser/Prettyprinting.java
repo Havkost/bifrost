@@ -94,7 +94,6 @@ public class Prettyprinting extends Visitor {
 		n.getValue().accept(this);
 	}
 
-
 	@Override
 	public void visit(AssignNode n) {
 		System.out.print("sæt " + n.getId() + " til ");
@@ -133,10 +132,6 @@ public class Prettyprinting extends Visitor {
 		System.out.print("gem boolsk ");
 		n.getValue().accept(this);
 		System.out.print(" som " + n.getId());
-	}
-
-	@Override
-	public void visit(ConvertToFloat n) {
 	}
 
 	public void indent(int indents) {

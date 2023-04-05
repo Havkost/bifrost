@@ -55,11 +55,6 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    public void visit(ConvertToFloat n) {
-
-    }
-
-    @Override
     public void visit(TekstDcl n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),TEKST);
         else error("variable " + n.getId() + " is already declared");
@@ -98,6 +93,7 @@ public class SymbolTableFilling extends Visitor {
     @Override
     public void visit(TekstLiteral n) {
     }
+
     private void error(String message) {
         throw new Error(message);
     }

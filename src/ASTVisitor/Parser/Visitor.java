@@ -21,5 +21,4 @@ public abstract class Visitor {
 	public abstract void visit(HeltalDcl n);
 	public abstract void visit(DecimaltalDcl n);
 	public abstract void visit(BoolskDcl n);
-    public abstract void visit(ConvertToFloat n);
 }
