@@ -24,7 +24,8 @@ public abstract class AST {
         GREATER_THAN(">", ">"),
         EQUALS("er", "=="),
         NOT_EQUALS("ikke er", "!="),
-        NOT("ikke", "!");
+        NOT("ikke", "!"),
+        PAREN("paren", null);
 
         public String textual;
         public String Cversion;

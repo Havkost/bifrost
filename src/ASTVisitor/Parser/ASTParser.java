@@ -291,7 +291,7 @@ public class ASTParser {
         AST expr = null;
         if (ts.peek() == LPAREN) {
             expect(LPAREN);
-            expr = expr();
+            expr = new UnaryComputing("paren", expr());
             expect(RPAREN);
         } else if (ts.peek() == HELTAL_LIT || ts.peek() == DECIMALTAL_LIT || ts.peek() == BOOLSK_LIT || ts.peek() == TEKST_LIT) {
             expr = value();

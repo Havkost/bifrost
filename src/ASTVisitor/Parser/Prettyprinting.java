@@ -113,8 +113,14 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(UnaryComputing n) {
-		System.out.print(n.getOperation().textual + " ");
-		n.getChild().accept(this);
+		if(n.getOperation().equals(AST.Operators.PAREN)) {
+			System.out.print("(");
+			n.getChild().accept(this);
+			System.out.print(")");
+		} else {
+			System.out.print(n.getOperation().textual + " ");
+			n.getChild().accept(this);
+		}
 	}
 
 	@Override

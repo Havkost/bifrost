@@ -195,7 +195,11 @@ public class DrawVisitor extends Visitor {
     @Override
     public void visit(UnaryComputing n) {
         drawCircle("UnaryComputing");
-        graphics.drawString(n.getOperation().textual, xCoord+23-(n.getOperation().textual.length() * 3), yCoord+30);
+        if (n.getOperation().equals(AST.Operators.PAREN)) {
+            graphics.drawString("()", xCoord+23-(n.getOperation().textual.length() * 3), yCoord+30);
+        } else {
+            graphics.drawString(n.getOperation().textual, xCoord+23-(n.getOperation().textual.length() * 3), yCoord+30);
+        }
         incrementY();
         graphics.drawLine(xCoord+25, yCoord, xCoord+25, yCoord - 50);
         n.getChild().accept(this);

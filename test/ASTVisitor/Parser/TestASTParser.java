@@ -17,7 +17,7 @@ import static java.util.Arrays.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class testASTParser {
+public class TestASTParser {
 
     public ASTParser makeASTParser(String str){
         CharArrayReader reader = new CharArrayReader(str.toCharArray());
@@ -135,21 +135,22 @@ public class testASTParser {
 
     @Test
     public void testExpr(){
-        ASTParser parser = makeASTParser("""
-                                             ikke (x < (3 + (10-5) * 2) / 2,5 eller y > x og x ikke er sandt) er falsk:
-                                             """);
+        ASTParser parser = makeASTParser("ikke (x < (3 + (10-5) * 2) / 2,5 eller y > x og x ikke er sandt) er falsk:");
         AST neq = new BinaryComputing("ikke", new IdNode("x"), new BoolskLiteral("sandt"));
         AST gt = new BinaryComputing(">", new IdNode("y"), new IdNode("x"));
         AST og = new BinaryComputing("og", gt, neq);
 
         AST minus = new BinaryComputing("-", new HeltalLiteral("10"), new HeltalLiteral("5"));
-        AST times = new BinaryComputing("*", minus, new HeltalLiteral("2"));
+        AST paren3 = new UnaryComputing("paren", minus);
+        AST times = new BinaryComputing("*", paren3, new HeltalLiteral("2"));
         AST plus = new BinaryComputing("+", new HeltalLiteral("3"), times);
-        AST div = new BinaryComputing("/", plus, new DecimaltalLiteral("2,5"));
+        AST paren2 = new UnaryComputing("paren", plus);
+        AST div = new BinaryComputing("/", paren2, new DecimaltalLiteral("2,5"));
         AST lt = new BinaryComputing("<", new IdNode("x"), div);
 
         AST eller = new BinaryComputing("eller", lt, og);
-        AST not = new UnaryComputing("ikke", eller);
+        AST paren1 = new UnaryComputing("paren", eller);
+        AST not = new UnaryComputing("ikke", paren1);
         AST er = new BinaryComputing("er", not, new BoolskLiteral("falsk"));
 
         assertEquals(er, parser.expr());

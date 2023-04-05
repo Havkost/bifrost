@@ -127,7 +127,7 @@ public class CCodeGenerator extends Visitor {
         } else {
            emit(formatStrings.get(n.getValue().type));
         }
-        emit("\\n\", (");
+        emit("\\n\", ");
 
         n.getValue().accept(this);
         if(n.getValue().type == BOOLSK) emit(")? \"Sandt\" : \"Falsk\"");
@@ -198,8 +198,13 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(UnaryComputing n) {
-        emit("!");
-        //emit(operators.get(n.getOperation()));
+        if (n.getOperation().equals(Operators.PAREN)) {
+            emit("(");
+            n.getChild().accept(this);
+            emit(")");
+            return;
+        }
+        emit(n.getOperation().Cversion);
         n.getChild().accept(this);
     }
 
