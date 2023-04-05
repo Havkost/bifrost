@@ -13,12 +13,6 @@ public class TypeChecker extends Visitor{
     // TODO: Check at parenteser bliver checket korrekt
 
 
-    // TODO: Bliver ikke brugt, skal den bruges i 2. iteration?
-    @Override
-    public void visit(ConvertToFloat n) {
-        n.getChild().accept(this);
-        n.type = DataTypes.DECIMALTAL;
-    }
 
     @Override
     public void visit(AssignNode n) {
@@ -94,7 +88,7 @@ public class TypeChecker extends Visitor{
     @Override
     public void visit(LoopNode n) {
         n.getRepeats().accept(this);
-        if(n.getType() != AST.getSymbolTable().get(n.getType())) {
+        if(AST.getSymbolTable().get(n.getId()) != DataTypes.RUTINE) {
             error("Id'et: " + n.getId() + " er ikke af typen: " + DataTypes.RUTINE);
         }
         if(n.getRepeats().type != DataTypes.HELTAL) {
@@ -113,7 +107,6 @@ public class TypeChecker extends Visitor{
             ast.accept(this);
         }
     }
-
 
     @Override
     public void visit(UnaryComputing n) {
@@ -164,16 +157,6 @@ public class TypeChecker extends Visitor{
             return DataTypes.DECIMALTAL;
         } else error("Ugyldig operation: " + operator + " mellem type " + type1 + " og type " + type2);
         return null;
-    }
-
-    // TODO: Bliver ikke brugt, skal den bruges i 2. iteration?
-    private AST convert(AST n, DataTypes type) {
-        if (n.type == DataTypes.DECIMALTAL && type == DataTypes.HELTAL) {
-            error("Ikke muligt at konvertere decimaltal til heltal");
-        } else if (n.type == DataTypes.HELTAL && type == DataTypes.DECIMALTAL){
-            return new ConvertToFloat(n);
-        }
-        return n;
     }
 
     private void error(String message) {

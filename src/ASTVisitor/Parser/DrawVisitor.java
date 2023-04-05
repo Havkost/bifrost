@@ -229,13 +229,4 @@ public class DrawVisitor extends Visitor {
         n.getValue().accept(this);
         decrementY();
     }
-
-    @Override
-    public void visit(ConvertToFloat n) {
-        drawCircle("ConToFlt");
-        incrementY();
-        graphics.drawLine(xCoord+25, yCoord, xCoord+25, yCoord - 50);
-        n.getChild().accept(this);
-        decrementY();
-    }
 }

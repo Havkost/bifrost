@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public abstract class AST {
+
     public static HashMap<String,DataTypes> SymbolTable = new HashMap<String,DataTypes>();
 
     public enum DataTypes {
@@ -27,8 +28,8 @@ public abstract class AST {
         NOT("ikke", "!"),
         PAREN("paren", null);
 
-        public String textual;
-        public String Cversion;
+        public final String textual;
+        public final String Cversion;
 
         Operators(String textual, String Cversion){
             this.textual = textual;
@@ -78,10 +79,6 @@ public abstract class AST {
         operationResultType[Operators.AND.ordinal()][DataTypes.BOOLSK.ordinal()] = DataTypes.BOOLSK;
     }
     public abstract void accept(Visitor v);
-
-    public static void setSymbolTable(HashMap<String, DataTypes> symbolTable) {
-        SymbolTable = symbolTable;
-    }
 
     public DataTypes getType() {
         return type;

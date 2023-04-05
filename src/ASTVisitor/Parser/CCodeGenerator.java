@@ -2,9 +2,9 @@ package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
 
-import ASTVisitor.Parser.AST.Operators;
 import java.util.HashMap;
 import java.util.Map;
+import static ASTVisitor.Parser.AST.Operators;
 import static java.util.Map.entry;
 import static ASTVisitor.Parser.AST.DataTypes.*;
 
@@ -23,7 +23,7 @@ public class CCodeGenerator extends Visitor {
             entry(HELTAL, "int"),
             entry(DECIMALTAL, "double"),
             entry(TEKST, "char*"),
-            entry(BOOLSK, "boolean")
+            entry(BOOLSK, "bool")
     ));
 
     public void emit(String c){
@@ -123,14 +123,13 @@ public class CCodeGenerator extends Visitor {
         emit("printf(\"");
         if(n.getValue() instanceof IdNode) {
             emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getName())));
-            //emit("%d"); // TODO: Use symbol table to look up type when the table has been constructed
         } else {
            emit(formatStrings.get(n.getValue().type));
         }
         emit("\\n\", ");
 
         n.getValue().accept(this);
-        if(n.getValue().type == BOOLSK) emit(")? \"Sandt\" : \"Falsk\"");
+        if(n.getValue().type == BOOLSK) emit("? \"Sandt\" : \"Falsk\"");
         emit(");");
     }
 
@@ -138,7 +137,9 @@ public class CCodeGenerator extends Visitor {
     public void visit(ProgramNode n) {
         emit("#include <string.h>\n");
         emit("#include <stdlib.h>\n");
-        emit("#include <stdio.h>\n\n");
+        emit("#include <stdio.h>\n");
+        emit("#include <stdbool.h>\n");
+        emit("\n");
 
         AST.getSymbolTable().forEach((id, type) -> {
             if(type == RUTINE) emit("void " + id + "();\n");
@@ -226,16 +227,9 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(BoolskDcl n) {
-        // TODO: It already does this, but how? - Jack
-        /** We assume here, that we are going to use a boolean library
-        emit ("boolean " + n.getId) + " = ");
-         n.getValue().accept(this);;
+        emit (n.getId() + " = ");
+         n.getValue().accept(this);
          emit(";");
-        */
-    }
-
-    @Override
-    public void visit(ConvertToFloat n) {
     }
 
     public void indent(int indents) {
