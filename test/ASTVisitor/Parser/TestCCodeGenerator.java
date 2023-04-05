@@ -86,6 +86,7 @@ public class TestCCodeGenerator {
                     #include <string.h>
                     #include <stdlib.h>
                     #include <stdio.h>
+                    #include <stdbool.h>
                                          
                     char* a;
                     char* b;
@@ -136,11 +137,12 @@ public class TestCCodeGenerator {
                     #include <string.h>
                     #include <stdlib.h>
                     #include <stdio.h>
+                    #include <stdbool.h>
                                          
                     int a;
                     char* b;
                     double c;
-                    boolean d;
+                    bool d;
                                          
                     int free_memory () {
                         free(b);
@@ -151,7 +153,7 @@ public class TestCCodeGenerator {
                         b = malloc(5 * sizeof(char));
                         strcpy(b, "test");
                         c = 11.5;
-                       \s
+                        d = false;
                         free_memory();
                         return 0;
                     }

@@ -92,6 +92,10 @@ public abstract class AST {
         return SymbolTable;
     }
 
+    public static void setSymbolTable(HashMap<String, DataTypes> symbolTable) {
+        SymbolTable = symbolTable;
+    }
+
     public static DataTypes getOperationResultType(Operators operator, DataTypes type) {
         return operationResultType[operator.ordinal()][type.ordinal()];
     }
