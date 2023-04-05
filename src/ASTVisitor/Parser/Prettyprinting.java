@@ -39,16 +39,6 @@ public class Prettyprinting extends Visitor {
 			System.out.println();
 		}
 	}
-
-	@Override
-	public void visit(SymDeclaring n) {
-	}
-
-	@Override
-	public void visit(TypeNode n) {
-
-	}
-
 	@Override
 	public void visit(FuncDclNode n) {
 		System.out.print("\nrutine " +  n.getId() + ":");
@@ -147,7 +137,6 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(ConvertToFloat n) {
-
 	}
 
 	public void indent(int indents) {

@@ -174,23 +174,11 @@ public class DrawVisitor extends Visitor {
     }
 
     @Override
-    public void visit(SymDeclaring n) {
-        drawCircle("SymDeclaring");
-        incrementY();
-        n.getValue().accept(this);
-        decrementY();
-    }
-
-    @Override
     public void visit(TekstLiteral n) {
         drawCircle("TekstLiteral");
         graphics.drawString(n.getValue(), xCoord+25, yCoord+30);
     }
 
-    @Override
-    public void visit(TypeNode n) {
-
-    }
 
     @Override
     public void visit(UnaryComputing n) {

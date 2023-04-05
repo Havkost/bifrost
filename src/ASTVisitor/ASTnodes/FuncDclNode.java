@@ -34,7 +34,6 @@ public class FuncDclNode extends AST {
         if (this.id.equals(object.getId()) && this.body.equals(object.getBody())) {
             return true;
         }
-
         return false;
     }
 }

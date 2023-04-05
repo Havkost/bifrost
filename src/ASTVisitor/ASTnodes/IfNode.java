@@ -3,7 +3,6 @@ package ASTVisitor.ASTnodes;
 import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class IfNode extends AST {
@@ -29,14 +28,6 @@ public class IfNode extends AST {
         return body;
     }
 
-    public void setExpr(AST expr) {
-        this.expr = expr;
-    }
-
-    public void setBody(List<AST> body) {
-        this.body = body;
-    }
-
     @Override
     public String toString() {
         return "IfNode{" +
@@ -52,7 +43,6 @@ public class IfNode extends AST {
         if (this.expr.equals(object.getExpr()) && this.body.equals(object.getBody())) {
             return true;
         }
-
         return false;
     }
 }

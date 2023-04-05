@@ -3,13 +3,8 @@ package ASTVisitor.Parser;
 import ASTVisitor.ASTnodes.*;
 
 
-import javax.xml.crypto.Data;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static ASTVisitor.Parser.AST.*;
 
@@ -35,7 +30,7 @@ public class TypeChecker extends Visitor{
     public void visit(BinaryComputing n) {
         n.getChild1().accept(this);
         n.getChild2().accept(this);
-        DataTypes type = generalize(n.getChild1().type, n.getChild2().type);
+        DataTypes type = findCommonDataType(n.getChild1().type, n.getChild2().type, n.getOperation());
         if (type != null) {
             DataTypes resultType = getOperationResultType(n.getOperation(), type);
             if(resultType != null) {
@@ -117,19 +112,9 @@ public class TypeChecker extends Visitor{
         }
     }
 
-    @Override
-    public void visit(SymDeclaring n) {
-    }
-
-    // TODO Skal slettes!
-    @Override
-    public void visit(TypeNode n) {
-
-    }
 
     @Override
     public void visit(UnaryComputing n) {
-        // Refactor if other unary operations are introduced
         n.getChild().accept(this);
         DataTypes resultType = getOperationResultType(n.getOperation(), n.getChild().type);
         if(resultType != null) {
@@ -168,14 +153,13 @@ public class TypeChecker extends Visitor{
         }
     }
 
-    // TODO: Better name please + include operator in error msg (perhaps move this code back into BinaryComputing?
-    private DataTypes generalize (DataTypes type1, DataTypes type2) {
+    private DataTypes findCommonDataType(DataTypes type1, DataTypes type2, Operators operator) {
         ArrayList<DataTypes> types = new ArrayList<>(List.of(type1, type2));
         if (type1 == type2) {
             return type1;
         } else if (types.contains(DataTypes.DECIMALTAL) && types.contains(DataTypes.HELTAL)){
             return DataTypes.DECIMALTAL;
-        } else error("Ugyldig operation mellem type " + type1 + " og type " + type2);
+        } else error("Ugyldig operation: " + operator + " mellem type " + type1 + " og type " + type2);
         return null;
     }
 
