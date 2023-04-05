@@ -2,8 +2,7 @@ package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
 import ASTVisitor.ASTnodes.ProgramNode;
-import ASTVisitor.Exceptions.UnexpectedLineStart;
-import ASTVisitor.Exceptions.UnexpectedTokenException;
+import ASTVisitor.Exceptions.*;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.CodeScanner;
 import ASTVisitor.Lexer.Token;
@@ -163,31 +162,31 @@ public class testASTParser {
     }
 
     @Test
-    public void testOr_Expr2Illegal(){
+    public void testOr_ExprIllegal(){
         ASTParser parser = makeASTParser("""
                                              x er 3 eller < y
                                              """);
-        assertThrows(Error.class, parser::or_expr2);
+        assertThrows(Error.class, parser::or_expr);
     }
 
     @Test
-    public void testAnd_Expr2Illegal(){
+    public void testAnd_ExprIllegal(){
         ASTParser parser = makeASTParser("""
                                              x er 3 og < y
                                              """);
-        assertThrows(Error.class, parser::and_expr2);
+        assertThrows(Error.class, parser::and_expr);
     }
 
     @Test
-    public void testEquality_Expr2Illegal(){
+    public void testEquality_ExprIllegal(){
         ASTParser parser = makeASTParser("""
                                              x er
                                              """);
-        assertThrows(Error.class, parser::equalityExpr2);
+        assertThrows(Error.class, parser::equalityExpr);
     }
 
     @Test
-    public void testEquality_Expr2(){
+    public void testEquality_Expr(){
         ASTParser parser = makeASTParser("""
                                              x ikke er 2:
                                              """);
@@ -195,27 +194,27 @@ public class testASTParser {
     }
 
     @Test
-    public void testRel_Expr2Illegal(){
+    public void testRel_ExprIllegal(){
         ASTParser parser = makeASTParser("""
                                              s <
                                              """);
-        assertThrows(Error.class, parser::relExpr2);
+        assertThrows(Error.class, parser::relExpr);
     }
 
     @Test
-    public void testSum_Expr2Illegal(){
+    public void testSum_ExprIllegal(){
         ASTParser parser = makeASTParser("""
                                              3 +
                                              """);
-        assertThrows(Error.class, parser::sumExpr2);
+        assertThrows(Error.class, parser::sumExpr);
     }
 
     @Test
-    public void testProduct_Expr2Illegal(){
+    public void testProduct_ExprIllegal(){
         ASTParser parser = makeASTParser("""
                                              3 * 
                                              """);
-        assertThrows(Error.class, parser::productExpr2);
+        assertThrows(Error.class, parser::productExpr);
     }
 
     @Test
@@ -272,9 +271,11 @@ public class testASTParser {
     }
 
     @Test
-    public void testVarDclBoolIllegal() {
-        ASTParser parser = makeASTParser("boolsk nej som test");
-        assertThrows(UnexpectedTokenException.class, parser::varDcl);
+    public void testVarDclBool2() {
+        ASTParser parser = makeASTParser("boolsk 3 er 2 som val");
+        AST dcl = new BoolskDcl(new BinaryComputing("er", new HeltalLiteral("3"),
+                    new HeltalLiteral("2")), "val");
+        assertEquals(dcl, parser.varDcl());
     }
 
     @Test

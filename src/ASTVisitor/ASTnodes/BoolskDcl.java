@@ -24,4 +24,12 @@ public class BoolskDcl extends SymDeclaring {
 
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "BoolskDcl{" +
+                "id='" + id + '\'' +
+                ", value=" + value +
+                '}';
+    }
 }

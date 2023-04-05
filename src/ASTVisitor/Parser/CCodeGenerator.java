@@ -66,7 +66,6 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(FuncDclNode n) {
-
         emit("void " + n.getId() + "() {");
         blockIndent++;
         for (AST stmt : n.getBody()) {

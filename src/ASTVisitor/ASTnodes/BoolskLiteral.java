@@ -32,6 +32,7 @@ public class BoolskLiteral extends AST {
     }
 
     public String toString() {
-        return value;
+        return "BoolskLiteral{" +
+                "value=" + this.value + "}";
     }
 }
