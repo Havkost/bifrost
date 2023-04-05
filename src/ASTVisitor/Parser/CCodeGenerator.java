@@ -4,6 +4,7 @@ import ASTVisitor.ASTnodes.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import static ASTVisitor.Parser.AST.Operators;
 import static java.util.Map.entry;
 import static ASTVisitor.Parser.AST.DataTypes.*;
 
@@ -128,7 +129,7 @@ public class CCodeGenerator extends Visitor {
         emit("\\n\", ");
 
         n.getValue().accept(this);
-        if(n.getValue().type == BOOLSK) emit(")? \"Sandt\" : \"Falsk\"");
+        if(n.getValue().type == BOOLSK) emit("? \"Sandt\" : \"Falsk\"");
         emit(");");
     }
 
@@ -227,7 +228,7 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(BoolskDcl n) {
         emit (n.getId() + " = ");
-         n.getValue().accept(this);;
+         n.getValue().accept(this);
          emit(";");
     }
 
