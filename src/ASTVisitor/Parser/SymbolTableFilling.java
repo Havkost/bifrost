@@ -36,66 +36,83 @@ public class SymbolTableFilling extends Visitor {
     public void visit(FuncDclNode n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(), RUTINE);
         else error("variable " + n.getId() + " is already declared");
+        for (AST child : n.getBody()) {
+            child.accept(this);
+        }
     }
 
     @Override
     public void visit(FuncNode n) {
+
     }
 
     @Override
     public void visit(IdNode n) {
+
     }
 
     @Override
     public void visit(IfNode n) {
+        n.getExpr().accept(this);
+        if (n.getBody() != null) {
+            for (AST child : n.getBody()) {
+                child.accept(this);
+            }
+        }
     }
 
     @Override
-    public void visit(LoopNode n) {
-    }
+    public void visit(LoopNode n) {}
 
     @Override
-    public void visit(PrintNode n) {
-    }
+    public void visit(PrintNode n) {}
 
     @Override
     public void visit(TekstDcl n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),TEKST);
         else error("variable " + n.getId() + " is already declared");
+        n.getValue().accept(this);
     }
 
     @Override
     public void visit(HeltalDcl n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),HELTAL);
         else error("variable " + n.getId() + " is already declared");
+        n.getValue().accept(this);
     }
 
     @Override
     public void visit(DecimaltalDcl n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),DECIMALTAL);
         else error("variable " + n.getId() + " is already declared");
+        n.getValue().accept(this);
     }
 
     @Override
     public void visit(BoolskDcl n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),BOOLSK);
         else error("variable " + n.getId() + " is already declared");
+        n.getValue().accept(this);
     }
 
     @Override
     public void visit(DecimaltalLiteral n) {
+
     }
 
     @Override
     public void visit(BoolskLiteral n) {
+
     }
 
     @Override
     public void visit(HeltalLiteral n) {
+
     }
 
     @Override
     public void visit(TekstLiteral n) {
+
     }
 
     private void error(String message) {
