@@ -1,7 +1,6 @@
-package ASTVisitor;
+package ASTVisitor.ASTDrawing;
 
 import ASTVisitor.Parser.AST;
-import ASTVisitor.Parser.DrawVisitor;
 
 import javax.swing.*;
 import java.awt.*;

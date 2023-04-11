@@ -1,8 +1,6 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +9,6 @@ import static ASTVisitor.Parser.AST.*;
 public class TypeChecker extends Visitor{
 
     // TODO: Check at parenteser bliver checket korrekt
-
-
-
     @Override
     public void visit(AssignNode n) {
         n.getValue().accept(this);
