@@ -383,9 +383,8 @@ public class ASTParser {
 
     public Token expect(TokenType type) {
         Token token = ts.advance();
-        if (token.getType() != type) {
+        if (token.getType() != type)
             throw new UnexpectedTokenException(type, token.getType());
-        }
         return token;
     }
 
@@ -393,4 +392,3 @@ public class ASTParser {
         throw new Error(message);
     }
 }
-
