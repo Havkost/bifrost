@@ -193,8 +193,9 @@ public class TestTypechecker {
         );
     }
 
+    @Test
     public void testAssignNodeTypeCheckHeltalThrows() {
-        DecimaltalLiteral dec = new DecimaltalLiteral("1");
+        DecimaltalLiteral dec = new DecimaltalLiteral("1,2");
         HeltalDcl helDcl = new HeltalDcl(new HeltalLiteral("4"), "a");
 
         AssignNode assDec = new AssignNode(helDcl.getId(), dec);
@@ -317,66 +318,121 @@ public class TestTypechecker {
         );
     }
 
-    // TODO Ting skal pushes...
-    /*
     @Test
-    public void testAssignNode() {
-        TekstDcl dcl = new TekstDcl(new TekstLiteral("\"Yoyo\""), "a");
-        TekstDcl dcl1 = new TekstDcl(new TekstLiteral("\"bøf\""), "b");
-        AssignNode ass = new AssignNode(dcl.getId(), dcl1.getValue());
-        ProgramNode ast = new ProgramNode(asList(ass));
+    public void testIfNodeTypeCheck() {
+        BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), "yesBool");
+        IfNode ifNode = new IfNode(bool.getValue(), new ArrayList<>(asList(bool)));
+        ProgramNode ast = new ProgramNode(asList(ifNode));
         assertDoesNotThrow(() ->
             ast.accept(new TypeChecker())
         );
     }
-    */
 
-
-    /*
-    @Test
-    public void testAssignNodeThrows() {
-        //TODO
-    }*/
 
     @Test
-    public void testIfNodeTypeCheck() {
-        BoolskDcl yesBool = new BoolskDcl(new BoolskLiteral("sandt"), "yesBool");
-        TekstDcl noBool = new TekstDcl(new TekstLiteral("bababooi"), "noBool");
-        IfNode ifNodeYes = new IfNode(yesBool.getValue(), new ArrayList<>(asList(yesBool)));
-        IfNode ifNodeNo = new IfNode(noBool.getValue(), new ArrayList<>(asList(noBool)));
-        List<IfNode> ifNodeList = new ArrayList<>(asList(ifNodeYes, ifNodeNo));
-        for (IfNode ifNode: ifNodeList) {
-            ProgramNode ast = new ProgramNode(asList(ifNode));
-            if (ifNode.getExpr().getType() == AST.DataTypes.BOOLSK) {
-
-                assertDoesNotThrow(() ->
-                    ast.accept(new TypeChecker())
-                );
-            } /*else {
-                assertThrows(Error.class, () ->
-                    ast.accept(new TypeChecker())
-                );
-            } */
-        }
+    public void testIfNodeTypeCheckThrows() {
+        TekstDcl tekst = new TekstDcl(new TekstLiteral("\"bob\""), "noBool");
+        IfNode ifNode = new IfNode(tekst.getValue(), new ArrayList<>(asList(tekst)));
+        ProgramNode ast = new ProgramNode(asList(ifNode));
+        assertThrows(Error.class, () ->
+                ast.accept(new TypeChecker())
+        );
     }
 
-    /*
+
     @Test
     public void testLoopNodeTypeCheck() {
-        //FuncDclNode func = new FuncDclNode("isFunc", new ArrayList<>(asList()));
-        FuncNode func = new FuncNode("isFunc");
-        LoopNode yesLoop = new LoopNode(func.getId(), new HeltalLiteral("2"));
-        LoopNode noLoop = new LoopNode("noFunc", new HeltalLiteral("2"));
-        LoopNode noLoop1 = new LoopNode(func.getId(), new HeltalLiteral("2,5"));
-        List<LoopNode> loopNodeList = new ArrayList<>(asList(yesLoop, noLoop, noLoop1));
-        for (LoopNode loopNode: loopNodeList) {
-            ProgramNode ast = new ProgramNode(asList(loopNode));
-            System.out.println(loopNode.getId().getClass().getSuperclass().isInstance(FuncNode.class));
-            if (loopNode.getId().getClass().getSuperclass().isInstance(FuncNode.class)) {
-                System.out.println("AAAAAAAAAAAAAAAAAAAAAAH");
+        FuncDclNode func = new FuncDclNode("hej", new ArrayList<>());
+        LoopNode loop = new LoopNode(func.getId(), new HeltalLiteral("2"));
+        ProgramNode ast = new ProgramNode(asList(loop, func));
+        ast.accept(new SymbolTableFilling());
+        assertDoesNotThrow(() ->
+                ast.accept(new TypeChecker())
+        );
+    }
+
+    @Test
+    public void testLoopNodeTypeCheckRepeatsThrows() {
+        FuncDclNode func = new FuncDclNode("hej", new ArrayList<>());
+        LoopNode loop = new LoopNode(func.getId(), new DecimaltalLiteral("2,5"));
+        ProgramNode ast = new ProgramNode(asList(loop, func));
+        ast.accept(new SymbolTableFilling());
+        assertThrows(Error.class, () ->
+                ast.accept(new TypeChecker())
+        );
+    }
+
+    @Test
+    public void testLoopNodeTypeCheckRutineThrows() {
+        TekstDcl tekst = new TekstDcl(new TekstLiteral("babooi"), "bla");
+        LoopNode loop = new LoopNode(tekst.getId(), new HeltalLiteral("2"));
+        ProgramNode ast = new ProgramNode(asList(loop, tekst));
+        ast.accept(new SymbolTableFilling());
+        assertThrows(Error.class, () ->
+                ast.accept(new TypeChecker())
+        );
+    }
+
+    @Test
+    public void testUnaryComputing() {
+        DecimaltalDcl dec = new DecimaltalDcl(new DecimaltalLiteral("1,5"), "a");
+        HeltalDcl heltal = new HeltalDcl(new HeltalLiteral("2"), "b");
+        TekstDcl tekst = new TekstDcl(new TekstLiteral("\"hej\""), "c");
+        BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), "d");
+        UnaryComputing una = null;
+        for (AST.Operators op : AST.Operators.values()) {
+            for (AST.DataTypes type : AST.DataTypes.values()) {
+                if (type == AST.DataTypes.HELTAL) {
+                    una = new UnaryComputing(op.textual, heltal.getValue());
+                    ProgramNode ast = new ProgramNode(asList(una));
+                    if (AST.getOperationResultType(op, type) == null) {
+                        assertThrows(Error.class, () ->
+                                ast.accept(new TypeChecker()));
+                    } else {
+                        assertDoesNotThrow(() ->
+                                ast.accept(new TypeChecker())
+                        );
+                    }
+                } else if (type == AST.DataTypes.DECIMALTAL) {
+                    una = new UnaryComputing(op.textual, dec.getValue());
+                    ProgramNode ast = new ProgramNode(asList(una));
+                    if (AST.getOperationResultType(op, type) == null) {
+                        assertThrows(Error.class, () ->
+                                ast.accept(new TypeChecker()));
+                    } else {
+                        assertDoesNotThrow(() ->
+                                ast.accept(new TypeChecker())
+                        );
+                    }
+                } else if (type == AST.DataTypes.BOOLSK) {
+                    una = new UnaryComputing(op.textual, bool.getValue());
+                    ProgramNode ast = new ProgramNode(asList(una));
+                    if (AST.getOperationResultType(op, type) == null) {
+                        assertThrows(Error.class, () ->
+                                ast.accept(new TypeChecker()));
+                    } else {
+                        assertDoesNotThrow(() ->
+                                ast.accept(new TypeChecker())
+                        );
+                    }
+                } else if (type == AST.DataTypes.TEKST) {
+                    una = new UnaryComputing(op.textual, tekst.getValue());
+                    ProgramNode ast = new ProgramNode(asList(una));
+                    if (AST.getOperationResultType(op, type) == null) {
+                        assertThrows(Error.class, () ->
+                                ast.accept(new TypeChecker()));
+                    } else {
+                        assertDoesNotThrow(() ->
+                                ast.accept(new TypeChecker())
+                        );
+                    }
+                } else if (type == AST.DataTypes.RUTINE) {
+                    //TODO lav case for denne, når det er implementeret
+                    System.out.println("FEJL, DER ER INGEN CASE FOR RUTINE!!");
+                }
             }
         }
     }
-    */
+
 
 }
