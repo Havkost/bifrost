@@ -28,13 +28,12 @@ public class TestTypechecker {
 
     @Test
     public void testHeltalDclTypecheckThrows() {
-
         HeltalDcl dcl1 = new HeltalDcl(new DecimaltalLiteral("4,2"), "b");
         HeltalDcl dcl2 = new HeltalDcl(new TekstLiteral("\"hej\""), "c");
         HeltalDcl dcl3 = new HeltalDcl(new BoolskLiteral("sandt"), "d");
-        ProgramNode ast1 = new ProgramNode(asList(dcl1, dcl2, dcl3));
+        ProgramNode ast = new ProgramNode(asList(dcl1, dcl2, dcl3));
         assertThrows(Error.class, () ->
-                ast1.accept(new TypeChecker())
+                ast.accept(new TypeChecker())
         );
     }
 
@@ -272,12 +271,13 @@ public class TestTypechecker {
         List<IfNode> ifNodeList = new ArrayList<>(asList(ifNodeYes, ifNodeNo));
         for (IfNode ifNode: ifNodeList) {
             ProgramNode ast = new ProgramNode(asList(ifNode));
+            System.out.println(ifNode.getExpr().getClass().isInstance(BoolskDcl.class));
             if (ifNode.getExpr().getType() == AST.DataTypes.BOOLSK) {
+
                 assertDoesNotThrow(() ->
                     ast.accept(new TypeChecker())
                 );
-            } //TODO hmm, else not working for some reason
-            /* else {
+            } /*else {
                 assertThrows(Error.class, () ->
                     ast.accept(new TypeChecker())
                 );
@@ -288,13 +288,18 @@ public class TestTypechecker {
     /*
     @Test
     public void testLoopNodeTypeCheck() {
-        LoopNode yesLoop = new LoopNode(new FuncNode("isFunc").toString(), new HeltalLiteral("2"));
+        //FuncDclNode func = new FuncDclNode("isFunc", new ArrayList<>(asList()));
+        FuncNode func = new FuncNode("isFunc");
+        LoopNode yesLoop = new LoopNode(func.getId(), new HeltalLiteral("2"));
         LoopNode noLoop = new LoopNode("noFunc", new HeltalLiteral("2"));
-        LoopNode noLoop1 = new LoopNode(new FuncNode("isFunc").toString(), new HeltalLiteral("2,5"));
+        LoopNode noLoop1 = new LoopNode(func.getId(), new HeltalLiteral("2,5"));
         List<LoopNode> loopNodeList = new ArrayList<>(asList(yesLoop, noLoop, noLoop1));
         for (LoopNode loopNode: loopNodeList) {
             ProgramNode ast = new ProgramNode(asList(loopNode));
-            if (loopNode.getType().)
+            System.out.println(loopNode.getId().getClass().getSuperclass().isInstance(FuncNode.class));
+            if (loopNode.getId().getClass().getSuperclass().isInstance(FuncNode.class)) {
+                System.out.println("AAAAAAAAAAAAAAAAAAAAAAH");
+            }
         }
     }
     */
