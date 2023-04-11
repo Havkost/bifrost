@@ -1,6 +1,8 @@
-package ASTVisitor.Parser;
+package ASTVisitor.ASTDrawing;
 
 import ASTVisitor.ASTnodes.*;
+import ASTVisitor.Parser.AST;
+import ASTVisitor.Parser.Visitor;
 
 import java.awt.*;
 
@@ -16,7 +18,7 @@ public class DrawVisitor extends Visitor {
     private final int height;
     public DrawVisitor(Graphics graphics) {
         this.graphics = graphics;
-        graphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        this.graphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         xCoord = graphics.getClipBounds().width / 2 - 25;
         yCoord = 50;
         width = graphics.getClipBounds().width;
