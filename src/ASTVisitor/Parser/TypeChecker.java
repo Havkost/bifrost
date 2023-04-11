@@ -59,7 +59,7 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(FuncNode n) {
-        if (AST.getSymbolTable().get(n.getId()) != DataTypes.RUTINE){
+        if (AST.getSymbolTable().get(n.getId()) != DataTypes.RUTINE) {
             error("Rutine kaldet med navn: " + n.getId() + " er ikke en rutine");
         }
     }
@@ -85,8 +85,7 @@ public class TypeChecker extends Visitor{
         n.getRepeats().accept(this);
         if(AST.getSymbolTable().get(n.getId()) != DataTypes.RUTINE) {
             error("Id'et: " + n.getId() + " er ikke af typen: " + DataTypes.RUTINE);
-        }
-        if(n.getRepeats().type != DataTypes.HELTAL) {
+        } else if(n.getRepeats().type != DataTypes.HELTAL) {
             error("Værdien: " + n.getRepeats() + " er ikke af typen: " + DataTypes.HELTAL);
         }
     }
