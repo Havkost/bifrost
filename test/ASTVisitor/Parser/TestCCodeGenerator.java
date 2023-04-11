@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.CharArrayReader;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,18 +16,19 @@ public class TestCCodeGenerator {
 
     CCodeGenerator generator;
     @BeforeEach
-    void beforeEach() {
+    public void beforeEach() {
+        AST.clearSymbolTable();
         generator = new CCodeGenerator();
     }
     @Test
-    void testEmit() {
+    public void testEmit() {
         generator.emit("Test text");
         generator.emit(" added.");
         assertEquals("Test text added.", generator.getCode());
     }
 
     @Test
-    void testExpr1() {
+    public void testExpr1() {
         BinaryComputing expr = new BinaryComputing("er",
                 new BinaryComputing("+", new HeltalLiteral("5"),
                         new DecimaltalLiteral("4,3")),
@@ -37,7 +39,7 @@ public class TestCCodeGenerator {
     }
 
     @Test
-    void testExpr2() {
+    public void testExpr2() {
         UnaryComputing expr = new UnaryComputing("paren",
                 new BinaryComputing("+", new HeltalLiteral("5"),
                         new DecimaltalLiteral("4,3")));
@@ -46,7 +48,7 @@ public class TestCCodeGenerator {
     }
 
     @Test
-    void testExpr3() {
+    public void testExpr3() {
         UnaryComputing expr = new UnaryComputing("ikke",
                 new BoolskLiteral("falsk"));
         generator.visit(expr);
@@ -54,7 +56,7 @@ public class TestCCodeGenerator {
     }
 
     @Test
-    void testStrings() {
+    public void testStrings() {
         String str = """
                       gem tekst "Haj" som a
                       gem tekst "hallo" som b
@@ -112,7 +114,7 @@ public class TestCCodeGenerator {
     }
 
     @Test
-    void testPrint() {
+    public void testPrint() {
         PrintNode print = new PrintNode(new HeltalLiteral("3"));
         print.accept(new SymbolTableFilling());
         print.accept(new TypeChecker());
@@ -122,7 +124,7 @@ public class TestCCodeGenerator {
     }
 
     @Test
-    void testDcls() {
+    public void testDcls() {
         HeltalDcl dcl1 = new HeltalDcl(new HeltalLiteral("3"), "a");
         TekstDcl dcl2 = new TekstDcl(new TekstLiteral("test"), "b");
         DecimaltalDcl dcl3 = new DecimaltalDcl(new DecimaltalLiteral("11,5"), "c");
@@ -159,5 +161,34 @@ public class TestCCodeGenerator {
                     }
                     
                      """, generator.getCode());
+    }
+
+    @Test
+    public void testIfNode() {
+        IfNode ifNode = new IfNode(new BinaryComputing("er",
+                            new HeltalLiteral("3"), new HeltalLiteral("3")),
+                            List.of(new FuncNode("test")));
+        ifNode.accept(generator);
+
+        assertEquals("""
+                    if (3 == 3) {
+                        test();
+                    }""", generator.getCode());
+    }
+
+    @Test
+    public void testFuncDcl() {
+        FuncDclNode funcDclNode = new FuncDclNode("test", List.of(
+                new IfNode(new BinaryComputing("ikke er", new IdNode("a"),
+                        new HeltalLiteral("3")),
+                    List.of(new AssignNode("a", new HeltalLiteral("5"))))));
+        funcDclNode.accept(generator);
+
+        assertEquals("""
+                void test() {
+                    if (a != 3) {
+                        a = 5;
+                    }
+                }""", generator.getCode());
     }
 }
