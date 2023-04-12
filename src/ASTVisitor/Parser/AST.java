@@ -104,10 +104,4 @@ public abstract class AST {
         setSymbolTable(new HashMap<String, DataTypes>());
     }
 
-    @Override
-    public String toString() {
-        return "AST{" +
-                "type=" + type +
-                '}';
-    }
 }

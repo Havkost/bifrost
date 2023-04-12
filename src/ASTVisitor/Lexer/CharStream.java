@@ -44,4 +44,8 @@ public class CharStream {
         }
         return ans;
     }
+
+    public Reader getReader() {
+        return reader;
+    }
 }

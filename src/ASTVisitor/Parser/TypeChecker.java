@@ -143,17 +143,16 @@ public class TypeChecker extends Visitor{
         }
     }
 
-    private DataTypes findCommonDataType(DataTypes type1, DataTypes type2, Operators operator) {
+    public DataTypes findCommonDataType(DataTypes type1, DataTypes type2, Operators operator) {
         ArrayList<DataTypes> types = new ArrayList<>(List.of(type1, type2));
         if (type1 == type2) {
             return type1;
         } else if (types.contains(DataTypes.DECIMALTAL) && types.contains(DataTypes.HELTAL)){
             return DataTypes.DECIMALTAL;
-        } else error("Ugyldig operation: " + operator + " mellem type " + type1 + " og type " + type2);
-        return null;
+        } else throw new Error("Ugyldig operation: " + operator + " mellem type " + type1 + " og type " + type2);
     }
 
-    private void error(String message) {
+    public void error(String message) {
         throw new Error(message);
     }
 }

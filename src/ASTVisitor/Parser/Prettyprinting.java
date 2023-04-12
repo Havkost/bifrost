@@ -5,144 +5,161 @@ import ASTVisitor.ASTnodes.*;
 public class Prettyprinting extends Visitor {
 
 	private int blockIndent = 0;
+	private String code = "";
+	private final boolean print;
+
+	public Prettyprinting(boolean print) {
+		this.print = print;
+	}
+
 	@Override
 	public void visit(BinaryComputing n) {
 		n.getChild1().accept(this);
-		System.out.print(" " + n.getOperation().textual + " ");
+		emit(" " + n.getOperation().textual + " ");
 		n.getChild2().accept(this);
+	}
+
+	public void emit(String s) {
+		code += s;
 	}
 
 	@Override
 	public void visit(BoolskLiteral n) {
-		System.out.print(n.getValue());
+		emit(n.getValue());
 	}
 
 	@Override
 	public void visit(DecimaltalLiteral n) {
-		System.out.print(n.getValue());
+		emit(n.getValue());
 	}
 
 	@Override
 	public void visit(TekstLiteral n) {
-		System.out.print("\"" + n.getValue() + "\"");
+		emit("\"" + n.getValue() + "\"");
 	}
 
 	@Override
 	public void visit(HeltalLiteral n) {
-		System.out.print(n.getValue());
+		emit(n.getValue());
 	}
 
 	@Override
 	public void visit(ProgramNode n) {
 		for(AST ast : n.getChild()){
 			ast.accept(this);
-			System.out.println();
+			emit("\n");
 		}
+
+		if (print) System.out.println(code);
 	}
 	@Override
 	public void visit(FuncDclNode n) {
-		System.out.print("\nrutine " +  n.getId() + ":");
+		emit("\nrutine " +  n.getId() + ":");
 		blockIndent++;
 		for (AST stmt : n.getBody()) {
-			System.out.print("\n");
+			emit("\n");
 			indent(blockIndent);
 			stmt.accept(this);
 		}
 		blockIndent--;
-		System.out.print("\n");
+		emit("\n");
 		indent(blockIndent);
-		System.out.print(".");
+		emit(".");
 	}
 
 	@Override
 	public void visit(FuncNode n) {
-		System.out.println("\nkør " + n.getId());
+		emit("kør " + n.getId());
 	}
 
 	@Override
 	public void visit(IdNode n) {
-		System.out.print(n.getName());
+		emit(n.getName());
 	}
 
 	@Override
 	public void visit(IfNode n) {
-		System.out.print("hvis ");
+		emit("hvis ");
 		n.getExpr().accept(this);
-		System.out.print(":");
+		emit(":");
 		blockIndent++;
 		for (AST child : n.getBody()) {
-			System.out.print("\n");
+			emit("\n");
 			indent(blockIndent);
 			child.accept(this);
 		}
 		blockIndent--;
-		System.out.print("\n");
+		emit("\n");
 		indent(blockIndent);
-		System.out.print(".");
+		emit(".");
 	}
 
 	@Override
 	public void visit(LoopNode n) {
-		System.out.print("gentag " + n.getId() + " ");
+		emit("gentag " + n.getId() + " ");
 		n.getRepeats().accept(this);
-		System.out.print(" gange");
+		emit(" gange");
 	}
 
 	@Override
 	public void visit(PrintNode n) {
-		System.out.print("print ");
+		emit("print ");
 		n.getValue().accept(this);
 	}
 
 	@Override
 	public void visit(AssignNode n) {
-		System.out.print("sæt " + n.getId() + " til ");
+		emit("sæt " + n.getId() + " til ");
 		n.getValue().accept(this);
 	}
 
 	@Override
 	public void visit(UnaryComputing n) {
 		if(n.getOperation().equals(AST.Operators.PAREN)) {
-			System.out.print("(");
+			emit("(");
 			n.getChild().accept(this);
-			System.out.print(")");
+			emit(")");
 		} else {
-			System.out.print(n.getOperation().textual + " ");
+			emit(n.getOperation().textual + " ");
 			n.getChild().accept(this);
 		}
 	}
 
 	@Override
 	public void visit(TekstDcl n) {
-		System.out.print("gem tekst ");
+		emit("gem tekst ");
 		n.getValue().accept(this);
-		System.out.print(" som " + n.getId());
+		emit(" som " + n.getId());
 	}
 
 	@Override
 	public void visit(HeltalDcl n) {
-		System.out.print("gem heltal ");
+		emit("gem heltal ");
 		n.getValue().accept(this);
-		System.out.print(" som " + n.getId());
+		emit(" som " + n.getId());
 	}
 
 	@Override
 	public void visit(DecimaltalDcl n) {
-		System.out.print("gem decimaltal ");
+		emit("gem decimaltal ");
 		n.getValue().accept(this);
-		System.out.print(" som " + n.getId());
+		emit(" som " + n.getId());
 	}
 
 	@Override
 	public void visit(BoolskDcl n) {
-		System.out.print("gem boolsk ");
+		emit("gem boolsk ");
 		n.getValue().accept(this);
-		System.out.print(" som " + n.getId());
+		emit(" som " + n.getId());
 	}
 
 	public void indent(int indents) {
 		for (int i = 0; i < indents; i++) {
-			System.out.print("    ");
+			emit("    ");
 		}
+	}
+
+	public String getCode() {
+		return code;
 	}
 }

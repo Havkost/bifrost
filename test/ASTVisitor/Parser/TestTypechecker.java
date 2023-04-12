@@ -158,7 +158,6 @@ public class TestTypechecker {
                     }
                 } else if (type == AST.DataTypes.RUTINE) {
                     //TODO lav case for denne, når det er implementeret
-                    System.out.println("FEJL, DER ER INGEN CASE FOR RUTINE!!");
                 }
             }
         }
@@ -352,10 +351,21 @@ public class TestTypechecker {
     }
 
     @Test
+    void testFuncDcl() {
+        TekstDcl tekstDcl = new TekstDcl(new TekstLiteral("test"), "a");
+        FuncDclNode func = new FuncDclNode("func", List.of(new AssignNode("a", new TekstLiteral("test2"))));
+        ProgramNode prog = new ProgramNode(List.of(tekstDcl, func));
+        prog.accept(new SymbolTableFilling());
+
+        assertDoesNotThrow(() -> prog.accept(new TypeChecker()));
+    }
+
+    @Test
     public void testLoopNodeTypeCheckRepeatsThrows() {
-        FuncDclNode func = new FuncDclNode("hej", new ArrayList<>());
+        TekstDcl tekstDcl = new TekstDcl(new TekstLiteral("Test"), "a");
+        FuncDclNode func = new FuncDclNode("hej", List.of(new AssignNode("a", new TekstLiteral("test"))));
         LoopNode loop = new LoopNode(func.getId(), new DecimaltalLiteral("2,5"));
-        ProgramNode ast = new ProgramNode(asList(loop, func));
+        ProgramNode ast = new ProgramNode(asList(tekstDcl, loop, func));
         ast.accept(new SymbolTableFilling());
         assertThrows(Error.class, () ->
                 ast.accept(new TypeChecker())
@@ -428,11 +438,42 @@ public class TestTypechecker {
                     }
                 } else if (type == AST.DataTypes.RUTINE) {
                     //TODO lav case for denne, når det er implementeret
-                    System.out.println("FEJL, DER ER INGEN CASE FOR RUTINE!!");
+
                 }
             }
         }
     }
 
+    @Test
+    void testFuncNode() {
+        FuncDclNode funcDclNode = new FuncDclNode("func", List.of());
+        FuncNode funcNode = new FuncNode("func");
+        ProgramNode prog = new ProgramNode(List.of(funcDclNode, funcNode));
 
+        prog.accept(new SymbolTableFilling());
+
+        assertDoesNotThrow(() -> funcNode.accept(new TypeChecker()));
+    }
+
+    @Test
+    void testFuncNodeIllegal() {
+        FuncNode funcNode = new FuncNode("func");
+        ProgramNode prog = new ProgramNode(List.of(funcNode));
+
+        prog.accept(new SymbolTableFilling());
+
+        assertThrows(Error.class, () -> funcNode.accept(new TypeChecker()));
+    }
+
+    @Test
+    void testFindCommonDataTypeConversion() {
+        assertEquals(AST.DataTypes.DECIMALTAL, new TypeChecker().findCommonDataType(AST.DataTypes.HELTAL,
+                AST.DataTypes.DECIMALTAL, AST.Operators.PLUS));
+    }
+
+    @Test
+    void testFindCommonDataTypeIllegal() {
+        assertThrows(Error.class, () -> new TypeChecker().findCommonDataType(AST.DataTypes.BOOLSK,
+                AST.DataTypes.DECIMALTAL, AST.Operators.PLUS));
+    }
 }

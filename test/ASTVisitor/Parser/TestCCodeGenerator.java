@@ -18,7 +18,7 @@ public class TestCCodeGenerator {
     @BeforeEach
     public void beforeEach() {
         AST.clearSymbolTable();
-        generator = new CCodeGenerator();
+        generator = new CCodeGenerator(false);
     }
     @Test
     public void testEmit() {
@@ -76,8 +76,6 @@ public class TestCCodeGenerator {
         PrintNode line5 = new PrintNode(new IdNode("b"));
 
         ProgramNode prog = new ProgramNode(Arrays.asList(line1, line2, line3, line4, line5));
-
-        System.out.println(AST.getSymbolTable());
 
         prog.accept(new SymbolTableFilling());
         prog.accept(new TypeChecker());
@@ -190,5 +188,54 @@ public class TestCCodeGenerator {
                         a = 5;
                     }
                 }""", generator.getCode());
+    }
+
+    @Test
+    void testLoopNode() {
+        LoopNode loopNode = new LoopNode("test", new HeltalLiteral("5"));
+
+        loopNode.accept(generator);
+        assertEquals("""
+                for(int __i = 0; __i < (5); __i++) {
+                    test();
+                }""", generator.getCode());
+    }
+
+    @Test
+    void testProg() {
+        ProgramNode programNode = new ProgramNode(List.of(
+                new HeltalDcl(new HeltalLiteral("3"), "a"),
+                new FuncDclNode("func", List.of(
+                        new AssignNode("a", new HeltalLiteral("8")),
+                        new IfNode(new BinaryComputing("er", new HeltalLiteral("3"),
+                                new HeltalLiteral("3")), List.of(new AssignNode("a", new HeltalLiteral("5"))))
+                ))
+        ));
+
+        programNode.accept(generator);
+
+        assertEquals("""
+                #include <string.h>
+                #include <stdlib.h>
+                #include <stdio.h>
+                #include <stdbool.h>
+                                
+                                
+                int free_memory () {
+                }
+                                
+                int main() {
+                    a = 3;
+                    free_memory();
+                    return 0;
+                }
+                                
+                void func() {
+                    a = 8;
+                    if (3 == 3) {
+                        a = 5;
+                    }
+                }
+                """, generator.getCode());
     }
 }

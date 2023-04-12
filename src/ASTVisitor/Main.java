@@ -49,7 +49,7 @@ public class Main {
             System.out.println("\n=======================");
             System.out.println("Pretty printing");
             System.out.println("=======================");
-            ast.accept(new Prettyprinting());
+            ast.accept(new Prettyprinting(true));
 
             ast.accept(new SymbolTableFilling());
 
@@ -61,7 +61,7 @@ public class Main {
             System.out.println("\n=======================");
             System.out.println("C code");
             System.out.println("=======================");
-            ast.accept(new CCodeGenerator());
+            ast.accept(new CCodeGenerator(true));
 
             System.out.println("\n=======================");
             System.out.println("Symbol table");

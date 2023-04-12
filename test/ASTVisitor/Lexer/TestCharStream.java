@@ -42,6 +42,11 @@ public class TestCharStream {
     @Test
     void testAdvanceError() {
         CharStream charStream = makeCharStream("");
+        try {
+            charStream.getReader().close();
+        } catch (Throwable e) {
+
+        }
         assertEquals(0, charStream.advance());
     }
 }

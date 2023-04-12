@@ -9,6 +9,13 @@ import static java.util.Map.entry;
 import static ASTVisitor.Parser.AST.DataTypes.*;
 
 public class CCodeGenerator extends Visitor {
+
+    public CCodeGenerator(boolean print) {
+        this.print = print;
+    }
+
+    private final boolean print;
+
     int blockIndent = 0;
     private String code = "";
 
@@ -183,7 +190,8 @@ public class CCodeGenerator extends Visitor {
             }
         }
 
-        System.out.println(code);
+        if (print) System.out.println(code);
+
     }
 
     @Override
