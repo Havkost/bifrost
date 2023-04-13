@@ -102,13 +102,14 @@ public class TestTypechecker {
 
     // BINARY COMPUTING
 
-    //TODO FIX DENNE
+    //TODO Kan nok godt forkortes
     @Test
     public void testBinaryComputing() {
         DecimaltalDcl dec = new DecimaltalDcl(new DecimaltalLiteral("1,5"), "a");
         HeltalDcl heltal = new HeltalDcl(new HeltalLiteral("2"), "b");
         TekstDcl tekst = new TekstDcl(new TekstLiteral("\"hej\""), "c");
         BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), "d");
+        FuncDclNode funcDcl = new FuncDclNode("hej", List.of(new AssignNode("a", new DecimaltalLiteral("2,5"))));
         BinaryComputing bin = null;
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {
@@ -156,8 +157,18 @@ public class TestTypechecker {
                                 ast.accept(new TypeChecker())
                         );
                     }
+                    //TODO tjek om denne er korrekt
                 } else if (type == AST.DataTypes.RUTINE) {
-                    //TODO lav case for denne, når det er implementeret
+                    bin = new BinaryComputing(op.textual, funcDcl, funcDcl);
+                    ProgramNode ast = new ProgramNode(asList(bin));
+                    if (AST.getOperationResultType(op, type) == null) {
+                        assertThrows(Error.class, () ->
+                                ast.accept(new TypeChecker()));
+                    } else {
+                        assertDoesNotThrow(() ->
+                                ast.accept(new TypeChecker())
+                        );
+                    }
                 }
             }
         }
@@ -389,6 +400,7 @@ public class TestTypechecker {
         HeltalDcl heltal = new HeltalDcl(new HeltalLiteral("2"), "b");
         TekstDcl tekst = new TekstDcl(new TekstLiteral("\"hej\""), "c");
         BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), "d");
+        FuncDclNode funcDcl = new FuncDclNode("hej", List.of(new AssignNode("a", new DecimaltalLiteral("2,5"))));
         UnaryComputing una = null;
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {
@@ -437,8 +449,16 @@ public class TestTypechecker {
                         );
                     }
                 } else if (type == AST.DataTypes.RUTINE) {
-                    //TODO lav case for denne, når det er implementeret
-
+                    una = new UnaryComputing(op.textual, funcDcl);
+                    ProgramNode ast = new ProgramNode(asList(una));
+                    if (AST.getOperationResultType(op, type) == null) {
+                        assertThrows(Error.class, () ->
+                                ast.accept(new TypeChecker()));
+                    } else {
+                        assertDoesNotThrow(() ->
+                                ast.accept(new TypeChecker())
+                        );
+                    }
                 }
             }
         }
