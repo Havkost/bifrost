@@ -1,22 +1,19 @@
 gem boolsk sandt som lysTændt
-
 gem decimaltal 23,3 som temperatur
-
 gem tekst "hello world" som hej
-
 gem heltal 0 som optæller
 
-rutine lmao:
+rutine testToby:
     sæt optæller til optæller + 1
 .
 
-kør lmao
+kør testToby
 
-hvis lysTændt:
-    gentag lmao 3 gange
+hvis lysTændt er sandt:
+    gentag testToby 3 gange
 .
 
-
-hvis temperatur < 100 og lysTændt:
-    sæt optæller til 30
+hvis lysTændt er sandt og temperatur < 100:
+    sæt temperatur til 30,5
 .
+
