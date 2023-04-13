@@ -12,6 +12,34 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestTypechecker {
 
+    public void binaryComputingTemplate(AST operand, AST.Operators op, AST.DataTypes type) {
+        BinaryComputing bin;
+        bin = new BinaryComputing(op.textual, operand, operand);
+        ProgramNode ast = new ProgramNode(asList(bin));
+        if (AST.getOperationResultType(op, type) == null) {
+            assertThrows(Error.class, () ->
+                    ast.accept(new TypeChecker()));
+        } else {
+            assertDoesNotThrow(() ->
+                    ast.accept(new TypeChecker())
+            );
+        }
+    }
+
+    public void unaryComputingTemplate(AST operand, AST.Operators op, AST.DataTypes type) {
+        UnaryComputing una;
+        una = new UnaryComputing(op.textual, operand);
+        ProgramNode ast = new ProgramNode(asList(una));
+        if (AST.getOperationResultType(op, type) == null) {
+            assertThrows(Error.class, () ->
+                    ast.accept(new TypeChecker()));
+        } else {
+            assertDoesNotThrow(() ->
+                    ast.accept(new TypeChecker())
+            );
+        }
+    }
+
     // TYPE DCLS
     @Test
     public void testHeltalDclTypecheck() {
@@ -102,62 +130,27 @@ public class TestTypechecker {
 
     // BINARY COMPUTING
 
-    //TODO FIX DENNE
+
     @Test
     public void testBinaryComputing() {
         DecimaltalDcl dec = new DecimaltalDcl(new DecimaltalLiteral("1,5"), "a");
         HeltalDcl heltal = new HeltalDcl(new HeltalLiteral("2"), "b");
         TekstDcl tekst = new TekstDcl(new TekstLiteral("\"hej\""), "c");
         BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), "d");
-        BinaryComputing bin = null;
+        FuncDclNode funcDcl = new FuncDclNode("hej", List.of(new AssignNode("a", new DecimaltalLiteral("2,5"))));
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {
                 if (type == AST.DataTypes.HELTAL) {
-                    bin = new BinaryComputing(op.textual, heltal.getValue(), heltal.getValue());
-                    ProgramNode ast = new ProgramNode(asList(bin));
-                    if (AST.getOperationResultType(op, type) == null) {
-                        assertThrows(Error.class, () ->
-                                ast.accept(new TypeChecker()));
-                    } else {
-                        assertDoesNotThrow(() ->
-                                ast.accept(new TypeChecker())
-                        );
-                    }
+                    binaryComputingTemplate(heltal.getValue(), op, type);
                 } else if (type == AST.DataTypes.DECIMALTAL) {
-                    bin = new BinaryComputing(op.textual, dec.getValue(), dec.getValue());
-                    ProgramNode ast = new ProgramNode(asList(bin));
-                    if (AST.getOperationResultType(op, type) == null) {
-                        assertThrows(Error.class, () ->
-                                ast.accept(new TypeChecker()));
-                    } else {
-                        assertDoesNotThrow(() ->
-                                ast.accept(new TypeChecker())
-                        );
-                    }
+                    binaryComputingTemplate(dec.getValue(), op, type);
                 } else if (type == AST.DataTypes.BOOLSK) {
-                    bin = new BinaryComputing(op.textual, bool.getValue(), bool.getValue());
-                    ProgramNode ast = new ProgramNode(asList(bin));
-                    if (AST.getOperationResultType(op, type) == null) {
-                        assertThrows(Error.class, () ->
-                                ast.accept(new TypeChecker()));
-                    } else {
-                        assertDoesNotThrow(() ->
-                                ast.accept(new TypeChecker())
-                        );
-                    }
+                    binaryComputingTemplate(bool.getValue(), op, type);
                 } else if (type == AST.DataTypes.TEKST) {
-                    bin = new BinaryComputing(op.textual, tekst.getValue(), tekst.getValue());
-                    ProgramNode ast = new ProgramNode(asList(bin));
-                    if (AST.getOperationResultType(op, type) == null) {
-                        assertThrows(Error.class, () ->
-                                ast.accept(new TypeChecker()));
-                    } else {
-                        assertDoesNotThrow(() ->
-                                ast.accept(new TypeChecker())
-                        );
-                    }
+                    binaryComputingTemplate(tekst.getValue(), op, type);
+                    //TODO tjek om denne er korrekt
                 } else if (type == AST.DataTypes.RUTINE) {
-                    //TODO lav case for denne, når det er implementeret
+                    binaryComputingTemplate(funcDcl, op, type);
                 }
             }
         }
@@ -389,56 +382,20 @@ public class TestTypechecker {
         HeltalDcl heltal = new HeltalDcl(new HeltalLiteral("2"), "b");
         TekstDcl tekst = new TekstDcl(new TekstLiteral("\"hej\""), "c");
         BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), "d");
+        FuncDclNode funcDcl = new FuncDclNode("hej", List.of(new AssignNode("a", new DecimaltalLiteral("2,5"))));
         UnaryComputing una = null;
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {
                 if (type == AST.DataTypes.HELTAL) {
-                    una = new UnaryComputing(op.textual, heltal.getValue());
-                    ProgramNode ast = new ProgramNode(asList(una));
-                    if (AST.getOperationResultType(op, type) == null) {
-                        assertThrows(Error.class, () ->
-                                ast.accept(new TypeChecker()));
-                    } else {
-                        assertDoesNotThrow(() ->
-                                ast.accept(new TypeChecker())
-                        );
-                    }
+                    unaryComputingTemplate(heltal.getValue(), op, type);
                 } else if (type == AST.DataTypes.DECIMALTAL) {
-                    una = new UnaryComputing(op.textual, dec.getValue());
-                    ProgramNode ast = new ProgramNode(asList(una));
-                    if (AST.getOperationResultType(op, type) == null) {
-                        assertThrows(Error.class, () ->
-                                ast.accept(new TypeChecker()));
-                    } else {
-                        assertDoesNotThrow(() ->
-                                ast.accept(new TypeChecker())
-                        );
-                    }
+                    unaryComputingTemplate(dec.getValue(), op, type);
                 } else if (type == AST.DataTypes.BOOLSK) {
-                    una = new UnaryComputing(op.textual, bool.getValue());
-                    ProgramNode ast = new ProgramNode(asList(una));
-                    if (AST.getOperationResultType(op, type) == null) {
-                        assertThrows(Error.class, () ->
-                                ast.accept(new TypeChecker()));
-                    } else {
-                        assertDoesNotThrow(() ->
-                                ast.accept(new TypeChecker())
-                        );
-                    }
+                    unaryComputingTemplate(bool.getValue(), op, type);
                 } else if (type == AST.DataTypes.TEKST) {
-                    una = new UnaryComputing(op.textual, tekst.getValue());
-                    ProgramNode ast = new ProgramNode(asList(una));
-                    if (AST.getOperationResultType(op, type) == null) {
-                        assertThrows(Error.class, () ->
-                                ast.accept(new TypeChecker()));
-                    } else {
-                        assertDoesNotThrow(() ->
-                                ast.accept(new TypeChecker())
-                        );
-                    }
+                    unaryComputingTemplate(tekst.getValue(), op, type);
                 } else if (type == AST.DataTypes.RUTINE) {
-                    //TODO lav case for denne, når det er implementeret
-
+                    unaryComputingTemplate(funcDcl, op, type);
                 }
             }
         }

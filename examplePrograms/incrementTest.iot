@@ -1,0 +1,5 @@
+gem heltal 0 som optæller
+
+rutine incr:
+    sæt optæller til optæller + 1
+.
