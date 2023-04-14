@@ -5,13 +5,8 @@ import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.CodeScanner;
 import ASTVisitor.Parser.*;
 
-import java.io.CharArrayReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Main {
 
@@ -46,84 +41,104 @@ public class Main {
             } else {
                 inputPaths.add(arg);
             }
+        }
 
-            for (String fileName : inputPaths) {
-                try {
-                    File sourceFile = new File(fileName);
-                    Scanner scanner = new Scanner(sourceFile);
-                    while (scanner.hasNextLine()) {
-                        sourceString.append(scanner.nextLine()).append("\n");
+        for (int i = 0; i < inputPaths.size(); i++) {
+            try {
+                File sourceFile = new File(inputPaths.get(i));
+                Scanner scanner = new Scanner(sourceFile);
+                while (scanner.hasNextLine()) {
+                    sourceString.append(scanner.nextLine()).append("\n");
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("[FEJL] Kunne ikke finde filen '" + inputPaths.get(i) + "'.");
+                return;
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("[FEJL] Kildefil blev ikke specificeret.");
+                return;
+            }
+
+            try {
+
+
+                CharArrayReader reader = new CharArrayReader(sourceString.toString().toCharArray());
+                CharStream charStream = new CharStream(reader);
+
+                CodeScanner.initialize(charStream);
+
+                ASTParser p = new ASTParser(charStream);
+                AST ast = p.prog();
+
+                ast.accept(new SymbolTableFilling());
+
+                /*System.out.println("\n=======================");
+                System.out.println("Typechecker");
+                System.out.println("=======================");*/
+                ast.accept(new TypeChecker());
+
+                AST.clearSymbolTable();
+                sourceString.setLength(0);
+
+                if (debug) {
+                    System.out.println("\n=======================");
+                    System.out.println("Input program");
+                    System.out.println("=======================");
+                    System.out.println(sourceString);
+
+                    System.out.println("\n=======================");
+                    System.out.println("Pretty printing");
+                    System.out.println("=======================");
+                    ast.accept(new Prettyprinting(true));
+
+                    System.out.println("\n=======================");
+                    System.out.println("Symbol table");
+                    System.out.println("=======================");
+                    for (Map.Entry<String, AST.DataTypes> entry : AST.getSymbolTable().entrySet()) {
+                        System.out.println(entry.getKey() + ":" + entry.getValue());
                     }
-                } catch (FileNotFoundException e) {
-                    System.out.println("[FEJL] Kunne ikke finde filen '" + fileName + "'.");
-                    return;
-                } catch (IndexOutOfBoundsException e) {
-                    System.out.println("[FEJL] Kildefil blev ikke specificeret.");
-                    return;
+
+                    System.out.println("\n=======================");
+                    System.out.println("C code");
+                    System.out.println("=======================");
                 }
 
-                try {
-
-
-                    CharArrayReader reader = new CharArrayReader(sourceString.toString().toCharArray());
-                    CharStream charStream = new CharStream(reader);
-
-                    CodeScanner.initialize(charStream);
-
-                    ASTParser p = new ASTParser(charStream);
-                    AST ast = p.prog();
-
-                    if (debug) {
-
-                    }
-
-                    ast.accept(new SymbolTableFilling());
-
-                    /*System.out.println("\n=======================");
-                    System.out.println("Typechecker");
-                    System.out.println("=======================");*/
-                    ast.accept(new TypeChecker());
-
-                    AST.clearSymbolTable();
-                    sourceString.setLength(0);
-
-                    if (debug) {
-                        System.out.println("\n=======================");
-                        System.out.println("Input program");
-                        System.out.println("=======================");
-                        System.out.println(sourceString);
-
-                        System.out.println("\n=======================");
-                        System.out.println("Pretty printing");
-                        System.out.println("=======================");
-                        ast.accept(new Prettyprinting(true));
-
-                        System.out.println("\n=======================");
-                        System.out.println("Symbol table");
-                        System.out.println("=======================");
-                        for (Map.Entry<String, AST.DataTypes> entry : AST.getSymbolTable().entrySet()) {
-                            System.out.println(entry.getKey() + ":" + entry.getValue());
+                if (outName != null) {
+                    try {
+                        FileWriter writer;
+                        if (inputPaths.size() > 1) {
+                            writer = new FileWriter(outName + i);
+                            System.out.println(outName + i);
+                        } else {
+                            writer = new FileWriter(outName);
+                            System.out.println(outName);
                         }
-
-                        System.out.println("\n=======================");
-                        System.out.println("C code");
-                        System.out.println("=======================");
+                        ast.accept(new CCodeGenerator(debug, writer));
+                    } catch (IOException e) {
+                        System.out.println("[FEJL] Filen " + outName + " kunne ikke oprettes.");
                     }
-
-                    ast.accept(new CCodeGenerator(debug));
-
-                    if (astDraw) {
-                        TreeDrawing panel = new TreeDrawing(ast);
-                        panel.draw();
+                } else {
+                    List<String> names = Arrays.stream(inputPaths.get(i).split("/")).toList();
+                    try {
+                        FileWriter writer = new FileWriter(names.get(names.size()-1));
+                        System.out.println(names.get(names.size()-1));
+                        ast.accept(new CCodeGenerator(debug, writer));
+                    } catch (IOException e) {
+                        System.out.println("[FEJL] Filen " + names.get(names.size()-1));
                     }
-
-                } catch (Throwable e) {
-                    System.out.println("[FEJL]: " + e);
-                    System.out.println("Stack trace:\n");
-                    e.printStackTrace(System.out);
                 }
+
+
+                if (astDraw) {
+                    TreeDrawing panel = new TreeDrawing(ast);
+                    panel.draw();
+                }
+
+            } catch (Throwable e) {
+                System.out.println("[FEJL]: " + e);
+                System.out.println("Stack trace:\n");
+                e.printStackTrace(System.out);
             }
         }
-        // TODO: Evt. skriv bedre error handling og fejlbeskeder
     }
+    // TODO: Evt. skriv bedre error handling og fejlbeskeder
 }

@@ -2,6 +2,7 @@ package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
 
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 import static ASTVisitor.Parser.AST.Operators;
@@ -14,7 +15,13 @@ public class CCodeGenerator extends Visitor {
         this.print = print;
     }
 
+    public CCodeGenerator(boolean print, FileWriter writer) {
+        this.print = print;
+        this.writer = writer;
+    }
+
     private final boolean print;
+    private FileWriter writer;
 
     int blockIndent = 0;
     private String code = "";
