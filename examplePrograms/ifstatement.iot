@@ -7,15 +7,6 @@ gem decimaltal 30,0 som c
 gem decimaltal 40,0 som d
 gem tekst "test af Tekst specifier" som tekstTest
 
-sæt a til b
-sæt b til a - 5 + 12 * 10
-
-print x
-print tekstTest
-print a
-print b
-
-sæt c til d
 
 hvis erLukket og erTændt:
     hvis erLukket eller erTændt:
@@ -31,12 +22,5 @@ hvis erLukket og erTændt:
     .
 .
 
-rutine rut1:
-    print a / 12
-    print b er a
+hvis erLukket og erTændt eller erTændt eller erLukket er ikke erLukket:
 .
-
-gentag rut1 a gange
-gentag rut1 b - 2 gange
-gentag rut1 a + b gange
-gentag rut1 2 + a gange

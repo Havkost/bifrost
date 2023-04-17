@@ -5,6 +5,7 @@ hvis ikke sandt:
 .
 hvis ikke falsk:
 .
-
-hvis ikke (a er a + 5):
+hvis ikke sandt eller falsk eller ikke falsk er ikke sandt:
+.
+hvis ikke (a > b):
 .
