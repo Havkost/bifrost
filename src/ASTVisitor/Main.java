@@ -19,7 +19,7 @@ public class Main {
 
         String absPath = System.getProperty("user.dir");
         if(System.getProperty("os.name").startsWith("Windows")) {
-            absPath += "\\TEST\\";
+            absPath += "\\";
         } else {
             absPath += "/";
         }
