@@ -1,0 +1,23 @@
+gem heltal 5+12 som a
+gem heltal 5*a som b
+gem tekst "Hej med dig" som x
+gem boolsk sandt som erLukket
+gem boolsk falsk som erTændt
+gem decimaltal 30,0 som c
+gem decimaltal 40,0 som d
+gem tekst "test af Tekst specifier" som tekstTest
+
+print x
+print tekstTest
+print a
+print b
+print erLukket
+print "erLukket"
+print c
+print d
+print c + d
+print 30
+print 30,3
+print sandt
+print falsk
+

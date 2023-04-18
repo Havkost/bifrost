@@ -1,0 +1,20 @@
+gem heltal 5+12 som a
+gem heltal 5*a som b
+gem tekst "Hej med dig" som x
+gem boolsk sandt som erLukket
+gem boolsk falsk som erTændt
+gem decimaltal 30,0 som c
+gem decimaltal 40,0 som d
+gem tekst "test af Tekst specifier" som tekstTest
+
+
+rutine rut1:
+    gentag rut1 3 gange
+.
+
+gentag rut1 a gange
+gentag rut1 b - 2 gange
+gentag rut1 a + b gange
+gentag rut1 2 + a gange
+gentag rut1 b gange
+gentag rut1 0 gange
