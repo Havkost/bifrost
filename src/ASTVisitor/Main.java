@@ -17,6 +17,13 @@ public class Main {
         boolean debug = false;
         boolean astDraw = false;
 
+        String absPath = System.getProperty("user.dir");
+        if(System.getProperty("os.name").startsWith("windows")) {
+            absPath += "\\";
+        } else {
+            absPath += "/";
+        }
+
         // Read text from source file into sourceString
 
         for (int i = 0; i < args.length; i++) {
@@ -25,7 +32,7 @@ public class Main {
                 switch (arg) {
                     case "-o", "--out":
                         try {
-                            outName = new StringBuilder(args[++i]);
+                            outName = new StringBuilder(absPath + args[++i]);
                         } catch (IndexOutOfBoundsException e) {
                             System.out.println("[FEJL] Outputfil blev ikke specificeret.");
                         }
@@ -95,7 +102,6 @@ public class Main {
                     System.out.println("=======================");
                 }
 
-
                 if (outName != null) {
                     if (outName.toString().contains("."))
                         outName = new StringBuilder(Arrays.stream(outName.toString().split("\\.")).toList().get(0));
@@ -113,16 +119,14 @@ public class Main {
                     List<String> names = Arrays.stream(inputPaths.get(i).split("/")).toList();
                     String name = Arrays.stream(names.get(names.size()-1).split("\\.")).toList().get(0) + ".c";
                     try {
-                        FileWriter writer = new FileWriter(name);
+                        FileWriter writer = new FileWriter(absPath + name);
                         ast.accept(new CCodeGenerator(debug, writer));
-                        System.out.println("Genererer fil: " + name);
+                        System.out.println("Genererer fil: " + absPath + name);
                     } catch (IOException e) {
-                        System.out.println("[FEJL] Filen " + name);
+                        System.out.println("[FEJL] Filen " + absPath + name);
                     }
 
                 }
-
-                System.out.println(System.getProperty("user.dir"));
 
                 if (astDraw) {
                     TreeDrawing panel = new TreeDrawing(ast);
