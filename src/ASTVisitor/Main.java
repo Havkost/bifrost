@@ -21,7 +21,7 @@ public class Main {
         if(System.getProperty("os.name").startsWith("Windows")) {
             absPath += "\\";
         } else {
-            absPath += "/";
+            absPath += "/TEST/";
         }
 
         // Read text from source file into sourceString
