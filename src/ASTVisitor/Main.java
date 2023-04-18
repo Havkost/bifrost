@@ -154,9 +154,11 @@ public class Main {
                 sourceString.setLength(0);
 
             } catch (Throwable e) {
-                System.out.println("[FEJL]: " + e);
-                System.out.println("Stack trace:\n");
-                e.printStackTrace(System.out);
+                StringBuilder stackTrace = new StringBuilder();
+                for (StackTraceElement line: e.getStackTrace()) {
+                    stackTrace.append("                ").append(line).append("\n");
+                }
+                errorPrint(e + "\n            Stack trace:\n" + stackTrace);
             }
         }
     }

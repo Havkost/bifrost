@@ -305,9 +305,10 @@ public class ASTParser {
         } else if (ts.peek() == TokenType.ID) {
             expr = new IdNode(expect(TokenType.ID).getVal());
         } else {
+            /*
             for (int i = 0; i < ts.getTokenList().size(); i++) {
                 System.out.println(i + ". " + ts.getTokenList().get(i));
-            }
+            }*/
             error("FORVENTEDE (, heltal, decimaltal, tekst ELLER boolsk. Index: " + ts.getIndex());
         }
 
@@ -396,10 +397,11 @@ public class ASTParser {
     public Token expect(TokenType type) {
         Token token = ts.advance();
         if (token.getType() != type) {
+            /*
             for (int i = 0; i < ts.getTokenList().size(); i++) {
                 System.out.println(i + ". " + ts.getTokenList().get(i));
             }
-            System.out.println(ts.getIndex());
+            System.out.println(ts.getIndex());*/
             throw new UnexpectedTokenException(type, token.getType());
         }
         return token;
