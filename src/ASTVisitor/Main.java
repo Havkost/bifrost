@@ -122,11 +122,8 @@ public class Main {
                     } else {
                         names = Arrays.stream(inputPaths.get(i).split("/")).toList();
                     }
-                    System.out.println(names);
                     String name = Arrays.stream(names.get(names.size()-1).split("\\.")).toList().get(0) + ".c";
-                    if (!System.getProperty("os.name").startsWith("Windows")) {
-                        name = absPath + name;
-                    }
+                    name = absPath + name;
                     try {
                         FileWriter writer = new FileWriter(name);
                         ast.accept(new CCodeGenerator(debug, writer));
