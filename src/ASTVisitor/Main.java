@@ -18,7 +18,7 @@ public class Main {
         boolean astDraw = false;
 
         String absPath = System.getProperty("user.dir");
-        if(System.getProperty("os.name").startsWith("windows")) {
+        if(System.getProperty("os.name").startsWith("Windows")) {
             absPath += "\\";
         } else {
             absPath += "/";
@@ -118,7 +118,7 @@ public class Main {
                 } else {
                     List<String> names = Arrays.stream(inputPaths.get(i).split("/")).toList();
                     String name = Arrays.stream(names.get(names.size()-1).split("\\.")).toList().get(0) + ".c";
-                    if (!System.getProperty("os.name").startsWith("windows")) {
+                    if (!System.getProperty("os.name").startsWith("Windows")) {
                         name = absPath + name;
                     }
                     try {
