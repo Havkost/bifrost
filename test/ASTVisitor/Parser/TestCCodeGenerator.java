@@ -1,13 +1,10 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
-import ASTVisitor.Exceptions.FileWriterError;
-import ASTVisitor.Lexer.CharStream;
-import ASTVisitor.Lexer.CodeScanner;
+import ASTVisitor.Exceptions.FileWriterIOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.CharArrayReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -313,7 +310,7 @@ public class TestCCodeGenerator {
                 ))
         ));
 
-        assertThrows(FileWriterError.class, () -> programNode.accept(generator));
+        assertThrows(FileWriterIOException.class, () -> programNode.accept(generator));
 
         file.deleteOnExit();
     }

@@ -1,7 +1,7 @@
 package ASTVisitor;
 
 import ASTVisitor.ASTDrawing.TreeDrawing;
-import ASTVisitor.Exceptions.FileWriterError;
+import ASTVisitor.Exceptions.FileWriterIOException;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.CodeScanner;
 import ASTVisitor.Parser.*;
@@ -123,7 +123,7 @@ public class Main {
                         writer = new FileWriter("" + outName + ".c");
                         ast.accept(new CCodeGenerator(debug, writer));
                         if (debug) System.out.println("Genererer fil: " + outName + ".c");
-                    } catch (FileWriterError e) {
+                    } catch (FileWriterIOException e) {
                         errorPrint("Filen " + outName + " kunne ikke oprettes.");
                     }
                 } else {
@@ -139,7 +139,7 @@ public class Main {
                         FileWriter writer = new FileWriter(name);
                         ast.accept(new CCodeGenerator(debug, writer));
                         if (debug) System.out.println("Genererer fil: " + name);
-                    } catch (FileWriterError e) {
+                    } catch (FileWriterIOException e) {
                         errorPrint("Kan ikke skrive til filen " + name);
                     }
 

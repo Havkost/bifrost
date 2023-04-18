@@ -1,7 +1,7 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
-import ASTVisitor.Exceptions.FileWriterError;
+import ASTVisitor.Exceptions.FileWriterIOException;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -210,7 +210,7 @@ public class CCodeGenerator extends Visitor {
                 writer.write(code);
                 writer.close();
             } catch (IOException e) {
-                throw new FileWriterError("[FEJL] Kunne ikke skrive til filen " + writer);
+                throw new FileWriterIOException("[FEJL] Kunne ikke skrive til filen " + writer);
             }
         }
     }

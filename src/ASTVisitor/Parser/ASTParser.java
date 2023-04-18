@@ -1,14 +1,14 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
-import ASTVisitor.Exceptions.UnexpectedLineStart;
-import ASTVisitor.Exceptions.UnexpectedTokenException;
+import ASTVisitor.Exceptions.*;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.Token;
 import ASTVisitor.Lexer.TokenStream;
 import ASTVisitor.Lexer.TokenType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ASTVisitor.Lexer.TokenType;
 import ASTVisitor.Parser.AST.Operators;
@@ -91,7 +91,7 @@ public class ASTParser {
             stmtList.addAll(stmts());
         } else if (ts.peek() == TokenType.BLOCKSLUT) {
             // Do nothing (lambda-production)
-        } else error("Forventede deklaration eller kommando. Fik " + ts.peek() + ".");
+        } else throw new IllegalStatementException(ts.peek());
         return stmtList;
     }
 
@@ -112,18 +112,17 @@ public class ASTParser {
             stmtAST = new IfNode(ifExpr, stmts);
         } else if (ts.peek() == TokenType.PRINT) {
             stmtAST = print();
-        } else error("Forventede kommando (sæt, gentag, kør eller hvis).");
+        } else throw new IllegalStatementException(ts.peek());
         return stmtAST;
     }
 
     public AST expr() {
-        AST expr = null;
+        AST expr;
         if (ts.peek() == TokenType.ID || ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.IKKE ||
                 ts.peek() == TokenType.LPAREN || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT) {
             expr = or_expr();
-        } else error("Forventede boolsk udtryk. Fik " + ts.peek());
+        } else throw new UnexpectedExpressionToken(ts.peek());
 
-        if(expr == null) error("Forventede udtryk. Fik " + ts.peek());
         return expr;
     }
 
@@ -305,11 +304,7 @@ public class ASTParser {
         } else if (ts.peek() == TokenType.ID) {
             expr = new IdNode(expect(TokenType.ID).getVal());
         } else {
-            /*
-            for (int i = 0; i < ts.getTokenList().size(); i++) {
-                System.out.println(i + ". " + ts.getTokenList().get(i));
-            }*/
-            error("FORVENTEDE (, heltal, decimaltal, tekst ELLER boolsk. Index: " + ts.getIndex());
+            throw new UnexpectedTokenException(List.of("heltal", "decimaltal", "boolsk værdi", "tekst", "parentes"), ts.peek());
         }
 
         return expr;
@@ -341,7 +336,7 @@ public class ASTParser {
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
             dclAst = new BoolskDcl(value, idToken.getVal());
-        } else error("Forventede type deklaration (tekst, heltal, decimaltal eller boolsk). Fik: " + ts.peek());
+        } //else error("Forventede type deklaration (tekst, heltal, decimaltal eller boolsk). Fik: " + ts.peek());
 
         return dclAst;
     }
@@ -405,9 +400,5 @@ public class ASTParser {
             throw new UnexpectedTokenException(type, token.getType());
         }
         return token;
-    }
-
-    private void error(String message) {
-        throw new Error(message);
     }
 }
