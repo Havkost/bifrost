@@ -297,7 +297,7 @@ public class TestCCodeGenerator {
     @Test
     void testFileWriteError() throws IOException {
         File file = new File("file.c");
-        file.createNewFile();
+        assertTrue(file.createNewFile());
         FileWriter writer;
         writer = new FileWriter(file);
 
