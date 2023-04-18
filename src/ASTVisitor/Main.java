@@ -70,14 +70,7 @@ public class Main {
                 AST ast = p.prog();
 
                 ast.accept(new SymbolTableFilling());
-
-                /*System.out.println("\n=======================");
-                System.out.println("Typechecker");
-                System.out.println("=======================");*/
                 ast.accept(new TypeChecker());
-
-                AST.clearSymbolTable();
-                sourceString.setLength(0);
 
                 if (debug) {
                     System.out.println("\n=======================");
@@ -132,6 +125,9 @@ public class Main {
                     TreeDrawing panel = new TreeDrawing(ast);
                     panel.draw();
                 }
+
+                AST.clearSymbolTable();
+                sourceString.setLength(0);
 
             } catch (Throwable e) {
                 System.out.println("[FEJL]: " + e);
