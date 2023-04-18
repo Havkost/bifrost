@@ -106,6 +106,7 @@ public class TestCCodeGenerator {
                         strcpy(a, "Haj");
                         b = malloc(6 * sizeof(char));
                         strcpy(b, "hallo");
+                        realloc(a, 3 * sizeof(char));
                         a = "hej";
                         printf("%s\\n", a);
                         printf("%s\\n", b);
@@ -217,6 +218,9 @@ public class TestCCodeGenerator {
                 ))
         ));
 
+        programNode.accept(new SymbolTableFilling());
+        programNode.accept(new TypeChecker());
+
         programNode.accept(generator);
 
         assertEquals("""
@@ -225,6 +229,8 @@ public class TestCCodeGenerator {
                 #include <stdio.h>
                 #include <stdbool.h>
                                 
+                int a;
+                void func();
                                 
                 int free_memory () {
                 }

@@ -1,6 +1,7 @@
 package ASTVisitor;
 
 import ASTVisitor.ASTDrawing.TreeDrawing;
+import ASTVisitor.Exceptions.FileWriterError;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.CodeScanner;
 import ASTVisitor.Parser.*;
@@ -9,6 +10,16 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
 
     public static void main(String[] args) {
         StringBuilder sourceString = new StringBuilder();
@@ -111,9 +122,9 @@ public class Main {
                         FileWriter writer;
                         writer = new FileWriter("" + outName + ".c");
                         ast.accept(new CCodeGenerator(debug, writer));
-                        System.out.println("Genererer fil: " + outName + ".c");
-                    } catch (IOException e) {
-                        System.out.println("[FEJL] Filen " + outName + " kunne ikke oprettes.");
+                        if (debug) System.out.println("Genererer fil: " + outName + ".c");
+                    } catch (FileWriterError e) {
+                        errorPrint("Filen " + outName + " kunne ikke oprettes.");
                     }
                 } else {
                     List<String> names;
@@ -127,9 +138,9 @@ public class Main {
                     try {
                         FileWriter writer = new FileWriter(name);
                         ast.accept(new CCodeGenerator(debug, writer));
-                        System.out.println("Genererer fil: " + name);
-                    } catch (IOException e) {
-                        System.out.println("[FEJL] Filen " + name);
+                        if (debug) System.out.println("Genererer fil: " + name);
+                    } catch (FileWriterError e) {
+                        errorPrint("Kan ikke skrive til filen " + name);
                     }
 
                 }
@@ -148,6 +159,10 @@ public class Main {
                 e.printStackTrace(System.out);
             }
         }
+    }
+
+    public static void errorPrint(String msg) {
+        System.out.println(ANSI_RED + "[FEJL]: " + ANSI_RESET + msg);
     }
     // TODO: Evt. skriv bedre error handling og fejlbeskeder
 }

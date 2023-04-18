@@ -49,10 +49,10 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(AssignNode n) {
-        if (SymbolTable.get(n.getId()).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
+        if (SymbolTable.get(n.getId()) != null && SymbolTable.get(n.getId()).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
             emit("realloc(" + n.getId() + ", " + ((TekstLiteral) n.getValue()).getValue().length() + " * sizeof(char));\n");
+            indent(blockIndent);
         }
-        indent(blockIndent);
         emit(n.getId() + " = ");
         n.getValue().accept(this);
         emit(";");
