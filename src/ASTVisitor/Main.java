@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         StringBuilder sourceString = new StringBuilder();
         List<String> inputPaths = new ArrayList<>();
-        String outName = null;
+        StringBuilder outName = null;
         boolean debug = false;
         boolean astDraw = false;
 
@@ -25,7 +25,7 @@ public class Main {
                 switch (arg) {
                     case "-o", "--out":
                         try {
-                            outName = args[++i];
+                            outName = new StringBuilder(args[++i]);
                         } catch (IndexOutOfBoundsException e) {
                             System.out.println("[FEJL] Outputfil blev ikke specificeret.");
                         }
@@ -95,29 +95,31 @@ public class Main {
                     System.out.println("=======================");
                 }
 
+
                 if (outName != null) {
+                    if (outName.toString().contains("."))
+                        outName = new StringBuilder(Arrays.stream(outName.toString().split("\\.")).toList().get(0));
+                    if (inputPaths.size() > 1)
+                        outName.append(i).append(".c");
                     try {
                         FileWriter writer;
-                        if (inputPaths.size() > 1) {
-                            writer = new FileWriter(outName + i);
-                            System.out.println(outName + i);
-                        } else {
-                            writer = new FileWriter(outName);
-                            System.out.println(outName);
-                        }
+                        writer = new FileWriter(outName + ".c");
                         ast.accept(new CCodeGenerator(debug, writer));
+                        System.out.println("Genererer fil: " + outName + ".c");
                     } catch (IOException e) {
                         System.out.println("[FEJL] Filen " + outName + " kunne ikke oprettes.");
                     }
                 } else {
                     List<String> names = Arrays.stream(inputPaths.get(i).split("/")).toList();
+                    String name = Arrays.stream(names.get(names.size()-1).split("\\.")).toList().get(0) + ".c";
                     try {
-                        FileWriter writer = new FileWriter(names.get(names.size()-1));
-                        System.out.println(names.get(names.size()-1));
+                        FileWriter writer = new FileWriter(name);
                         ast.accept(new CCodeGenerator(debug, writer));
+                        System.out.println("Genererer fil: " + name);
                     } catch (IOException e) {
-                        System.out.println("[FEJL] Filen " + names.get(names.size()-1));
+                        System.out.println("[FEJL] Filen " + name);
                     }
+
                 }
 
 

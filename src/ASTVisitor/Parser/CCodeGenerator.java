@@ -3,6 +3,7 @@ package ASTVisitor.Parser;
 import ASTVisitor.ASTnodes.*;
 
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import static ASTVisitor.Parser.AST.Operators;
@@ -198,6 +199,12 @@ public class CCodeGenerator extends Visitor {
         }
 
         if (print) System.out.println(code);
+        try {
+            writer.write(code);
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("[FEJL] Kunne ikke skrive til filen " + writer);
+        }
 
     }
 
