@@ -1,0 +1,4 @@
+gem heltal 1 som a
+gem decimaltal 3,3 som c
+
+sæt c til a / c
