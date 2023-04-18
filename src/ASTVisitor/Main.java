@@ -116,7 +116,13 @@ public class Main {
                         System.out.println("[FEJL] Filen " + outName + " kunne ikke oprettes.");
                     }
                 } else {
-                    List<String> names = Arrays.stream(inputPaths.get(i).split("/")).toList();
+                    List<String> names;
+                    if (System.getProperty("os.name").startsWith("Windows")) {
+                        names = Arrays.stream(inputPaths.get(i).split("\\\\")).toList();
+                    } else {
+                        names = Arrays.stream(inputPaths.get(i).split("/")).toList();
+                    }
+                    System.out.println(names);
                     String name = Arrays.stream(names.get(names.size()-1).split("\\.")).toList().get(0) + ".c";
                     if (!System.getProperty("os.name").startsWith("Windows")) {
                         name = absPath + name;
