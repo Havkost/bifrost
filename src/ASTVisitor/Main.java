@@ -19,9 +19,9 @@ public class Main {
 
         String absPath = System.getProperty("user.dir");
         if(System.getProperty("os.name").startsWith("Windows")) {
-            absPath += "\\";
+            absPath += "\\TEST\\";
         } else {
-            absPath += "/TEST/";
+            absPath += "/";
         }
 
         // Read text from source file into sourceString
