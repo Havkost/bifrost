@@ -315,6 +315,6 @@ public class TestCCodeGenerator {
 
         assertThrows(FileWriterError.class, () -> programNode.accept(generator));
 
-        file.delete();
+        file.deleteOnExit();
     }
 }
