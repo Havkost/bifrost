@@ -154,11 +154,14 @@ public class Main {
                 sourceString.setLength(0);
 
             } catch (Throwable e) {
-                StringBuilder stackTrace = new StringBuilder();
-                for (StackTraceElement line: e.getStackTrace()) {
-                    stackTrace.append("                ").append(line).append("\n");
-                }
-                errorPrint(e + "\n            Stack trace:\n" + stackTrace);
+                if (debug) {
+                    StringBuilder stackTrace = new StringBuilder();
+                    for (StackTraceElement line: e.getStackTrace()) {
+                        stackTrace.append("                ").append(line).append("\n");
+                    }
+                    errorPrint(e + "\n            Stack trace:\n" + stackTrace);
+                } else errorPrint(e.getMessage());
+
             }
         }
     }

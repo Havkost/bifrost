@@ -16,9 +16,11 @@ import ASTVisitor.Parser.AST.Operators;
 public class ASTParser {
 
     private final TokenStream ts;
+    private int line;
 
     public ASTParser(CharStream charStream) {
         this.ts = new TokenStream(charStream);
+        this.line = 1;
     }
 
     public AST prog() {
@@ -336,7 +338,7 @@ public class ASTParser {
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
             dclAst = new BoolskDcl(value, idToken.getVal());
-        } //else error("Forventede type deklaration (tekst, heltal, decimaltal eller boolsk). Fik: " + ts.peek());
+        } else throw new UnexpectedDeclarationToken(ts.peek(), line);
 
         return dclAst;
     }
@@ -392,13 +394,9 @@ public class ASTParser {
     public Token expect(TokenType type) {
         Token token = ts.advance();
         if (token.getType() != type) {
-            /*
-            for (int i = 0; i < ts.getTokenList().size(); i++) {
-                System.out.println(i + ". " + ts.getTokenList().get(i));
-            }
-            System.out.println(ts.getIndex());*/
             throw new UnexpectedTokenException(type, token.getType());
         }
+        if (type.equals(TokenType.NEWLINE)) line++;
         return token;
     }
 }
