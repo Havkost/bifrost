@@ -1,0 +1,4 @@
+gem boolsk sandt som erLukket
+gem boolsk falsk som erTændt
+
+sæt erLukket til erLukket og erLukket eller erLukket + erTændt
