@@ -136,7 +136,7 @@ public class TestASTParser {
     @Test
     public void testExpr(){
         ASTParser parser = makeASTParser("ikke (x < (3 + (10-5) * 2) / 2,5 eller y > x og x ikke er sandt) er falsk:");
-        AST neq = new BinaryComputing("ikke", new IdNode("x"), new BoolskLiteral("sandt"));
+        AST neq = new BinaryComputing(AST.Operators.NOT_EQUALS, new IdNode("x"), new BoolskLiteral("sandt"));
         AST gt = new BinaryComputing(">", new IdNode("y"), new IdNode("x"));
         AST og = new BinaryComputing("og", gt, neq);
 

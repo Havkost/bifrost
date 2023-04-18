@@ -103,7 +103,7 @@ public class Main {
                         outName.append(i).append(".c");
                     try {
                         FileWriter writer;
-                        writer = new FileWriter(outName + ".c");
+                        writer = new FileWriter("" + outName + ".c");
                         ast.accept(new CCodeGenerator(debug, writer));
                         System.out.println("Genererer fil: " + outName + ".c");
                     } catch (IOException e) {
@@ -122,6 +122,7 @@ public class Main {
 
                 }
 
+                System.out.println(System.getProperty("user.dir"));
 
                 if (astDraw) {
                     TreeDrawing panel = new TreeDrawing(ast);

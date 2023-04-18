@@ -1,12 +1,17 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
+import ASTVisitor.Exceptions.FileWriterError;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.CodeScanner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.CharArrayReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
@@ -237,5 +242,73 @@ public class TestCCodeGenerator {
                     }
                 }
                 """, generator.getCode());
+    }
+
+    @Test
+    void testFileWrite() throws IOException {
+        File file = new File("file.c");
+        file.createNewFile();
+        FileWriter writer;
+        writer = new FileWriter(file);
+
+        generator = new CCodeGenerator(false, writer);
+        ProgramNode programNode = new ProgramNode(List.of(
+                new HeltalDcl(new HeltalLiteral("3"), "a"),
+                new FuncDclNode("func", List.of(
+                        new AssignNode("a", new HeltalLiteral("8")),
+                        new IfNode(new BinaryComputing("er", new HeltalLiteral("3"),
+                                new HeltalLiteral("3")), List.of(new AssignNode("a", new HeltalLiteral("5"))))
+                ))
+        ));
+
+        programNode.accept(generator);
+
+        assertEquals("""
+                #include <string.h>
+                #include <stdlib.h>
+                #include <stdio.h>
+                #include <stdbool.h>
+                                
+                                
+                int free_memory () {
+                }
+                                
+                int main() {
+                    a = 3;
+                    free_memory();
+                    return 0;
+                }
+                                
+                void func() {
+                    a = 8;
+                    if (3 == 3) {
+                        a = 5;
+                    }
+                }
+                """, Files.readString(file.toPath()));
+    }
+
+    @Test
+    void testFileWriteError() throws IOException {
+        File file = new File("file.c");
+        file.createNewFile();
+        FileWriter writer;
+        writer = new FileWriter(file);
+
+        writer.close();
+
+        generator = new CCodeGenerator(false, writer);
+        ProgramNode programNode = new ProgramNode(List.of(
+                new HeltalDcl(new HeltalLiteral("3"), "a"),
+                new FuncDclNode("func", List.of(
+                        new AssignNode("a", new HeltalLiteral("8")),
+                        new IfNode(new BinaryComputing("er", new HeltalLiteral("3"),
+                                new HeltalLiteral("3")), List.of(new AssignNode("a", new HeltalLiteral("5"))))
+                ))
+        ));
+
+        assertThrows(FileWriterError.class, () -> programNode.accept(generator));
+
+        file.delete();
     }
 }

@@ -1,12 +1,14 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
+import ASTVisitor.Exceptions.FileWriterError;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import static ASTVisitor.Parser.AST.Operators;
+import static ASTVisitor.Parser.AST.SymbolTable;
 import static java.util.Map.entry;
 import static ASTVisitor.Parser.AST.DataTypes.*;
 
@@ -47,6 +49,10 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(AssignNode n) {
+        if (SymbolTable.get(n.getId()).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
+            emit("realloc(" + n.getId() + ", " + ((TekstLiteral) n.getValue()).getValue().length() + " * sizeof(char));\n");
+        }
+        indent(blockIndent);
         emit(n.getId() + " = ");
         n.getValue().accept(this);
         emit(";");
@@ -199,13 +205,14 @@ public class CCodeGenerator extends Visitor {
         }
 
         if (print) System.out.println(code);
-        try {
-            writer.write(code);
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("[FEJL] Kunne ikke skrive til filen " + writer);
+        if (writer != null) {
+            try {
+                writer.write(code);
+                writer.close();
+            } catch (IOException e) {
+                throw new FileWriterError("[FEJL] Kunne ikke skrive til filen " + writer);
+            }
         }
-
     }
 
     @Override
