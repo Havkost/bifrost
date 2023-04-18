@@ -118,12 +118,15 @@ public class Main {
                 } else {
                     List<String> names = Arrays.stream(inputPaths.get(i).split("/")).toList();
                     String name = Arrays.stream(names.get(names.size()-1).split("\\.")).toList().get(0) + ".c";
+                    if (!System.getProperty("os.name").startsWith("windows")) {
+                        name = absPath + name;
+                    }
                     try {
-                        FileWriter writer = new FileWriter(absPath + name);
+                        FileWriter writer = new FileWriter(name);
                         ast.accept(new CCodeGenerator(debug, writer));
-                        System.out.println("Genererer fil: " + absPath + name);
+                        System.out.println("Genererer fil: " + name);
                     } catch (IOException e) {
-                        System.out.println("[FEJL] Filen " + absPath + name);
+                        System.out.println("[FEJL] Filen " + name);
                     }
 
                 }
