@@ -19,3 +19,6 @@ sæt c til d
 sæt a til b
 sæt a til 30
 sæt b til 40
+sæt tekstTest til "hej"
+sæt tekstTest til "Denne besked er længere end den forrige, allokerer den nu?"
+
