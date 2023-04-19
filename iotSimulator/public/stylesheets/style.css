@@ -1,0 +1,40 @@
+:root {
+  --col-primary-700: #0E7490;
+  --col-gray-900: #1C1917;
+  --col-gray-800: #292524;
+  --col-gray-700: #44403C;
+  --col-gray-600: #57534E;
+  --col-gray-500: #78716C;
+  --col-gray-400: #A8A29E;
+  --col-gray-300: #D6D3D1;
+  --col-gray-200: #E7E5E4;
+  --col-gray-100: #F5F5F4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: var(--col-gray-800);
+  color: white;
+}
+
+a {
+  text-decoration: none;
+}
+
+.title {
+  font-size: 3em;
+}
+
+.center {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 50vw;
+  padding: 2em;
+  background-color: var(--col-gray-600);
+}
