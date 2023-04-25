@@ -1,0 +1,11 @@
+gem tekst "Hej" som a
+
+rutine test:
+    hvis 3 < 4:
+        sæt a til a + " verden"
+    .
+.
+
+kør test
+
+print a

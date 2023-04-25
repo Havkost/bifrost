@@ -28,4 +28,6 @@ hs_err_pid*
 **/.idea/tasks.xml
 **/out/*
 
+*.out
+
 /*.c

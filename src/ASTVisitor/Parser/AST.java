@@ -46,6 +46,7 @@ public abstract class AST {
         // Plus operations mapped to the datatype result
         operationResultType[Operators.PLUS.ordinal()][DataTypes.HELTAL.ordinal()] = DataTypes.HELTAL;
         operationResultType[Operators.PLUS.ordinal()][DataTypes.DECIMALTAL.ordinal()] = DataTypes.DECIMALTAL;
+        operationResultType[Operators.PLUS.ordinal()][DataTypes.TEKST.ordinal()] = DataTypes.TEKST;
         // Minus operations mapped to the datatype result
         operationResultType[Operators.MINUS.ordinal()][DataTypes.HELTAL.ordinal()] = DataTypes.HELTAL;
         operationResultType[Operators.MINUS.ordinal()][DataTypes.DECIMALTAL.ordinal()] = DataTypes.DECIMALTAL;

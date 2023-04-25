@@ -60,6 +60,16 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(BinaryComputing n) {
+        if(n.getChild1().getType() == TEKST && n.getChild2().getType() == TEKST) {
+            emit("strncat(");
+            n.getChild1().accept(this);
+            emit(", ");
+            n.getChild2().accept(this);
+            emit(", sizeof(");
+            n.getChild2().accept(this);
+            emit(") + 1);");
+            return;
+        }
         n.getChild1().accept(this);
          emit(" " + n.getOperation().Cversion + " ");
         n.getChild2().accept(this);
@@ -175,6 +185,8 @@ public class CCodeGenerator extends Visitor {
                 emit("free(" + id + ");\n");
             }
         });
+        indent(blockIndent);
+        emit("return 0;\n");
         blockIndent--;
         emit("}\n\n");
 
