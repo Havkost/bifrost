@@ -1,6 +1,8 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
+import ASTVisitor.Exceptions.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public class TypeChecker extends Visitor{
     public void visit(AssignNode n) {
         n.getValue().accept(this);
         if (AST.getSymbolTable().get(n.getId()) != n.getValue().getType()){
-            error("Kan ikke sætte typen: "+ AST.getSymbolTable().get(n.getId()) + " på ID: " + n.getId() + " til at have værdien: " +  n.getValue().getType());
+            throw new IllegalTypeAssignmentException(n.getId(), AST.getSymbolTable().get(n.getId()), n.getValue());
         }
     }
 
@@ -22,12 +24,10 @@ public class TypeChecker extends Visitor{
         n.getChild1().accept(this);
         n.getChild2().accept(this);
         DataTypes type = findCommonDataType(n.getChild1().type, n.getChild2().type, n.getOperation());
-        if (type != null) {
-            DataTypes resultType = getOperationResultType(n.getOperation(), type);
-            if(resultType != null) {
-                n.setType(resultType);
-            } else error("Kan ikke bruge operatoren '" + n.getOperation() + "' på typen " + type);
-        } else error("Der opstod en fejl, din computationstype er: " + type);
+        DataTypes resultType = getOperationResultType(n.getOperation(), type);
+        if(resultType != null) {
+            n.setType(resultType);
+        } else throw new IllegalOperationTypeException(n.getOperation(), type);
     }
 
     @Override

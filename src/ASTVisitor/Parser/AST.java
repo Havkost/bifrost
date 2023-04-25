@@ -12,8 +12,14 @@ public abstract class AST {
         HELTAL,
         TEKST,
         BOOLSK,
-        RUTINE
+        RUTINE;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
     }
+
     public enum Operators {
         PLUS("+", "+"),
         MINUS("-", "-"),

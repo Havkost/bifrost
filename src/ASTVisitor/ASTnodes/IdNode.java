@@ -22,13 +22,8 @@ public class IdNode extends AST {
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof IdNode)) return false;
-        IdNode object = (IdNode) obj;
-        if (this.name.equals(object.getName())) {
-            return true;
-        }
-
-        return false;
+        if(!(obj instanceof IdNode object)) return false;
+        return this.name.equals(object.getName());
     }
 
     @Override

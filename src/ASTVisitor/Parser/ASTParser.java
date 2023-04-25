@@ -45,7 +45,7 @@ public class ASTParser {
         } else if (ts.peek() == TokenType.NEWLINE) {
             expect(TokenType.NEWLINE);
             linesList.addAll(lines());
-        } else throw new UnexpectedLineStart(ts.peek());
+        } else throw new UnexpectedLineStart(ts.peek(), line);
         return linesList;
     }
 
@@ -93,7 +93,7 @@ public class ASTParser {
             stmtList.addAll(stmts());
         } else if (ts.peek() == TokenType.BLOCKSLUT) {
             // Do nothing (lambda-production)
-        } else throw new IllegalStatementException(ts.peek());
+        } else throw new IllegalStatementException(ts.peek(), line);
         return stmtList;
     }
 
@@ -114,7 +114,7 @@ public class ASTParser {
             stmtAST = new IfNode(ifExpr, stmts);
         } else if (ts.peek() == TokenType.PRINT) {
             stmtAST = print();
-        } else throw new IllegalStatementException(ts.peek());
+        } else throw new IllegalStatementException(ts.peek(), line);
         return stmtAST;
     }
 
@@ -123,7 +123,7 @@ public class ASTParser {
         if (ts.peek() == TokenType.ID || ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.IKKE ||
                 ts.peek() == TokenType.LPAREN || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT) {
             expr = or_expr();
-        } else throw new UnexpectedExpressionToken(ts.peek());
+        } else throw new UnexpectedExpressionToken(ts.peek(), line);
 
         return expr;
     }
@@ -306,7 +306,7 @@ public class ASTParser {
         } else if (ts.peek() == TokenType.ID) {
             expr = new IdNode(expect(TokenType.ID).getVal());
         } else {
-            throw new UnexpectedTokenException(List.of("heltal", "decimaltal", "boolsk værdi", "tekst", "parentes"), ts.peek());
+            throw new UnexpectedTokenException(List.of("heltal", "decimaltal", "boolsk værdi", "tekst", "parentes"), ts.peek(), line);
         }
 
         return expr;
@@ -394,7 +394,7 @@ public class ASTParser {
     public Token expect(TokenType type) {
         Token token = ts.advance();
         if (token.getType() != type) {
-            throw new UnexpectedTokenException(type, token.getType());
+            throw new UnexpectedTokenException(type, token.getType(), line);
         }
         if (type.equals(TokenType.NEWLINE)) line++;
         return token;

@@ -1,11 +1,13 @@
 gem tekst "Hej" som a
+gem tekst "test" som b
 
 rutine test:
     hvis 3 < 4:
-        sæt a til a + " verden"
+        sæt b til a + " verden"
     .
 .
 
 kør test
 
 print a
+print b

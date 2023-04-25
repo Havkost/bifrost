@@ -5,17 +5,17 @@ import ASTVisitor.Lexer.TokenType;
 import java.util.List;
 
 public class UnexpectedTokenException extends RuntimeException {
-    public UnexpectedTokenException(TokenType expected, TokenType actual) {
+    public UnexpectedTokenException(TokenType expected, TokenType actual, int line) {
         super("Forventede " +
                 expected +
                 " men fik " +
-                actual + ".");
+                actual + "." + " (Linje " + line + ")");
     }
 
-    public UnexpectedTokenException(List<String> expected, TokenType actual) {
+    public UnexpectedTokenException(List<String> expected, TokenType actual, int line) {
         super("Forventede " + expectedTokensToString(expected)
                 + " men fik " +
-                actual + ".");
+                actual + "." + " (Linje " + line + ")");
     }
 
     public static String expectedTokensToString(List<String> list) {

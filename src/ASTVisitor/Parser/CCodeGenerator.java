@@ -52,6 +52,12 @@ public class CCodeGenerator extends Visitor {
         if (SymbolTable.get(n.getId()) != null && SymbolTable.get(n.getId()).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
             emit("realloc(" + n.getId() + ", " + ((TekstLiteral) n.getValue()).getValue().length() + " * sizeof(char));\n");
             indent(blockIndent);
+        } else if (SymbolTable.get(n.getId()) != null && SymbolTable.get(n.getId()).equals(TEKST) && n.getValue().getType().equals(TEKST)) {
+            emit(n.getId() + " = ");
+            emit("realloc(");
+            n.getValue().accept(this);
+            emit(");");
+            return;
         }
         emit(n.getId() + " = ");
         n.getValue().accept(this);
@@ -61,17 +67,25 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(BinaryComputing n) {
         if(n.getChild1().getType() == TEKST && n.getChild2().getType() == TEKST) {
-            emit("strncat(");
+            emit("concat(");
             n.getChild1().accept(this);
             emit(", ");
             n.getChild2().accept(this);
-            emit(", sizeof(");
-            n.getChild2().accept(this);
-            emit(") + 1);");
+            emit("), customStrLen(");
+            n.getChild1().accept(this);
+            emit(", ");
+            if(n.getChild2() instanceof BinaryComputing)
+                n.getChild2().accept(this);
+            else {
+                emit("strlen(");
+                n.getChild2().accept(this);
+                emit(")");
+            }
+            emit(")");
             return;
         }
         n.getChild1().accept(this);
-         emit(" " + n.getOperation().Cversion + " ");
+        emit(" " + n.getOperation().Cversion + " ");
         n.getChild2().accept(this);
     }
 
@@ -189,6 +203,25 @@ public class CCodeGenerator extends Visitor {
         emit("return 0;\n");
         blockIndent--;
         emit("}\n\n");
+
+        emit("""
+                char* concat(char* str1, char* str2) {
+                    size_t len = strlen(str1) + strlen(str2) + 1;
+                    char* res = malloc(len);
+                    strcpy(res, str1);
+                    strcat(res, str2);
+                                
+                    return res;
+                }
+                
+                """);
+
+        emit("""
+                int customStrLen(char* str1, int len2) {
+                    return strlen(str1) + len2;
+                }
+                
+                """);
 
         emit("int main() {\n");
         blockIndent++;
