@@ -6,7 +6,7 @@ import java.util.List;
 
 public class TokenStream {
     private long index;
-    private List<Token> tokenList;
+    private final List<Token> tokenList;
     private Token nextToken;
 
     public TokenStream(CharStream s) {
