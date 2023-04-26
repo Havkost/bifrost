@@ -9,7 +9,8 @@ public class DecimaltalDcl extends AST {
     private AST value;
 
 
-    public DecimaltalDcl(AST value, String id) {
+    public DecimaltalDcl(AST value, String id, int line) {
+        super(line);
         this.id = id;
         this.value = value;
     }

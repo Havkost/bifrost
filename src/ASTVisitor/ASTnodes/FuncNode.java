@@ -7,7 +7,8 @@ public class FuncNode extends AST {
 
     private String id;
 
-    public FuncNode(String id) {
+    public FuncNode(String id, int line) {
+        super(line);
         this.id = id;
     }
 

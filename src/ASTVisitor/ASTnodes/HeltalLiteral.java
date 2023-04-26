@@ -7,7 +7,8 @@ public class HeltalLiteral extends AST {
 
     private String value;
 
-    public HeltalLiteral(String value) {
+    public HeltalLiteral(String value, int line) {
+        super(line);
         this.value = value;
     }
 

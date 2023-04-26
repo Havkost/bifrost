@@ -7,7 +7,8 @@ public class DecimaltalLiteral extends AST {
 
     private String value;
 
-    public DecimaltalLiteral(String value) {
+    public DecimaltalLiteral(String value, int line) {
+        super(line);
         this.value = value;
     }
 

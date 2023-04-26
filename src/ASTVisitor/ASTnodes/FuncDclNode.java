@@ -14,7 +14,8 @@ public class FuncDclNode extends AST {
         v.visit(this);
     }
 
-    public FuncDclNode(String id, List<AST> body) {
+    public FuncDclNode(String id, List<AST> body, int line) {
+        super(line);
         this.id = id;
         this.body = body;
     }

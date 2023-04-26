@@ -15,7 +15,8 @@ public class IfNode extends AST {
         v.visit(this);
     }
 
-    public IfNode(AST expr, List<AST> children) {
+    public IfNode(AST expr, List<AST> children, int line) {
+        super(line);
         this.expr = expr;
         this.body = children;
     }

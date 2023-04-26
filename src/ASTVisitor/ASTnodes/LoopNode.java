@@ -8,7 +8,8 @@ public class LoopNode extends AST {
     private String id;
     private AST repeatCount;
 
-    public LoopNode(String id, AST repeatCount) {
+    public LoopNode(String id, AST repeatCount, int line) {
+        super(line);
         this.id = id;
         this.repeatCount = repeatCount;
     }

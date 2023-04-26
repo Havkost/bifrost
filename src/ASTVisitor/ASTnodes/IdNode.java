@@ -12,7 +12,8 @@ public class IdNode extends AST {
         v.visit(this);
     }
 
-    public IdNode(String name) {
+    public IdNode(String name, int line) {
+        super(line);
         this.name = name;
     }
 

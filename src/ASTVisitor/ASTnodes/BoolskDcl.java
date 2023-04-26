@@ -8,7 +8,8 @@ public class BoolskDcl extends AST {
     private String id;
     private AST value;
 
-    public BoolskDcl(AST value, String id) {
+    public BoolskDcl(AST value, String id, int line) {
+        super(line);
         this.value = value;
         this.id = id;
     }

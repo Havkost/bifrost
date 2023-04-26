@@ -8,7 +8,8 @@ public class AssignNode extends AST {
     private String id;
     private AST value;
 
-    public AssignNode(String id, AST value) {
+    public AssignNode(String id, AST value, int line) {
+        super(line);
         this.id = id;
         this.value = value;
     }

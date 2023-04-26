@@ -7,7 +7,8 @@ public class BoolskLiteral extends AST {
 
     private String value;
 
-    public BoolskLiteral(String value) {
+    public BoolskLiteral(String value, int line) {
+        super(line);
         this.value = value;
     }
 

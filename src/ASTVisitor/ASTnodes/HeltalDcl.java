@@ -8,7 +8,8 @@ public class HeltalDcl extends AST{
     private String id;
     private AST value;
 
-    public HeltalDcl(AST value, String id) {
+    public HeltalDcl(AST value, String id, int line) {
+        super(line);
         this.id = id;
         this.value = value;
     }

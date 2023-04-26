@@ -11,12 +11,12 @@ import static ASTVisitor.Parser.AST.*;
 public class TypeChecker extends Visitor{
 
     private boolean stringConcatenationAllowed = true;
-    // TODO: Check at parenteser bliver checket korrekt
     @Override
     public void visit(AssignNode n) {
         n.getValue().accept(this);
-        if (AST.getSymbolTable().get(n.getId()) != n.getValue().getType()){
-            throw new IllegalTypeAssignmentException(n.getId(), AST.getSymbolTable().get(n.getId()), n.getValue());
+        DataTypes type = AST.getSymbolTable().get(n.getId());
+        if (type != n.getValue().getType()){
+            throw new IllegalTypeAssignmentException(n.getId(), type, n.getValue(), n.getLine());
         }
     }
 
@@ -26,11 +26,11 @@ public class TypeChecker extends Visitor{
         n.getChild2().accept(this);
         DataTypes type = findCommonDataType(n.getChild1().type, n.getChild2().type, n.getOperation());
         DataTypes resultType = getOperationResultType(n.getOperation(), type);
-        if(resultType != null && resultType != DataTypes.TEKST || stringConcatenationAllowed) {
+        if(resultType != null && (resultType != DataTypes.TEKST || stringConcatenationAllowed)) {
             n.setType(resultType);
         } else if (resultType == DataTypes.TEKST) {
-            throw new IllegalStringConcatenationException();
-        } else throw new IllegalOperationTypeException(n.getOperation(), type);
+            throw new IllegalStringConcatenationException(n.getLine());
+        } else throw new IllegalOperationTypeException(n.getOperation(), type, n.getLine());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TypeChecker extends Visitor{
     @Override
     public void visit(FuncNode n) {
         if (AST.getSymbolTable().get(n.getId()) != DataTypes.RUTINE) {
-            throw new UnknownSubroutineException(n.getId());
+            throw new UnknownSubroutineException(n.getId(), n.getLine());
         }
     }
 

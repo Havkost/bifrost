@@ -7,7 +7,8 @@ public class TekstLiteral extends AST {
 
     private String value;
 
-    public TekstLiteral(String value) {
+    public TekstLiteral(String value, int line) {
+        super(line);
         this.value = value;
     }
 

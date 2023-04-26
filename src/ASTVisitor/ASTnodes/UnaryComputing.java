@@ -7,7 +7,8 @@ public class UnaryComputing extends AST {
     private Operators operation;
     private AST child;
 
-    public UnaryComputing(String operation, AST child) {
+    public UnaryComputing(String operation, AST child, int line) {
+        super(line);
         this.child = child;
         for(Operators operator : Operators.values()) {
             if(operator.textual.equals(operation.toLowerCase())) {

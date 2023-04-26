@@ -5,6 +5,12 @@ import java.util.List;
 
 public abstract class AST {
 
+    private int line;
+
+    public AST(int line) {
+        this.line = line;
+    }
+
     public static HashMap<String,DataTypes> SymbolTable = new HashMap<String,DataTypes>();
 
     public enum DataTypes {
@@ -110,6 +116,10 @@ public abstract class AST {
 
     public static DataTypes getOperationResultType(Operators operator, DataTypes type) {
         return operationResultType[operator.ordinal()][type.ordinal()];
+    }
+
+    public int getLine() {
+        return line;
     }
 
     public static void clearSymbolTable() {

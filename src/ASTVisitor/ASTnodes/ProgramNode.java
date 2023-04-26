@@ -7,7 +7,8 @@ import java.util.List;
 public class ProgramNode extends AST {
     private List<AST> children;
 
-    public ProgramNode(List<AST> children) {
+    public ProgramNode(List<AST> children, int line) {
+        super(line);
         this.children = children;
     }
 

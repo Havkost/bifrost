@@ -1,0 +1,8 @@
+gem enhed "ip/endpoint" som lampe1
+gem heltal 50 som lysstyrke for lampe1
+
+hvis lysstyrke for lampe1 < 80:
+    sæt lysstyrke for lampe1 til 100
+.
+
+print lysstyrke for lampe1

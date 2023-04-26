@@ -8,7 +8,8 @@ public class TekstDcl extends AST {
     private String id;
     private AST value;
 
-    public TekstDcl(AST value, String id) {
+    public TekstDcl(AST value, String id, int line) {
+        super(line);
         this.id = id;
         this.value = value;
     }

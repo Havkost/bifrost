@@ -9,7 +9,8 @@ public class BinaryComputing extends AST {
     private AST child1;
     private AST child2;
 
-    public BinaryComputing(String operation, AST child1, AST child2) {
+    public BinaryComputing(String operation, AST child1, AST child2, int line) {
+        super(line);
         this.child1 = child1;
         this.child2 = child2;
         for(Operators operator : Operators.values()) {
@@ -20,7 +21,8 @@ public class BinaryComputing extends AST {
         }
     }
 
-    public BinaryComputing(Operators operation, AST child1, AST child2) {
+    public BinaryComputing(Operators operation, AST child1, AST child2, int line) {
+        super(line);
         this.operation = operation;
         this.child1 = child1;
         this.child2 = child2;

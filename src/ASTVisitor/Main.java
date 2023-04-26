@@ -1,7 +1,7 @@
 package ASTVisitor;
 
 import ASTVisitor.ASTDrawing.TreeDrawing;
-import ASTVisitor.Exceptions.FileWriterIOException;
+import ASTVisitor.Exceptions.*;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.CodeScanner;
 import ASTVisitor.Parser.*;
@@ -145,15 +145,29 @@ public class Main {
                 AST.clearSymbolTable();
                 sourceString.setLength(0);
 
-            } catch (Throwable e) {
+            } catch (CustomException e) {
+                if (debug) {
+                    StringBuilder stackTrace = new StringBuilder();
+                    for (StackTraceElement line: e.getStackTrace()) {
+                        stackTrace.append("                ").append(line).append("\n");
+                    }
+                    errorPrint(e + "\n            " + ANSI.cyan("Linje " + e.getLine() + ": ") +
+                            Arrays.stream(sourceString.toString().split("\n")).toList().get(e.getLine()-1).trim() + "\n            Stack trace:\n" + stackTrace);
+                } else {
+                    errorPrint(e.getMessage() + "\n            " + ANSI.cyan("Linje " + e.getLine() + ": ") +
+                            Arrays.stream(sourceString.toString().split("\n")).toList().get(e.getLine()-1).trim());
+                }
+
+            } catch (IOException e) {
                 if (debug) {
                     StringBuilder stackTrace = new StringBuilder();
                     for (StackTraceElement line: e.getStackTrace()) {
                         stackTrace.append("                ").append(line).append("\n");
                     }
                     errorPrint(e + "\n            Stack trace:\n" + stackTrace);
-                } else errorPrint(e.getMessage());
-
+                } else {
+                    errorPrint(e.getMessage());
+                }
             }
         }
     }

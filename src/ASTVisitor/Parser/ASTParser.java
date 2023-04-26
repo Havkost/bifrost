@@ -24,7 +24,7 @@ public class ASTParser {
     }
 
     public AST prog() {
-        ProgramNode progAST = new ProgramNode(new ArrayList<>());
+        ProgramNode progAST = new ProgramNode(new ArrayList<>(), line);
         ArrayList<AST> linesList = lines();
         expect(TokenType.EOF);
         if(linesList != null) progAST.getChild().addAll(linesList);
@@ -76,7 +76,7 @@ public class ASTParser {
         Token idToken = expect(TokenType.ID);
         expect(TokenType.TIL);
         AST value = expr();
-        return new AssignNode(idToken.getVal(), value);
+        return new AssignNode(idToken.getVal(), value, line);
     }
 
     public ArrayList<AST> stmts() {
@@ -111,7 +111,7 @@ public class ASTParser {
             expect(TokenType.BLOCKSTART);
             ArrayList<AST> stmts = stmts();
             expect(TokenType.BLOCKSLUT);
-            stmtAST = new IfNode(ifExpr, stmts);
+            stmtAST = new IfNode(ifExpr, stmts, line);
         } else if (ts.peek() == TokenType.PRINT) {
             stmtAST = print();
         } else throw new IllegalStatementException(ts.peek(), line);
@@ -133,7 +133,7 @@ public class ASTParser {
         AST andExpr = and_expr();
         AST orExpr = or_expr2();
 
-        if(orExpr != null) expr = new BinaryComputing(TokenType.ELLER.name(), andExpr, orExpr);
+        if(orExpr != null) expr = new BinaryComputing(TokenType.ELLER.name(), andExpr, orExpr, line);
         else expr = andExpr;
         
         return expr;
@@ -145,7 +145,7 @@ public class ASTParser {
             expect(TokenType.ELLER);
             AST andExpr = and_expr();
             AST ors = or_expr2();
-            if(ors != null) orExpr = new BinaryComputing(TokenType.ELLER.name(), andExpr, ors);
+            if(ors != null) orExpr = new BinaryComputing(TokenType.ELLER.name(), andExpr, ors, line);
             else orExpr = andExpr;
         }
         return orExpr;
@@ -155,7 +155,7 @@ public class ASTParser {
         AST expr;
         AST eqExpr = equalityExpr();
         AST andExpr = and_expr2();
-        if(andExpr != null) expr = new BinaryComputing(TokenType.OG.name(), eqExpr, andExpr);
+        if(andExpr != null) expr = new BinaryComputing(TokenType.OG.name(), eqExpr, andExpr, line);
         else expr = eqExpr;
 
         return expr;
@@ -167,7 +167,7 @@ public class ASTParser {
             expect(TokenType.OG);
             AST eqExpr = equalityExpr();
             AST ands = and_expr2();
-            if(ands != null) andExpr = new BinaryComputing(TokenType.OG.name(), eqExpr, ands);
+            if(ands != null) andExpr = new BinaryComputing(TokenType.OG.name(), eqExpr, ands, line);
             else andExpr = eqExpr;
         }
         return andExpr;
@@ -183,7 +183,7 @@ public class ASTParser {
             op = Operators.NOT_EQUALS;
         }
         AST eqExpr = equalityExpr2();
-        if(eqExpr != null) expr = new BinaryComputing(op, relExpr, eqExpr);
+        if(eqExpr != null) expr = new BinaryComputing(op, relExpr, eqExpr, line);
         else expr = relExpr;
 
         return expr;
@@ -196,7 +196,7 @@ public class ASTParser {
             Operators op = Operators.EQUALS;
             AST relExpr = relExpr();
             AST eqs = equalityExpr2();
-            if(eqs != null) eqExpr = new BinaryComputing(op, relExpr, eqs);
+            if(eqs != null) eqExpr = new BinaryComputing(op, relExpr, eqs, line);
             else eqExpr = relExpr;
         } else if (ts.peek() == TokenType.IKKE) {
             expect(TokenType.IKKE);
@@ -204,7 +204,7 @@ public class ASTParser {
             Operators op = Operators.NOT_EQUALS;
             AST relExpr = relExpr();
             AST eqs = equalityExpr2();
-            if(eqs != null) eqExpr = new BinaryComputing(op, relExpr, eqs);
+            if(eqs != null) eqExpr = new BinaryComputing(op, relExpr, eqs, line);
             else eqExpr = relExpr;
         }
         return eqExpr;
@@ -215,7 +215,7 @@ public class ASTParser {
         AST sumExpr = sumExpr();
         String op = ts.peek().getName();
         AST relExpr = relExpr2();
-        if(relExpr != null) expr = new BinaryComputing(op, sumExpr, relExpr);
+        if(relExpr != null) expr = new BinaryComputing(op, sumExpr, relExpr, line);
         else expr = sumExpr;
 
         return expr;
@@ -229,7 +229,7 @@ public class ASTParser {
             AST sumExpr = sumExpr();
             String op = ts.peek().getName();
             AST rels = equalityExpr2();
-            if(rels != null) relExpr = new BinaryComputing(op, sumExpr, rels);
+            if(rels != null) relExpr = new BinaryComputing(op, sumExpr, rels, line);
             else relExpr = sumExpr;
         }
         return relExpr;
@@ -240,7 +240,7 @@ public class ASTParser {
         AST prodExpr = productExpr();
         String op = ts.peek().getName();
         AST sumExpr = sumExpr2();
-        if(sumExpr != null) expr = new BinaryComputing(op, prodExpr, sumExpr);
+        if(sumExpr != null) expr = new BinaryComputing(op, prodExpr, sumExpr, line);
         else expr = prodExpr;
 
         return expr;
@@ -254,7 +254,7 @@ public class ASTParser {
             AST prodExpr = productExpr();
             String op = ts.peek().getName();
             AST sums = sumExpr2();
-            if(sums != null) sumExpr = new BinaryComputing(op, prodExpr, sums);
+            if(sums != null) sumExpr = new BinaryComputing(op, prodExpr, sums, line);
             else sumExpr = prodExpr;
         }
         return sumExpr;
@@ -265,7 +265,7 @@ public class ASTParser {
         AST notExpr = not_expr();
         String op = ts.peek().getName();
         AST prodExpr = productExpr2();
-        if(prodExpr != null) expr = new BinaryComputing(op, notExpr, prodExpr);
+        if(prodExpr != null) expr = new BinaryComputing(op, notExpr, prodExpr, line);
         else expr = notExpr;
 
         return expr;
@@ -279,7 +279,7 @@ public class ASTParser {
             AST notExpr = not_expr();
             String op = ts.peek().getName();
             AST prods = productExpr2();
-            if(prods != null) prodExpr = new BinaryComputing(op, notExpr, prods);
+            if(prods != null) prodExpr = new BinaryComputing(op, notExpr, prods, line);
             else prodExpr = notExpr;
         }
         return prodExpr;
@@ -290,7 +290,7 @@ public class ASTParser {
         if(ts.peek() == TokenType.IKKE) {
             expect(TokenType.IKKE);
             AST factor = factor();
-            expr = new UnaryComputing(TokenType.IKKE.name(), factor);
+            expr = new UnaryComputing(TokenType.IKKE.name(), factor, line);
         } else expr = factor();
         return expr;
     }
@@ -299,12 +299,12 @@ public class ASTParser {
         AST expr = null;
         if (ts.peek() == TokenType.LPAREN) {
             expect(TokenType.LPAREN);
-            expr = new UnaryComputing("paren", expr());
+            expr = new UnaryComputing("paren", expr(), line);
             expect(TokenType.RPAREN);
         } else if (ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT) {
             expr = value();
         } else if (ts.peek() == TokenType.ID) {
-            expr = new IdNode(expect(TokenType.ID).getVal());
+            expr = new IdNode(expect(TokenType.ID).getVal(), line);
         } else {
             throw new UnexpectedTokenException(List.of("heltal", "decimaltal", "boolsk værdi", "tekst", "parentes"), ts.peek(), line);
         }
@@ -319,25 +319,25 @@ public class ASTParser {
             AST value = expr();
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
-            dclAst = new TekstDcl(value, idToken.getVal());
+            dclAst = new TekstDcl(value, idToken.getVal(), line);
         } else if(ts.peek() == TokenType.HELTAL_DCL){
             expect(TokenType.HELTAL_DCL);
             AST value = expr();
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
-            dclAst = new HeltalDcl(value, idToken.getVal());
+            dclAst = new HeltalDcl(value, idToken.getVal(), line);
         } else if(ts.peek() == TokenType.DECIMALTAL_DCL){
             expect(TokenType.DECIMALTAL_DCL);
             AST value = expr();
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
-            dclAst = new DecimaltalDcl(value, idToken.getVal());
+            dclAst = new DecimaltalDcl(value, idToken.getVal(), line);
         } else if (ts.peek() == TokenType.BOOLSK_DCL) {
             expect(TokenType.BOOLSK_DCL);
             AST value = expr();
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
-            dclAst = new BoolskDcl(value, idToken.getVal());
+            dclAst = new BoolskDcl(value, idToken.getVal(), line);
         } else throw new UnexpectedDeclarationToken(ts.peek(), line);
 
         return dclAst;
@@ -346,13 +346,13 @@ public class ASTParser {
     private AST value() {
         AST valueAST = null;
         if (ts.peek() == TokenType.TEKST_LIT) {
-            valueAST = new TekstLiteral(expect(TokenType.TEKST_LIT).getVal());
+            valueAST = new TekstLiteral(expect(TokenType.TEKST_LIT).getVal(), line);
         } else if (ts.peek() == TokenType.HELTAL_LIT) {
-            valueAST = new HeltalLiteral(expect(TokenType.HELTAL_LIT).getVal());
+            valueAST = new HeltalLiteral(expect(TokenType.HELTAL_LIT).getVal(), line);
         } else if (ts.peek() == TokenType.DECIMALTAL_LIT) {
-            valueAST = new DecimaltalLiteral(expect(TokenType.DECIMALTAL_LIT).getVal());
+            valueAST = new DecimaltalLiteral(expect(TokenType.DECIMALTAL_LIT).getVal(), line);
         } else if (ts.peek() == TokenType.BOOLSK_LIT) {
-            valueAST = new BoolskLiteral(expect(TokenType.BOOLSK_LIT).getVal());
+            valueAST = new BoolskLiteral(expect(TokenType.BOOLSK_LIT).getVal(), line);
         }
 
         return valueAST;
@@ -365,21 +365,21 @@ public class ASTParser {
         ArrayList<AST> body = stmts();
         expect(TokenType.BLOCKSLUT);
 
-        return new FuncDclNode(idToken.getVal(), body);
+        return new FuncDclNode(idToken.getVal(), body, line);
     }
 
     public AST func() {
         expect(TokenType.KOER);
         Token idToken = expect(TokenType.ID);
 
-        return new FuncNode(idToken.getVal());
+        return new FuncNode(idToken.getVal(), line);
     }
 
     public AST print() {
         expect(TokenType.PRINT);
         AST value = expr();
 
-        return new PrintNode(value);
+        return new PrintNode(value, line);
     }
 
     public AST repeat() {
@@ -388,7 +388,7 @@ public class ASTParser {
         AST repeatCount = expr();
         expect(TokenType.GANGE);
 
-        return new LoopNode(funcCall.getVal(), repeatCount);
+        return new LoopNode(funcCall.getVal(), repeatCount, line);
     }
 
     public Token expect(TokenType type) {

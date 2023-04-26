@@ -11,7 +11,8 @@ public class PrintNode extends AST {
         return value;
     }
 
-    public PrintNode(AST value) {
+    public PrintNode(AST value, int line) {
+        super(line);
         this.value = value;
     }
 
