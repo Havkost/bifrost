@@ -1,0 +1,5 @@
+gem tekst "hej" som a
+
+kør test
+
+print a

@@ -2,6 +2,7 @@ package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
 import ASTVisitor.Exceptions.FileWriterIOException;
+import ASTVisitor.Exceptions.IllegalStringConcatenationException;
 
 import java.io.FileWriter;
 import java.io.IOException;

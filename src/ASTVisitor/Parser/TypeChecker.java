@@ -10,6 +10,7 @@ import static ASTVisitor.Parser.AST.*;
 
 public class TypeChecker extends Visitor{
 
+    private boolean stringConcatenationAllowed = true;
     // TODO: Check at parenteser bliver checket korrekt
     @Override
     public void visit(AssignNode n) {
@@ -25,8 +26,10 @@ public class TypeChecker extends Visitor{
         n.getChild2().accept(this);
         DataTypes type = findCommonDataType(n.getChild1().type, n.getChild2().type, n.getOperation());
         DataTypes resultType = getOperationResultType(n.getOperation(), type);
-        if(resultType != null) {
+        if(resultType != null && resultType != DataTypes.TEKST || stringConcatenationAllowed) {
             n.setType(resultType);
+        } else if (resultType == DataTypes.TEKST) {
+            throw new IllegalStringConcatenationException();
         } else throw new IllegalOperationTypeException(n.getOperation(), type);
     }
 
@@ -60,7 +63,7 @@ public class TypeChecker extends Visitor{
     @Override
     public void visit(FuncNode n) {
         if (AST.getSymbolTable().get(n.getId()) != DataTypes.RUTINE) {
-            error("Rutine kaldet med navn: " + n.getId() + " er ikke en rutine");
+            throw new UnknownSubroutineException(n.getId());
         }
     }
 
@@ -71,7 +74,9 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(IfNode n) {
+        stringConcatenationAllowed = false;
         n.getExpr().accept(this);
+        stringConcatenationAllowed = true;
         if (n.getExpr().type != DataTypes.BOOLSK) {
             error("Typen på expression skal være boolsk, og må ikke være " + n.getExpr().type);
         }
