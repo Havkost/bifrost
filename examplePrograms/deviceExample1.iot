@@ -1,5 +1,16 @@
-gem enhed "ip/endpoint" som lampe1
-gem heltal 50 som lysstyrke for lampe1
+gem enhed "ip/endpoint" med:
+    heltal 0 som lysstyrke
+    boolsk falsk som tændt
+    tekst "hej" som besked
+    decimaltal 3,3 som temperatur
+som lampe1
+
+gem enhed "ip/endpoint" med:
+    heltal 0 som lysstyrke
+    boolsk falsk som tændt
+    tekst "hej" som besked
+    decimaltal 3,3 som temperatur
+som lampe2
 
 hvis lysstyrke for lampe1 < 80:
     sæt lysstyrke for lampe1 til 100

@@ -2,7 +2,6 @@ package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
 import ASTVisitor.Exceptions.FileWriterIOException;
-import ASTVisitor.Exceptions.IllegalStringConcatenationException;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -301,6 +300,15 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
+    public void visit(FieldDclNode n) {
+    }
+
+    @Override
+    public void visit(FieldNode n) {
+    }
+
+
+    @Override
     public void visit(BoolskDcl n) {
         emit (n.getId() + " = ");
          n.getValue().accept(this);
@@ -311,6 +319,10 @@ public class CCodeGenerator extends Visitor {
         for (int i = 0; i < indents; i++) {
             emit("    ");
         }
+    }
+    @Override
+    public void visit(DeviceNode n) {
+        //TODO
     }
 
     public String getCode() {

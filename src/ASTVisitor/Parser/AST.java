@@ -11,14 +11,16 @@ public abstract class AST {
         this.line = line;
     }
 
-    public static HashMap<String,DataTypes> SymbolTable = new HashMap<String,DataTypes>();
+    public static HashMap<String,DataTypes> SymbolTable = new HashMap<>();
 
     public enum DataTypes {
         DECIMALTAL,
         HELTAL,
         TEKST,
         BOOLSK,
-        RUTINE;
+        RUTINE,
+        DEVICE
+        ;
 
         @Override
         public String toString() {

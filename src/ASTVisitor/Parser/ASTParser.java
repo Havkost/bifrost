@@ -72,11 +72,18 @@ public class ASTParser {
     }
 
     public AST assign() {
+        String parentId = null;
         expect(TokenType.SAET);
-        Token idToken = expect(TokenType.ID);
+        String id = expect(TokenType.ID).getVal();
+        if (ts.peek() == TokenType.FOR) {
+            expect(TokenType.FOR);
+            parentId = expect(TokenType.ID).getVal();
+        }
         expect(TokenType.TIL);
         AST value = expr();
-        return new AssignNode(idToken.getVal(), value, line);
+        if (parentId != null)
+            return new AssignNode(new FieldNode(id, parentId, line), value, line);
+        return new AssignNode(new IdNode(id, line), value, line);
     }
 
     public ArrayList<AST> stmts() {
@@ -304,7 +311,7 @@ public class ASTParser {
         } else if (ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT) {
             expr = value();
         } else if (ts.peek() == TokenType.ID) {
-            expr = new IdNode(expect(TokenType.ID).getVal(), line);
+            expr = field();
         } else {
             throw new UnexpectedTokenException(List.of("heltal", "decimaltal", "boolsk værdi", "tekst", "parentes"), ts.peek(), line);
         }
@@ -338,9 +345,73 @@ public class ASTParser {
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
             dclAst = new BoolskDcl(value, idToken.getVal(), line);
+        } else if (ts.peek() == TokenType.DEVICE_DCL) {
+            expect(TokenType.DEVICE_DCL);
+            dclAst = deviceDcl();
         } else throw new UnexpectedDeclarationToken(ts.peek(), line);
 
         return dclAst;
+    }
+
+    public AST deviceDcl() {
+        String endpoint = expect(TokenType.TEKST_LIT).getVal();
+        expect(TokenType.MED);
+        expect(TokenType.BLOCKSTART);
+        expect(TokenType.NEWLINE);
+        List<FieldDclNode> fields = fields();
+        expect(TokenType.SOM);
+        String id = expect(TokenType.ID).getVal();
+
+        DeviceNode device = new DeviceNode(id, fields, endpoint, line);
+        device.getFields().forEach((field) -> {
+            field.setParentId(id);
+        });
+
+        return device;
+    }
+
+    public List<FieldDclNode> fields() {
+        List<FieldDclNode> fields = new ArrayList<>();
+        while (ts.peek() == TokenType.HELTAL_DCL || ts.peek() == TokenType.DECIMALTAL_DCL || ts.peek() == TokenType.TEKST_DCL || ts.peek() == TokenType.BOOLSK_DCL) {
+            String id;
+            AST value;
+            switch (ts.peek()) {
+                case BOOLSK_DCL -> {
+                    expect(TokenType.BOOLSK_DCL);
+                    value = expr();
+                    expect(TokenType.SOM);
+                    id = expect(TokenType.ID).getVal();
+                    expect(TokenType.NEWLINE);
+                    fields.add(new FieldDclNode(id, value, line));
+                }
+                case HELTAL_DCL -> {
+                    expect(TokenType.HELTAL_DCL);
+                    value = expr();
+                    expect(TokenType.SOM);
+                    id = expect(TokenType.ID).getVal();
+                    expect(TokenType.NEWLINE);
+                    fields.add(new FieldDclNode(id, value, line));
+                }
+                case DECIMALTAL_DCL -> {
+                    expect(TokenType.DECIMALTAL_DCL);
+                    value = expr();
+                    expect(TokenType.SOM);
+                    id = expect(TokenType.ID).getVal();
+                    expect(TokenType.NEWLINE);
+                    fields.add(new FieldDclNode(id, value, line));
+                }
+                case TEKST_DCL -> {
+                    expect(TokenType.TEKST_DCL);
+                    value = expr();
+                    expect(TokenType.SOM);
+                    id = expect(TokenType.ID).getVal();
+                    expect(TokenType.NEWLINE);
+                    fields.add(new FieldDclNode(id, value, line));
+                }
+            }
+        }
+
+        return fields;
     }
 
     private AST value() {
@@ -391,9 +462,33 @@ public class ASTParser {
         return new LoopNode(funcCall.getVal(), repeatCount, line);
     }
 
+    public AST field() {
+        AST res = null;
+        String id = expect(TokenType.ID).getVal();
+        String parent = parent();
+
+        if (parent != null) {
+            res = new FieldNode(id, parent, line);
+        } else {
+            res = new IdNode(id, line);
+        }
+
+        return res;
+    }
+
+    public String parent() {
+        String res = null;
+        if(ts.peek() == TokenType.FOR) {
+            expect(TokenType.FOR);
+            res = expect(TokenType.ID).getVal();
+        }
+        return res;
+    }
+
     public Token expect(TokenType type) {
         Token token = ts.advance();
         if (token.getType() != type) {
+            System.out.println(ts.getTokenList());
             throw new UnexpectedTokenException(type, token.getType(), line);
         }
         if (type.equals(TokenType.NEWLINE)) line++;

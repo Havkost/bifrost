@@ -11,12 +11,22 @@ import static ASTVisitor.Parser.AST.*;
 public class TypeChecker extends Visitor{
 
     private boolean stringConcatenationAllowed = true;
+
     @Override
     public void visit(AssignNode n) {
         n.getValue().accept(this);
-        DataTypes type = AST.getSymbolTable().get(n.getId());
+        DataTypes type;
+        if (n.getId() instanceof FieldNode) {
+            type = AST.getSymbolTable().get(((FieldNode) n.getId()).getParentId() + "." + ((FieldNode) n.getId()).getId());
+        } else
+            type = AST.getSymbolTable().get(((IdNode) n.getId()).getName());
+
+
         if (type != n.getValue().getType()){
-            throw new IllegalTypeAssignmentException(n.getId(), type, n.getValue(), n.getLine());
+            if (n.getId() instanceof IdNode)
+                throw new IllegalTypeAssignmentException(((IdNode) n.getId()).getName(), type, n.getValue(), n.getLine());
+            else
+                throw new IllegalTypeAssignmentException(((FieldNode) n.getId()), type, n.getValue(), n.getLine());
         }
     }
 
@@ -24,7 +34,14 @@ public class TypeChecker extends Visitor{
     public void visit(BinaryComputing n) {
         n.getChild1().accept(this);
         n.getChild2().accept(this);
-        DataTypes type = findCommonDataType(n.getChild1().type, n.getChild2().type, n.getOperation());
+        DataTypes type;
+
+        try {
+            type = findCommonDataType(n.getChild1().type, n.getChild2().type, n.getOperation());
+        } catch (NullPointerException e) {
+            throw new MissingTypeException(n, n.getLine());
+        }
+
         DataTypes resultType = getOperationResultType(n.getOperation(), type);
         if(resultType != null && (resultType != DataTypes.TEKST || stringConcatenationAllowed)) {
             n.setType(resultType);
@@ -148,7 +165,29 @@ public class TypeChecker extends Visitor{
         }
     }
 
+    @Override
+    public void visit(FieldNode n) {
+        n.type = AST.getSymbolTable().get(n.getParentId() + "." + n.getId());
+    }
+
+    @Override
+    public void visit(DeviceNode n) {
+        n.getFields().forEach((field) -> {
+            field.accept(this);
+        });
+        n.type = DataTypes.DEVICE;
+    }
+
+    @Override
+    public void visit(FieldDclNode n) {
+        n.getValue().accept(this);
+        n.type = n.getValue().type;
+    }
+
     public DataTypes findCommonDataType(DataTypes type1, DataTypes type2, Operators operator) {
+        if (type1 == null || type2 == null) {
+            throw new NullPointerException();
+        }
         ArrayList<DataTypes> types = new ArrayList<>(List.of(type1, type2));
         if (type1 == type2) {
             return type1;

@@ -10,6 +10,10 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
+    public void visit(FieldNode n) {
+    }
+
+    @Override
     public void visit(ProgramNode n) {
         for(AST ast : n.getChild()){
             ast.accept(this);
@@ -35,7 +39,7 @@ public class SymbolTableFilling extends Visitor {
     @Override
     public void visit(FuncDclNode n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(), RUTINE);
-        else error("variable " + n.getId() + " is already declared");
+        else error("Variablen " + n.getId() + " er allerede deklareret.");
         for (AST child : n.getBody()) {
             child.accept(this);
         }
@@ -43,12 +47,10 @@ public class SymbolTableFilling extends Visitor {
 
     @Override
     public void visit(FuncNode n) {
-
     }
 
     @Override
     public void visit(IdNode n) {
-
     }
 
     @Override
@@ -70,49 +72,69 @@ public class SymbolTableFilling extends Visitor {
     @Override
     public void visit(TekstDcl n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),TEKST);
-        else error("variable " + n.getId() + " is already declared");
+        else error("Variablen " + n.getId() + " er allerede deklareret.");
         n.getValue().accept(this);
     }
 
     @Override
     public void visit(HeltalDcl n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),HELTAL);
-        else error("variable " + n.getId() + " is already declared");
+        else error("Variablen " + n.getId() + " er allerede deklareret.");
         n.getValue().accept(this);
     }
 
     @Override
     public void visit(DecimaltalDcl n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),DECIMALTAL);
-        else error("variable " + n.getId() + " is already declared");
+        else error("Variablen " + n.getId() + " er allerede deklareret.");
         n.getValue().accept(this);
     }
 
     @Override
     public void visit(BoolskDcl n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),BOOLSK);
-        else error("variable " + n.getId() + " is already declared");
+        else error("Variablen " + n.getId() + " er allerede deklareret.");
         n.getValue().accept(this);
     }
 
     @Override
-    public void visit(DecimaltalLiteral n) {
+    public void visit(FieldDclNode n) {
+        String id = n.getParentId() + "." + n.getId();
 
+        if (AST.getSymbolTable().get(id) == null) {
+            n.getValue().accept(this);
+            AST.getSymbolTable().put(id, n.getValue().getType());
+        }
+        else error("Variablen " + n.getId() + " er allerede deklareret.");
+    }
+
+    @Override
+    public void visit(DeviceNode n) {
+        if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),DEVICE);
+        else error("Variablen " + n.getId() + " er allerede deklareret.");
+        n.getFields().forEach((field) -> {
+            field.accept(this);
+        });
+    }
+
+    @Override
+    public void visit(DecimaltalLiteral n) {
+        n.type = AST.DataTypes.DECIMALTAL;
     }
 
     @Override
     public void visit(BoolskLiteral n) {
-
+        n.type = AST.DataTypes.BOOLSK;
     }
 
     @Override
     public void visit(HeltalLiteral n) {
-
+        n.type = AST.DataTypes.HELTAL;
     }
 
     @Override
     public void visit(TekstLiteral n) {
-
+        n.type = AST.DataTypes.TEKST;
     }
 
     private void error(String message) {

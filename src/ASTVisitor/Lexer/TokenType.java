@@ -12,6 +12,7 @@ public enum TokenType {
     BLOCKSLUT("."),
     NEWLINE("\n"),
     SAET("sæt"),
+    FOR("for"),
     TIL("til"),
     GENTAG("gentag"),
     GANGE("gange"),
@@ -38,7 +39,9 @@ public enum TokenType {
     DIVIDE("/"),
     LPAREN("("),
     RPAREN(")"),
-    EOF("\u001a");
+    EOF("\u001a"),
+    DEVICE_DCL("enhed"),
+    MED("med");
 
     final String name;
 

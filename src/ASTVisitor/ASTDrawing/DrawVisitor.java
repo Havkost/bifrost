@@ -231,4 +231,19 @@ public class DrawVisitor extends Visitor {
         n.getValue().accept(this);
         decrementY();
     }
+
+    @Override
+    public void visit(FieldDclNode n) {
+
+    }
+
+    @Override
+    public void visit(FieldNode n) {
+
+    }
+
+    @Override
+    public void visit(DeviceNode n) {
+
+    }
 }
