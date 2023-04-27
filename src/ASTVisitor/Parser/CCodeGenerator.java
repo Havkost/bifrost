@@ -187,6 +187,8 @@ public class CCodeGenerator extends Visitor {
         emit("#include <stdlib.h>\n");
         emit("#include <stdio.h>\n");
         emit("#include <stdbool.h>\n");
+        emit("#include <curl/curl.h>\n");
+        emit("#include <cjson/cjson.h>\n");
         emit("\n");
 
         n.getChild().stream().filter(ast -> ast instanceof DeviceNode).forEach((device) -> {
@@ -237,6 +239,72 @@ public class CCodeGenerator extends Visitor {
                 
                 """);
         } else emit("\n");
+
+        emit("""
+                enum Datatype {
+                  TYPE_INTEGER,
+                  TYPE_DOUBLE,
+                  TYPE_STRING,
+                  TYPE_BOOL
+                };
+                
+                int send_field_to_endpoint(char *endpoint, char *field, void *value_ptr, enum Datatype datatype) {
+                  char *json;
+                  cJSON *root;
+                                
+                  // Create JSON from field and value
+                  root = cJSON_CreateObject();
+                  switch(datatype) {
+                    case TYPE_INTEGER:
+                    cJSON_AddItemToObject(root, field, cJSON_CreateNumber((double) *((int *) value_ptr)));
+                    break;
+                    case TYPE_DOUBLE:
+                    cJSON_AddItemToObject(root, field, cJSON_CreateNumber(*((double *) value_ptr)));
+                    break;
+                    case TYPE_STRING:
+                    cJSON_AddItemToObject(root, field, cJSON_CreateString((char *) value_ptr));
+                    break;
+                    case TYPE_BOOL:
+                    cJSON_AddItemToObject(root, field, cJSON_CreateBool(*((bool *) value_ptr)));
+                    break;
+                  }
+                  json = cJSON_Print(root);
+                                
+                  // Send to endpoint
+                  CURL *curl;
+                  CURLcode res;
+                                
+                  char *protocol = "http://"; \s
+                  char *url = calloc(strlen(protocol)+strlen(endpoint)+1, sizeof(char));
+                  strcpy(url, protocol);
+                  strcat(url, endpoint);
+                                
+                  curl = curl_easy_init();
+                  if(curl) {
+                    struct curl_slist *hs=NULL;
+                    hs = curl_slist_append(hs, "Content-Type: application/json");
+                    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, hs);
+                    curl_easy_setopt(curl, CURLOPT_URL, url);
+                    // curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+                    curl_easy_setopt(curl, CURLOPT_POST, 1);
+                    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json);
+                \s
+                    res = curl_easy_perform(curl);
+                    /* Check for errors */
+                    if(res != CURLE_OK)
+                      fprintf(stderr, "curl_easy_perform() failed: %s\\n",
+                              curl_easy_strerror(res));
+                  }
+                                
+                  // Cleanup
+                  curl_easy_cleanup(curl);
+                  free(json);
+                  cJSON_Delete(root);
+                  free(url);
+                                
+                  return 0;
+                }
+                """);
 
         emit("int main() {\n");
         blockIndent++;

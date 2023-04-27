@@ -19,11 +19,7 @@ const updateLightbulb = (update) => {
 
 const updateDisplay = (update) => {
   newContent = update.content ?? undefined;
-  if(newContent != undefined) {
-    deviceElements.display.content.innerText = toString(newContent);
-  } else {
-    deviceElements.display.content.innerText = "...";
-  }
+  if(newContent != undefined) deviceElements.display.content.innerText = newContent;
 }
 
 const deviceUpdateFunctions = {
@@ -35,10 +31,25 @@ const deviceUpdateFunctions = {
 eventSource.onmessage = (event) => {
   const data = JSON.parse(event.data);
   for(let key of Object.keys(data)){
-    deviceUpdateFunctions[key](data[key]);
+    if(Object.keys(deviceUpdateFunctions).indexOf(key) != -1) deviceUpdateFunctions[key](data[key]);
   }
 }
 
 eventSource.onerror = (error) => {
   console.error('SSE error:', error);
 }
+
+const initializeDevices = async () => {
+  res = await fetch("http://localhost:3000/devices", {
+    method: 'GET',
+    headers: {
+        'Accept': 'application/json',
+    },
+  });
+  let devices = await res.json();
+  for(let key of Object.keys(devices)){
+    if(Object.keys(deviceUpdateFunctions).indexOf(key) != -1) deviceUpdateFunctions[key](devices[key]);
+  }
+}
+
+initializeDevices();
