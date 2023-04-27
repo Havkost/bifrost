@@ -16,6 +16,12 @@ public class FieldDclNode extends AST {
         this.value = value;
     }
 
+    public FieldDclNode(String id, AST value) {
+        super(0);
+        this.id = id;
+        this.value = value;
+    }
+
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }

@@ -83,7 +83,7 @@ public class TestPrettyPrinting {
 
     @Test
     void testAssign() {
-        AssignNode assignNode = new AssignNode("a", new HeltalLiteral("5"));
+        AssignNode assignNode = new AssignNode(new IdNode("a"), new HeltalLiteral("5"));
         assignNode.accept(prettyPrinter);
 
         assertEquals("sæt a til 5", prettyPrinter.getCode());
@@ -108,7 +108,7 @@ public class TestPrettyPrinting {
     @Test
     void testIfNode() {
         IfNode ifNode = new IfNode(new UnaryComputing("ikke", new BoolskLiteral("falsk")),
-                    List.of(new AssignNode("a", new HeltalLiteral("3")), new FuncNode("func"))
+                    List.of(new AssignNode(new IdNode("a"), new HeltalLiteral("3")), new FuncNode("func"))
                 );
         ifNode.accept(prettyPrinter);
 
@@ -130,8 +130,8 @@ public class TestPrettyPrinting {
     @Test
     void testFuncDclNode() {
         FuncDclNode funcDclNode = new FuncDclNode("func", List.of(
-                new AssignNode("a", new HeltalLiteral("5")),
-                new AssignNode("b", new TekstLiteral("Test"))
+                new AssignNode(new IdNode("a"), new HeltalLiteral("5")),
+                new AssignNode(new IdNode("b"), new TekstLiteral("Test"))
         ));
         funcDclNode.accept(prettyPrinter);
 
@@ -148,13 +148,13 @@ public class TestPrettyPrinting {
         ProgramNode prog = new ProgramNode(List.of(
                 new TekstDcl(new TekstLiteral("Tekst"), "b"),
                 new FuncDclNode("func", List.of(
-                        new AssignNode("a", new HeltalLiteral("5")),
-                        new AssignNode("b", new TekstLiteral("Test"))
+                        new AssignNode(new IdNode("a"), new HeltalLiteral("5")),
+                        new AssignNode(new IdNode("b"), new TekstLiteral("Test"))
                 )),
                 new HeltalDcl(new HeltalLiteral("3"), "a"),
                 new IfNode(new BinaryComputing("er", new DecimaltalLiteral("3,45"),
                                 new DecimaltalLiteral("5,34")),
-                        List.of(new AssignNode("b", new TekstLiteral("Hello world")))
+                        List.of(new AssignNode(new IdNode("b"), new TekstLiteral("Hello world")))
                 )
         ));
         prog.accept(prettyPrinter);

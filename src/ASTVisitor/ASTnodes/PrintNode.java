@@ -16,6 +16,11 @@ public class PrintNode extends AST {
         this.value = value;
     }
 
+    public PrintNode(AST value) {
+        super(0);
+        this.value = value;
+    }
+
     @Override
     public void accept(Visitor v) {
         v.visit(this);

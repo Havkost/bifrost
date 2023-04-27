@@ -20,6 +20,18 @@ public class AssignNode extends AST {
         this.value = value;
     }
 
+    public AssignNode(IdNode id, AST value) {
+        super(0);
+        this.id = id;
+        this.value = value;
+    }
+
+    public AssignNode(FieldNode id, AST value) {
+        super(0);
+        this.id = id;
+        this.value = value;
+    }
+
     public void setValue(AST value) {
         this.value = value;
     }

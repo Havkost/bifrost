@@ -28,10 +28,6 @@ public class TokenStream {
         return ans;
     }
 
-    public long getIndex() {
-        return index;
-    }
-
     public List<Token> getTokenList() {
         return tokenList;
     }

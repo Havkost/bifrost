@@ -20,6 +20,12 @@ public class FuncDclNode extends AST {
         this.body = body;
     }
 
+    public FuncDclNode(String id, List<AST> body) {
+        super(0);
+        this.id = id;
+        this.body = body;
+    }
+
     public String getId() {
         return id;
     }

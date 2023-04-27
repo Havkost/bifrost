@@ -14,6 +14,12 @@ public class LoopNode extends AST {
         this.repeatCount = repeatCount;
     }
 
+    public LoopNode(String id, AST repeatCount) {
+        super(0);
+        this.id = id;
+        this.repeatCount = repeatCount;
+    }
+
     @Override
     public void accept(Visitor v) {
         v.visit(this);

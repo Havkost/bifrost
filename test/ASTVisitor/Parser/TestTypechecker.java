@@ -1,6 +1,10 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
+import ASTVisitor.Exceptions.IllegalOperationTypeException;
+import ASTVisitor.Exceptions.IllegalTypeAssignmentException;
+import ASTVisitor.Exceptions.MissingTypeException;
+import ASTVisitor.Exceptions.UnknownSubroutineException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import java.util.ArrayList;
@@ -17,7 +21,7 @@ public class TestTypechecker {
         bin = new BinaryComputing(op.textual, operand, operand);
         ProgramNode ast = new ProgramNode(asList(bin));
         if (AST.getOperationResultType(op, type) == null) {
-            assertThrows(Error.class, () ->
+            assertThrows(IllegalOperationTypeException.class, () ->
                     ast.accept(new TypeChecker()));
         } else {
             assertDoesNotThrow(() ->
@@ -31,7 +35,7 @@ public class TestTypechecker {
         una = new UnaryComputing(op.textual, operand);
         ProgramNode ast = new ProgramNode(asList(una));
         if (AST.getOperationResultType(op, type) == null) {
-            assertThrows(Error.class, () ->
+            assertThrows(MissingTypeException.class, () ->
                     ast.accept(new TypeChecker()));
         } else {
             assertDoesNotThrow(() ->
@@ -137,7 +141,7 @@ public class TestTypechecker {
         HeltalDcl heltal = new HeltalDcl(new HeltalLiteral("2"), "b");
         TekstDcl tekst = new TekstDcl(new TekstLiteral("\"hej\""), "c");
         BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), "d");
-        FuncDclNode funcDcl = new FuncDclNode("hej", List.of(new AssignNode("a", new DecimaltalLiteral("2,5"))));
+        FuncDclNode funcDcl = new FuncDclNode("hej", null);
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {
                 if (type == AST.DataTypes.HELTAL) {
@@ -148,7 +152,6 @@ public class TestTypechecker {
                     binaryComputingTemplate(bool.getValue(), op, type);
                 } else if (type == AST.DataTypes.TEKST) {
                     binaryComputingTemplate(tekst.getValue(), op, type);
-                    //TODO tjek om denne er korrekt
                 } else if (type == AST.DataTypes.RUTINE) {
                     binaryComputingTemplate(funcDcl, op, type);
                 }
@@ -162,7 +165,7 @@ public class TestTypechecker {
         DecimaltalLiteral dec = new DecimaltalLiteral("1,5");
         DecimaltalDcl decDcl = new DecimaltalDcl(new DecimaltalLiteral("2,5"), "a");
 
-        AssignNode assDec = new AssignNode(decDcl.getId(), dec);
+        AssignNode assDec = new AssignNode(new IdNode(decDcl.getId()), dec);
 
         ProgramNode ast = new ProgramNode(asList(decDcl, assDec));
         ast.accept(new SymbolTableFilling());
@@ -176,11 +179,11 @@ public class TestTypechecker {
         HeltalLiteral hel = new HeltalLiteral("1");
         DecimaltalDcl decDcl = new DecimaltalDcl(new DecimaltalLiteral("4,2"), "a");
 
-        AssignNode assDec = new AssignNode(decDcl.getId(), hel);
+        AssignNode assDec = new AssignNode(new IdNode(decDcl.getId()), hel);
 
         ProgramNode ast = new ProgramNode(asList(decDcl, assDec));
         ast.accept(new SymbolTableFilling());
-        assertThrows(Error.class, () ->
+        assertThrows(IllegalTypeAssignmentException.class, () ->
                 ast.accept(new TypeChecker())
         );
     }
@@ -190,11 +193,11 @@ public class TestTypechecker {
         DecimaltalLiteral dec = new DecimaltalLiteral("1,2");
         HeltalDcl helDcl = new HeltalDcl(new HeltalLiteral("4"), "a");
 
-        AssignNode assDec = new AssignNode(helDcl.getId(), dec);
+        AssignNode assDec = new AssignNode(new IdNode(helDcl.getId()), dec);
 
         ProgramNode ast = new ProgramNode(asList(helDcl, assDec));
         ast.accept(new SymbolTableFilling());
-        assertThrows(Error.class, () ->
+        assertThrows(IllegalTypeAssignmentException.class, () ->
                 ast.accept(new TypeChecker())
         );
     }
@@ -204,11 +207,11 @@ public class TestTypechecker {
         HeltalLiteral hel = new HeltalLiteral("1");
         TekstDcl tekstDcl = new TekstDcl(new TekstLiteral("\"Hejsa\""), "a");
 
-        AssignNode assDec = new AssignNode(tekstDcl.getId(), hel);
+        AssignNode assDec = new AssignNode(new IdNode(tekstDcl.getId()), hel);
 
         ProgramNode ast = new ProgramNode(asList(tekstDcl, assDec));
         ast.accept(new SymbolTableFilling());
-        assertThrows(Error.class, () ->
+        assertThrows(IllegalTypeAssignmentException.class, () ->
                 ast.accept(new TypeChecker())
         );
     }
@@ -218,7 +221,7 @@ public class TestTypechecker {
         HeltalLiteral hel = new HeltalLiteral("2");
         HeltalDcl helDcl = new HeltalDcl(new HeltalLiteral("1"), "b");
 
-        AssignNode assHeltal = new AssignNode(helDcl.getId(), hel);
+        AssignNode assHeltal = new AssignNode(new IdNode(helDcl.getId()), hel);
 
         ProgramNode ast = new ProgramNode(asList(helDcl, assHeltal));
         ast.accept(new SymbolTableFilling());
@@ -232,7 +235,7 @@ public class TestTypechecker {
         TekstLiteral tekst = new TekstLiteral("\"hej\"");
         TekstDcl tekstDcl = new TekstDcl(new TekstLiteral("\"øf\""), "c");
 
-        AssignNode assTekst = new AssignNode(tekstDcl.getId(), tekst);
+        AssignNode assTekst = new AssignNode(new IdNode(tekstDcl.getId()), tekst);
 
         ProgramNode ast = new ProgramNode(asList(tekstDcl, assTekst));
         ast.accept(new SymbolTableFilling());
@@ -246,7 +249,7 @@ public class TestTypechecker {
         BoolskLiteral bool = new BoolskLiteral("sandt");
         BoolskDcl boolDcl = new BoolskDcl(new BoolskLiteral("falsk"), "d");
 
-        AssignNode assBool = new AssignNode(boolDcl.getId(), bool);
+        AssignNode assBool = new AssignNode(new IdNode(boolDcl.getId()), bool);
 
         ProgramNode ast = new ProgramNode(asList(boolDcl, assBool));
         ast.accept(new SymbolTableFilling());
@@ -272,7 +275,7 @@ public class TestTypechecker {
         TekstDcl dcl1 = new TekstDcl(new TekstLiteral("\"med dig\""), "b");
         BinaryComputing bin = new BinaryComputing(">", dcl.getValue(), dcl1.getValue());
         ProgramNode ast = new ProgramNode(asList(bin));
-        assertThrows(Error.class, () ->
+        assertThrows(IllegalOperationTypeException.class, () ->
                 ast.accept(new TypeChecker())
         );
     }
@@ -346,7 +349,7 @@ public class TestTypechecker {
     @Test
     void testFuncDcl() {
         TekstDcl tekstDcl = new TekstDcl(new TekstLiteral("test"), "a");
-        FuncDclNode func = new FuncDclNode("func", List.of(new AssignNode("a", new TekstLiteral("test2"))));
+        FuncDclNode func = new FuncDclNode("func", List.of(new AssignNode(new IdNode("a"), new TekstLiteral("test2"))));
         ProgramNode prog = new ProgramNode(List.of(tekstDcl, func));
         prog.accept(new SymbolTableFilling());
 
@@ -356,7 +359,7 @@ public class TestTypechecker {
     @Test
     public void testLoopNodeTypeCheckRepeatsThrows() {
         TekstDcl tekstDcl = new TekstDcl(new TekstLiteral("Test"), "a");
-        FuncDclNode func = new FuncDclNode("hej", List.of(new AssignNode("a", new TekstLiteral("test"))));
+        FuncDclNode func = new FuncDclNode("hej", List.of(new AssignNode(new IdNode("a"), new TekstLiteral("test"))));
         LoopNode loop = new LoopNode(func.getId(), new DecimaltalLiteral("2,5"));
         ProgramNode ast = new ProgramNode(asList(tekstDcl, loop, func));
         ast.accept(new SymbolTableFilling());
@@ -382,8 +385,7 @@ public class TestTypechecker {
         HeltalDcl heltal = new HeltalDcl(new HeltalLiteral("2"), "b");
         TekstDcl tekst = new TekstDcl(new TekstLiteral("\"hej\""), "c");
         BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), "d");
-        FuncDclNode funcDcl = new FuncDclNode("hej", List.of(new AssignNode("a", new DecimaltalLiteral("2,5"))));
-        UnaryComputing una = null;
+        FuncDclNode funcDcl = new FuncDclNode("hej", List.of(new AssignNode(new IdNode("a"), new DecimaltalLiteral("2,5"))));
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {
                 if (type == AST.DataTypes.HELTAL) {
@@ -419,7 +421,7 @@ public class TestTypechecker {
 
         prog.accept(new SymbolTableFilling());
 
-        assertThrows(Error.class, () -> funcNode.accept(new TypeChecker()));
+        assertThrows(UnknownSubroutineException.class, () -> funcNode.accept(new TypeChecker()));
     }
 
     @Test

@@ -82,7 +82,7 @@ public class TestSymbolTableFilling {
     @Test
     void testFuncDcl() {
         BoolskDcl dcl = new BoolskDcl(new BoolskLiteral("sandt"), "b");
-        AssignNode ass = new AssignNode("b", new BoolskLiteral("falsk"));
+        AssignNode ass = new AssignNode(new IdNode("b"), new BoolskLiteral("falsk"));
         IfNode ifNode = new IfNode(new UnaryComputing("ikke", new BinaryComputing("+",
                 new HeltalLiteral("3"), new IdNode("b"))), List.of(new IfNode(new BoolskLiteral("sandt"), null)));
         FuncNode funcNode = new FuncNode("a");

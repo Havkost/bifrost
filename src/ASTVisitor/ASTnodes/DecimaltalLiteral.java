@@ -12,6 +12,11 @@ public class DecimaltalLiteral extends AST {
         this.value = value;
     }
 
+    public DecimaltalLiteral(String value) {
+        super(0);
+        this.value = value;
+    }
+
     @Override
     public void accept(Visitor v) {
         v.visit(this);

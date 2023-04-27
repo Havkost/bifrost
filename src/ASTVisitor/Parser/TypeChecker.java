@@ -21,12 +21,20 @@ public class TypeChecker extends Visitor{
         } else
             type = AST.getSymbolTable().get(((IdNode) n.getId()).getName());
 
-
         if (type != n.getValue().getType()){
-            if (n.getId() instanceof IdNode)
-                throw new IllegalTypeAssignmentException(((IdNode) n.getId()).getName(), type, n.getValue(), n.getLine());
-            else
-                throw new IllegalTypeAssignmentException(((FieldNode) n.getId()), type, n.getValue(), n.getLine());
+            try {
+                if (n.getId() instanceof IdNode)
+                    throw new IllegalTypeAssignmentException(((IdNode) n.getId()).getName(), type, n.getValue(), n.getLine());
+                else
+                    throw new IllegalTypeAssignmentException(((FieldNode) n.getId()), type, n.getValue(), n.getLine());
+            } catch (NullPointerException e) {
+                if (n.getValue() instanceof BinaryComputing)
+                    throw new MissingTypeException((BinaryComputing) n.getValue(), n.getLine());
+                else if (n.getValue() instanceof UnaryComputing)
+                    throw new MissingTypeException((UnaryComputing) n.getValue(), n.getLine());
+                else throw new MissingTypeException(n.getValue(), n.getLine());
+            }
+
         }
     }
 
@@ -35,6 +43,10 @@ public class TypeChecker extends Visitor{
         n.getChild1().accept(this);
         n.getChild2().accept(this);
         DataTypes type;
+
+        if(n.getChild1().type == DataTypes.RUTINE || n.getChild2().type == DataTypes.RUTINE) {
+            throw new IllegalOperationTypeException(n.getOperation(), DataTypes.RUTINE, n.getLine());
+        }
 
         try {
             type = findCommonDataType(n.getChild1().type, n.getChild2().type, n.getOperation());
@@ -72,6 +84,8 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(FuncDclNode n) {
+        n.setType(DataTypes.RUTINE);
+        if(n.getBody() == null) return;
         for(AST ast : n.getBody()) {
             ast.accept(this);
         }
@@ -82,6 +96,8 @@ public class TypeChecker extends Visitor{
         if (AST.getSymbolTable().get(n.getId()) != DataTypes.RUTINE) {
             throw new UnknownSubroutineException(n.getId(), n.getLine());
         }
+
+        n.setType(DataTypes.RUTINE);
     }
 
     @Override
@@ -127,10 +143,11 @@ public class TypeChecker extends Visitor{
     @Override
     public void visit(UnaryComputing n) {
         n.getChild().accept(this);
+
         DataTypes resultType = getOperationResultType(n.getOperation(), n.getChild().type);
         if(resultType != null) {
             n.setType(resultType);
-        } else error("Kan ikke bruge operatoren '" + n.getOperation() + "' på typen " + n.getChild().type);
+        } else throw new MissingTypeException(n, n.getLine());
     }
 
     @Override

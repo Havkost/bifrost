@@ -52,7 +52,7 @@ public class CCodeGenerator extends Visitor {
         String id;
         if (n.getId() instanceof IdNode) id = ((IdNode) n.getId()).getName();
         else id = ((FieldNode) n.getId()).getParentId() + "." + ((FieldNode) n.getId()).getId();
-        if (SymbolTable.get(id).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
+        if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
             emit("realloc(" + id + ", " + ((TekstLiteral) n.getValue()).getValue().length() + " * sizeof(char));\n");
             indent(blockIndent);
         } else if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST) && n.getValue().getType().equals(TEKST)) {
@@ -204,20 +204,21 @@ public class CCodeGenerator extends Visitor {
             else emit(dataTypeString.get(type) + " " + id + ";\n");
         });
 
-        emit("\nint free_memory () {\n");
-        blockIndent++;
-        AST.getSymbolTable().forEach((id, type) -> {
-            if(type == TEKST) {
-                indent(blockIndent);
-                emit("free(" + id + ");\n");
-            }
-        });
-        indent(blockIndent);
-        emit("return 0;\n");
-        blockIndent--;
-        emit("}\n\n");
+        if (AST.getSymbolTable().containsValue(TEKST)) {
+            emit("\nint free_memory () {\n");
+            blockIndent++;
+            AST.getSymbolTable().forEach((id, type) -> {
+                if(type == TEKST) {
+                    indent(blockIndent);
+                    emit("free(" + id + ");\n");
+                }
+            });
+            indent(blockIndent);
+            emit("return 0;\n");
+            blockIndent--;
+            emit("}\n\n");
 
-        emit("""
+            emit("""
                 char* concat(char* str1, char* str2) {
                     size_t len = strlen(str1) + strlen(str2) + 1;
                     char* res = malloc(len);
@@ -229,20 +230,21 @@ public class CCodeGenerator extends Visitor {
                 
                 """);
 
-        emit("""
+            emit("""
                 int customStrLen(char* str1, int len2) {
                     return strlen(str1) + len2;
                 }
                 
                 """);
+        } else emit("\n");
 
         emit("int main() {\n");
         blockIndent++;
         for(AST ast : n.getChild()){
             if (ast instanceof DeviceNode) {
                 indent(blockIndent);
-                emit(((DeviceNode) ast).getId() + ".endpoint__ = \""
-                        + ((DeviceNode) ast).getEndpoint() + "\";\n");
+                emit(("strcpy(" + ((DeviceNode) ast).getId()) + ".endpoint__, \""
+                        + ((DeviceNode) ast).getEndpoint() + "\");\n");
                 ((DeviceNode) ast).getFields().forEach((field) -> {
                     indent(blockIndent);
                     field.accept(this);
@@ -256,8 +258,12 @@ public class CCodeGenerator extends Visitor {
             }
         }
         indent(blockIndent);
-        emit("free_memory();\n");
-        indent(blockIndent);
+
+        if (AST.getSymbolTable().containsValue(TEKST)) {
+            emit("free_memory();\n");
+            indent(blockIndent);
+        }
+
         emit("return 0;");
         blockIndent--;
         emit("\n");
@@ -363,7 +369,7 @@ public class CCodeGenerator extends Visitor {
         emit("typedef struct {\n");
         blockIndent++;
         indent(blockIndent);
-        emit("char[" + (n.getEndpoint().length()+1) + "] endpoint__;\n");
+        emit("char endpoint__[" + (n.getEndpoint().length()+1) + "];\n");
         n.getFields().forEach((field) -> {
             indent(blockIndent);
             emit(dataTypeString.get(field.getType()) + " " + field.getId() + ";");

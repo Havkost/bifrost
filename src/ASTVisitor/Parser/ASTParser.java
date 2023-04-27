@@ -10,7 +10,6 @@ import ASTVisitor.Lexer.TokenType;
 import java.util.ArrayList;
 import java.util.List;
 
-import ASTVisitor.Lexer.TokenType;
 import ASTVisitor.Parser.AST.Operators;
 
 public class ASTParser {
@@ -424,7 +423,7 @@ public class ASTParser {
             valueAST = new DecimaltalLiteral(expect(TokenType.DECIMALTAL_LIT).getVal(), line);
         } else if (ts.peek() == TokenType.BOOLSK_LIT) {
             valueAST = new BoolskLiteral(expect(TokenType.BOOLSK_LIT).getVal(), line);
-        }
+        } else throw new UnexpectedExpressionToken(ts.peek(), line);
 
         return valueAST;
     }

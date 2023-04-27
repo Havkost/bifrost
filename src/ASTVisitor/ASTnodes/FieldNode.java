@@ -14,6 +14,12 @@ public class FieldNode extends AST {
         this.parentId = parentId;
     }
 
+    public FieldNode(String id, String parentId) {
+        super(0);
+        this.id = id;
+        this.parentId = parentId;
+    }
+
     public String getId() {
         return id;
     }
