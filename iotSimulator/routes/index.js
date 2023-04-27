@@ -83,8 +83,8 @@ router.get('/lightbulb', function(req, res, next) {
 router.post('/display', function(req, res, next) {
   let content = req.body?.content;
 
-  if(content === null) return res.status(400).send('Content was not found!');
-  content = toString(content);
+  if(content == null) return res.status(400).send('Content was not found!');
+  content = ""+content; // Convert to string
   if(content.length > 150) return res.status(400).send('Text is too large for the display!'); // max 150 characters in string
   devices.display.content = content;
 

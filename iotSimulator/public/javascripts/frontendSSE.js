@@ -19,11 +19,7 @@ const updateLightbulb = (update) => {
 
 const updateDisplay = (update) => {
   newContent = update.content ?? undefined;
-  if(newContent != undefined) {
-    deviceElements.display.content.innerText = newContent;
-  } else {
-    deviceElements.display.content.innerText = "...";
-  }
+  if(newContent != undefined) deviceElements.display.content.innerText = newContent;
 }
 
 const deviceUpdateFunctions = {
@@ -35,7 +31,7 @@ const deviceUpdateFunctions = {
 eventSource.onmessage = (event) => {
   const data = JSON.parse(event.data);
   for(let key of Object.keys(data)){
-    deviceUpdateFunctions[key](data[key]);
+    if(Object.keys(deviceUpdateFunctions).indexOf(key) != -1) deviceUpdateFunctions[key](data[key]);
   }
 }
 
