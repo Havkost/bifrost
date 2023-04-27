@@ -25,6 +25,11 @@ body {
 #content-container {
   display: grid;
   place-content: center;
+  grid-template-columns: 1fr 2fr;
+}
+
+#description-container {
+  margin: auto;
 }
 
 a {
@@ -36,6 +41,7 @@ a {
 }
 
 #device-container {
+  margin: auto;
   height: 100vh;
   aspect-ratio: 1/1;
   position: relative;
@@ -68,4 +74,21 @@ a {
   margin: auto;
   content: "";
   background: radial-gradient(rgba(227, 241, 255, 1) 0%, rgba(227, 241, 255, 0.9) 10%, rgba(255, 255, 255, 0) 70%);
+}
+
+#lcd-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+#content {
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: x-large;
+    color: #1C1917;
+    background-color: var(--col-gray-200);
+    border-radius: 10px;
+    padding: 10px 40px;
+    border: #1C1917 2px solid;
 }
