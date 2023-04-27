@@ -52,7 +52,7 @@ const initializeDevices = async () => {
   });
   let devices = await res.json();
   for(let key of Object.keys(devices)){
-    deviceUpdateFunctions[key](devices[key]);
+    if(Object.keys(deviceUpdateFunctions).indexOf(key) != -1) deviceUpdateFunctions[key](devices[key]);
   }
 }
 
