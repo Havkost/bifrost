@@ -34,8 +34,6 @@ const deviceUpdateFunctions = {
 // HANDLE SSE
 eventSource.onmessage = (event) => {
   const data = JSON.parse(event.data);
-  console.log('keys:', Object.keys(data));
-  console.log('data:',data);
   for(let key of Object.keys(data)){
     deviceUpdateFunctions[key](data[key]);
   }
