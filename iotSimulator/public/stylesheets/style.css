@@ -31,10 +31,44 @@ a {
 }
 
 .center {
+  display: flex;
+  flex-direction: column;
   position: absolute;
+  z-index: -100;
   inset: 0;
   margin: auto;
-  width: 50vw;
+  width: 80vw;
   padding: 2em;
   background-color: var(--col-gray-600);
+}
+
+#device-container {
+  flex: 1;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#lightbulb {
+  position: relative;
+}
+
+#lightbulb img {
+  position: absolute;
+  width: 15em;
+  inset: 0;
+  margin: auto;
+}
+
+#glow::after {
+  position: absolute;
+  z-index: -90;
+  width: 30em;
+  height: 30em;
+  inset: 0;
+  top: -7.5em;
+  border-radius: 100vw;
+  margin: auto;
+  content: "";
+  background: radial-gradient(rgba(227, 241, 255, 1) 0%, rgba(227, 241, 255, 0.9) 10%, rgba(255, 255, 255, 0) 70%);
 }
