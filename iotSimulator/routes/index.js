@@ -4,7 +4,7 @@ let router = express.Router();
 // Define devices
 let devices = {
   lightbulb: {power: false, brightness: 100}, // Brightness = [0;100]
-  display: {content: ""},
+  display: {content: "Standard tekst"},
   thermometer: {temperature: 20},
   motionSensor: {presence: false, lastUpdated: 0},
 }
@@ -44,6 +44,10 @@ router.get('/stateSSE', (req, res) => {
       SSEconnections.pop(res);
       res.end();
   });
+});
+
+router.get('/devices', function(req, res, next) {
+  res.send(devices);
 });
 
 // TODO: flyt specifikke devices til deres egen routes fil

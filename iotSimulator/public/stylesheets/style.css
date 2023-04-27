@@ -60,6 +60,10 @@ a {
   margin: auto;
 }
 
+#glow {
+  display: none;
+}
+
 #glow::after {
   position: absolute;
   z-index: -90;
