@@ -12,6 +12,11 @@ public class ProgramNode extends AST {
         this.children = children;
     }
 
+    public ProgramNode(List<AST> children) {
+        super(0);
+        this.children = children;
+    }
+
     public List<AST> getChild() {
         return children;
     }

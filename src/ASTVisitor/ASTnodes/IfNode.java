@@ -21,6 +21,12 @@ public class IfNode extends AST {
         this.body = children;
     }
 
+    public IfNode(AST expr, List<AST> children) {
+        super(0);
+        this.expr = expr;
+        this.body = children;
+    }
+
     public AST getExpr() {
         return expr;
     }

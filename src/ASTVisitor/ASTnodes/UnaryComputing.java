@@ -11,11 +11,34 @@ public class UnaryComputing extends AST {
         super(line);
         this.child = child;
         for(Operators operator : Operators.values()) {
-            if(operator.textual.equals(operation.toLowerCase())) {
+            if(operator.textual.equals(operation.toLowerCase())){
                 this.operation = operator;
                 return;
             }
         }
+    }
+
+    public UnaryComputing(String operation, AST child) {
+        super(0);
+        this.child = child;
+        for(Operators operator : Operators.values()) {
+            if(operator.textual.equals(operation.toLowerCase())){
+                this.operation = operator;
+                return;
+            }
+        }
+    }
+
+    public UnaryComputing(Operators operation, AST child, int line) {
+        super(line);
+        this.operation = operation;
+        this.child = child;
+    }
+
+    public UnaryComputing(Operators operation, AST child) {
+        super(0);
+        this.operation = operation;
+        this.child = child;
     }
 
     public void accept(Visitor v) {

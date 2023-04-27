@@ -12,6 +12,11 @@ public class FuncNode extends AST {
         this.id = id;
     }
 
+    public FuncNode(String id) {
+        super(0);
+        this.id = id;
+    }
+
     @Override
     public void accept(Visitor v) {
         v.visit(this);

@@ -15,6 +15,12 @@ public class DecimaltalDcl extends AST {
         this.value = value;
     }
 
+    public DecimaltalDcl(AST value, String id) {
+        super(0);
+        this.id = id;
+        this.value = value;
+    }
+
     public void accept(Visitor v) {
         v.visit(this);
     }

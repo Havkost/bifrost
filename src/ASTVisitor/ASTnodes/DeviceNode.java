@@ -19,6 +19,13 @@ public class DeviceNode extends AST {
         this.endpoint = endpoint;
     }
 
+    public DeviceNode(String id, List<FieldDclNode> fields, String endpoint) {
+        super(0);
+        this.id = id;
+        this.fields = fields;
+        this.endpoint = endpoint;
+    }
+
     public String getId() {
         return id;
     }

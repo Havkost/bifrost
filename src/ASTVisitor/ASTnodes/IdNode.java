@@ -17,6 +17,11 @@ public class IdNode extends AST {
         this.name = name;
     }
 
+    public IdNode(String name) {
+        super(0);
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
