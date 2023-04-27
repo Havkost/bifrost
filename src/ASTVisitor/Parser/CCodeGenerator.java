@@ -49,17 +49,20 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(AssignNode n) {
-        if (SymbolTable.get(n.getId()) != null && SymbolTable.get(n.getId()).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
-            emit("realloc(" + n.getId() + ", " + ((TekstLiteral) n.getValue()).getValue().length() + " * sizeof(char));\n");
+        String id;
+        if (n.getId() instanceof IdNode) id = ((IdNode) n.getId()).getName();
+        else id = ((FieldNode) n.getId()).getParentId() + "." + ((FieldNode) n.getId()).getId();
+        if (SymbolTable.get(id).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
+            emit("realloc(" + id + ", " + ((TekstLiteral) n.getValue()).getValue().length() + " * sizeof(char));\n");
             indent(blockIndent);
-        } else if (SymbolTable.get(n.getId()) != null && SymbolTable.get(n.getId()).equals(TEKST) && n.getValue().getType().equals(TEKST)) {
-            emit(n.getId() + " = ");
+        } else if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST) && n.getValue().getType().equals(TEKST)) {
+            emit(id + " = ");
             emit("realloc(");
             n.getValue().accept(this);
             emit(");");
             return;
         }
-        emit(n.getId() + " = ");
+        emit(id + " = ");
         n.getValue().accept(this);
         emit(";");
     }
@@ -186,8 +189,18 @@ public class CCodeGenerator extends Visitor {
         emit("#include <stdbool.h>\n");
         emit("\n");
 
+        n.getChild().stream().filter(ast -> ast instanceof DeviceNode).forEach((device) -> {
+            device.accept(this);
+        });
+
         AST.getSymbolTable().forEach((id, type) -> {
-            if(type == RUTINE) emit("void " + id + "();\n");
+            if (id.contains(".")) {
+                // Do nothing
+            } else if (type == DEVICE) {
+                emit(id.substring(0,1).toUpperCase() +
+                        id.substring(1) + " " + id + ";\n");
+            }
+            else if(type == RUTINE) emit("void " + id + "();\n");
             else emit(dataTypeString.get(type) + " " + id + ";\n");
         });
 
@@ -226,7 +239,17 @@ public class CCodeGenerator extends Visitor {
         emit("int main() {\n");
         blockIndent++;
         for(AST ast : n.getChild()){
-            if(!(ast instanceof FuncDclNode)) {
+            if (ast instanceof DeviceNode) {
+                indent(blockIndent);
+                emit(((DeviceNode) ast).getId() + ".endpoint__ = \""
+                        + ((DeviceNode) ast).getEndpoint() + "\";\n");
+                ((DeviceNode) ast).getFields().forEach((field) -> {
+                    indent(blockIndent);
+                    field.accept(this);
+                    emit("\n");
+                });
+                emit("\n");
+            } else if(!(ast instanceof FuncDclNode)) {
                 indent(blockIndent);
                 ast.accept(this);
                 emit("\n");
@@ -301,10 +324,25 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(FieldDclNode n) {
+        String id = n.getParentId() + "." + n.getId();
+        emit(id+ " = ");
+        if (n.type == TEKST) {
+            emit("malloc((strlen(");
+            n.getValue().accept( this);
+            emit(")+1) * sizeof(char));\n");
+            indent(blockIndent);
+            emit("strcpy(" + id + ", ");
+            n.getValue().accept(this);
+            emit(");");
+            return;
+        }
+        n.getValue().accept(this);
+        emit(";");
     }
 
     @Override
     public void visit(FieldNode n) {
+        emit(n.getParentId() + "." + n.getId());
     }
 
 
@@ -322,7 +360,19 @@ public class CCodeGenerator extends Visitor {
     }
     @Override
     public void visit(DeviceNode n) {
-        //TODO
+        emit("typedef struct {\n");
+        blockIndent++;
+        indent(blockIndent);
+        emit("char[" + (n.getEndpoint().length()+1) + "] endpoint__;\n");
+        n.getFields().forEach((field) -> {
+            indent(blockIndent);
+            emit(dataTypeString.get(field.getType()) + " " + field.getId() + ";");
+            emit("\n");
+        });
+        blockIndent--;
+        indent(blockIndent);
+        emit("} " + n.getId().substring(0,1).toUpperCase()
+                + n.getId().substring(1) + ";\n\n");
     }
 
     public String getCode() {

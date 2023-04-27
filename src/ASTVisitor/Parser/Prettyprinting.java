@@ -184,8 +184,6 @@ public class Prettyprinting extends Visitor {
 		blockIndent--;
 		indent(blockIndent);
 		emit("som " + n.getId() + "\n");
-
-
 	}
 
 	public String getCode() {
