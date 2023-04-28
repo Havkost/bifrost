@@ -5,37 +5,56 @@ import ASTVisitor.Parser.Visitor;
 
 public class IdNode extends AST {
 
-    private String name;
+    private String value;
+    private String parentId;
+
 
     @Override
     public void accept(Visitor v) {
         v.visit(this);
     }
 
-    public IdNode(String name, int line) {
+    public IdNode(String value, int line) {
         super(line);
-        this.name = name;
+        this.value = value;
     }
 
-    public IdNode(String name) {
+    public IdNode(String value) {
         super(0);
-        this.name = name;
+        this.value = value;
     }
 
-    public String getName() {
-        return name;
+    // FIELD CONSTRUCTORS
+    public IdNode(String value, String parentId, int line) {
+        super(line);
+        this.value = value;
+        this.parentId = parentId;
+    }
+
+    public IdNode(String value, String parentId) {
+        super(0);
+        this.value = value;
+        this.parentId = parentId;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public String getParentId() {
+        return parentId;
     }
 
     @Override
     public boolean equals(Object obj) {
         if(!(obj instanceof IdNode object)) return false;
-        return this.name.equals(object.getName());
+        return this.value.equals(object.getValue());
     }
 
     @Override
     public String toString() {
         return "IdNode{" +
-                "name='" + name + '\'' +
+                "name='" + value + '\'' +
                 '}';
     }
 }

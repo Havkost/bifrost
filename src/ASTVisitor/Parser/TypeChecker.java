@@ -16,17 +16,17 @@ public class TypeChecker extends Visitor{
     public void visit(AssignNode n) {
         n.getValue().accept(this);
         DataTypes type;
-        if (n.getId() instanceof FieldNode) {
-            type = AST.getSymbolTable().get(((FieldNode) n.getId()).getParentId() + "." + ((FieldNode) n.getId()).getId());
+        if (n.getId().getParentId() != null) {
+            type = AST.getSymbolTable().get(n.getId().getParentId() + "." + n.getId().getValue());
         } else
-            type = AST.getSymbolTable().get(((IdNode) n.getId()).getName());
+            type = AST.getSymbolTable().get(n.getId().getValue());
 
         if (type != n.getValue().getType()){
             try {
-                if (n.getId() instanceof IdNode)
-                    throw new IllegalTypeAssignmentException(((IdNode) n.getId()).getName(), type, n.getValue(), n.getLine());
+                if (n.getId().getParentId() == null)
+                    throw new IllegalTypeAssignmentException(n.getId().getValue(), type, n.getValue(), n.getLine());
                 else
-                    throw new IllegalTypeAssignmentException(((FieldNode) n.getId()), type, n.getValue(), n.getLine());
+                    throw new IllegalTypeAssignmentException(n.getId() + "." + n.getId().getParentId(), type, n.getValue(), n.getLine());
             } catch (NullPointerException e) {
                 if (n.getValue() instanceof BinaryComputing)
                     throw new MissingTypeException((BinaryComputing) n.getValue(), n.getLine());
@@ -94,15 +94,16 @@ public class TypeChecker extends Visitor{
     @Override
     public void visit(FuncNode n) {
         if (AST.getSymbolTable().get(n.getId()) != DataTypes.RUTINE) {
-            throw new UnknownSubroutineException(n.getId(), n.getLine());
+            throw new UnexpectedTypeException(n.getId(), n.getType(), DataTypes.RUTINE, n.getLine());
         }
-
         n.setType(DataTypes.RUTINE);
     }
 
     @Override
     public void visit(IdNode n) {
-        n.type = AST.getSymbolTable().get(n.getName());
+        if (n.getParentId() != null)
+            n.type = AST.getSymbolTable().get(n.getParentId() + "." + n.getValue());
+        else n.type = AST.getSymbolTable().get(n.getValue());
     }
 
     @Override
@@ -183,22 +184,11 @@ public class TypeChecker extends Visitor{
     }
 
     @Override
-    public void visit(FieldNode n) {
-        n.type = AST.getSymbolTable().get(n.getParentId() + "." + n.getId());
-    }
-
-    @Override
     public void visit(DeviceNode n) {
         n.getFields().forEach((field) -> {
             field.accept(this);
         });
         n.type = DataTypes.DEVICE;
-    }
-
-    @Override
-    public void visit(FieldDclNode n) {
-        n.getValue().accept(this);
-        n.type = n.getValue().type;
     }
 
     public DataTypes findCommonDataType(DataTypes type1, DataTypes type2, Operators operator) {

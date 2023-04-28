@@ -5,7 +5,7 @@ import ASTVisitor.Parser.Visitor;
 
 public class AssignNode extends AST {
 
-    private AST id;
+    private IdNode id;
     private AST value;
 
     public AssignNode(IdNode id, AST value, int line) {
@@ -14,19 +14,7 @@ public class AssignNode extends AST {
         this.value = value;
     }
 
-    public AssignNode(FieldNode id, AST value, int line) {
-        super(line);
-        this.id = id;
-        this.value = value;
-    }
-
     public AssignNode(IdNode id, AST value) {
-        super(0);
-        this.id = id;
-        this.value = value;
-    }
-
-    public AssignNode(FieldNode id, AST value) {
         super(0);
         this.id = id;
         this.value = value;
@@ -41,7 +29,7 @@ public class AssignNode extends AST {
         v.visit(this);
     }
 
-    public AST getId() {
+    public IdNode getId() {
         return id;
     }
 

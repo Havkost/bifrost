@@ -23,6 +23,9 @@ public class CCodeGenerator extends Visitor {
         this.writer = writer;
     }
 
+    private boolean containsString;
+    private boolean containsDevice;
+
     private final boolean print;
     private FileWriter writer;
 
@@ -50,8 +53,8 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(AssignNode n) {
         String id;
-        if (n.getId() instanceof IdNode) id = ((IdNode) n.getId()).getName();
-        else id = ((FieldNode) n.getId()).getParentId() + "." + ((FieldNode) n.getId()).getId();
+        if (n.getId().getParentId() == null) id = n.getId().getValue();
+        else id = n.getId().getParentId() + "." + n.getId().getValue();
         if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
             emit("realloc(" + id + ", " + ((TekstLiteral) n.getValue()).getValue().length() + " * sizeof(char));\n");
             indent(blockIndent);
@@ -134,7 +137,7 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(IdNode n) {
-        emit(n.getName());
+        emit(n.getValue());
     }
 
     @Override
@@ -170,7 +173,7 @@ public class CCodeGenerator extends Visitor {
     public void visit(PrintNode n) {
         emit("printf(\"");
         if(n.getValue() instanceof IdNode) {
-            emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getName())));
+            emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getValue())));
         } else {
            emit(formatStrings.get(n.getValue().type));
         }
@@ -183,12 +186,17 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(ProgramNode n) {
-        emit("#include <string.h>\n");
+        this.containsString = AST.getSymbolTable().containsValue(TEKST);
+        this.containsDevice = AST.getSymbolTable().containsValue(DEVICE);
         emit("#include <stdlib.h>\n");
         emit("#include <stdio.h>\n");
         emit("#include <stdbool.h>\n");
-        emit("#include <curl/curl.h>\n");
-        emit("#include <cjson/cjson.h>\n");
+        if(containsString)
+            emit("#include <string.h>\n");
+        if(containsDevice) {
+            emit("#include <curl/curl.h>\n");
+            emit("#include <cjson/cJSON.h>\n");
+        }
         emit("\n");
 
         n.getChild().stream().filter(ast -> ast instanceof DeviceNode).forEach((device) -> {
@@ -206,7 +214,7 @@ public class CCodeGenerator extends Visitor {
             else emit(dataTypeString.get(type) + " " + id + ";\n");
         });
 
-        if (AST.getSymbolTable().containsValue(TEKST)) {
+        if (containsString) {
             emit("\nint free_memory () {\n");
             blockIndent++;
             AST.getSymbolTable().forEach((id, type) -> {
@@ -240,7 +248,8 @@ public class CCodeGenerator extends Visitor {
                 """);
         } else emit("\n");
 
-        emit("""
+        if (containsDevice) {
+            emit("""
                 enum Datatype {
                   TYPE_INTEGER,
                   TYPE_DOUBLE,
@@ -305,6 +314,7 @@ public class CCodeGenerator extends Visitor {
                   return 0;
                 }
                 """);
+        }
 
         emit("int main() {\n");
         blockIndent++;
@@ -371,60 +381,45 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(TekstDcl n) {
-        if(n.getValue() instanceof TekstLiteral) {
-            emit(n.getId() + " = malloc(" +
-                    (((TekstLiteral) n.getValue()).getValue().length()+1) +
-                    " * sizeof(char));\n");
-            indent(blockIndent);
-            emit("strcpy(" + n.getId() + ", ");
-            n.getValue().accept(this);
-            emit(");");
-        }
+        if (n.getParentId() != null)
+            emit(n.getParentId() + "." + n.getId() + " = ");
+        else emit(n.getId() + " = ");
+        emit("malloc(" + (((TekstLiteral) n.getValue()).getValue().length()+1) +
+                " * sizeof(char));\n");
+        indent(blockIndent);
+        emit("strcpy(");
+        if (n.getParentId() != null)
+            emit(n.getParentId() + "." + n.getId() + ", ");
+        else emit(n.getId() + ", ");
+        n.getValue().accept(this);
+        emit(");");
     }
 
     @Override
     public void visit(HeltalDcl n) {
-        emit(n.getId() + " = ");
+        if (n.getParentId() != null)
+            emit(n.getParentId() + "." + n.getId() + " = ");
+        else emit(n.getId() + " = ");
         n.getValue().accept(this);
         emit(";");
     }
 
     @Override
     public void visit(DecimaltalDcl n) {
-        emit(n.getId() + " = ");
+        if (n.getParentId() != null)
+            emit(n.getParentId() + "." + n.getId() + " = ");
+        else emit(n.getId() + " = ");
         n.getValue().accept(this);
         emit(";");
     }
-
-    @Override
-    public void visit(FieldDclNode n) {
-        String id = n.getParentId() + "." + n.getId();
-        emit(id+ " = ");
-        if (n.type == TEKST) {
-            emit("malloc((strlen(");
-            n.getValue().accept( this);
-            emit(")+1) * sizeof(char));\n");
-            indent(blockIndent);
-            emit("strcpy(" + id + ", ");
-            n.getValue().accept(this);
-            emit(");");
-            return;
-        }
-        n.getValue().accept(this);
-        emit(";");
-    }
-
-    @Override
-    public void visit(FieldNode n) {
-        emit(n.getParentId() + "." + n.getId());
-    }
-
 
     @Override
     public void visit(BoolskDcl n) {
-        emit (n.getId() + " = ");
-         n.getValue().accept(this);
-         emit(";");
+        if (n.getParentId() != null)
+            emit(n.getParentId() + "." + n.getId() + " = ");
+        else emit(n.getId() + " = ");
+        n.getValue().accept(this);
+        emit(";");
     }
 
     public void indent(int indents) {

@@ -3,40 +3,38 @@ package ASTVisitor.ASTnodes;
 import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
-public class BoolskDcl extends AST {
+public class BoolskDcl extends VariableDcl {
 
     private String id;
     private AST value;
+    private String parentId;
 
     public BoolskDcl(AST value, String id, int line) {
-        super(line);
-        this.value = value;
-        this.id = id;
+        super(value, id, line);
     }
 
     public BoolskDcl(AST value, String id) {
-        super(0);
-        this.value = value;
-        this.id = id;
+        super(value, id);
+    }
+
+    // FIELD CONSTRUCTORS
+    public BoolskDcl(AST value, String id, String parentId, int line) {
+        super(value, id, parentId, line);
+    }
+
+    public BoolskDcl(AST value, String id, String parentId) {
+        super(value, id, parentId);
     }
 
     public void accept(Visitor v) {
         v.visit(this);
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public AST getValue() {
-        return value;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if(!(obj instanceof BoolskDcl)) return false;
         BoolskDcl object = (BoolskDcl) obj;
-        if (this.id.equals(object.getId()) && this.value.equals(object.getValue())) {
+        if (this.getId().equals(object.getId()) && this.getValue().equals(object.getValue())) {
             return true;
         }
         return false;
@@ -45,8 +43,8 @@ public class BoolskDcl extends AST {
     @Override
     public String toString() {
         return "BoolskDcl{" +
-                "id='" + id + '\'' +
-                ", value=" + value +
+                "id='" + this.getId() + '\'' +
+                ", value=" + this.getValue() +
                 '}';
     }
 }
