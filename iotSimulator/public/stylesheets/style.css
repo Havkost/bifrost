@@ -22,6 +22,7 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: var(--col-gray-800);
   color: white;
+  height: 100vh;
 }
 
 #content-container {
@@ -32,6 +33,13 @@ body {
 
 #description-container {
   margin: auto;
+  padding: 20px;
+  background-color: var(--col-primary-700);
+  height: 100%;
+  box-shadow: -30px -1px 90px -44px rgba(0,0,0,0.75) inset;
+  -webkit-box-shadow: -30px -1px 90px -44px rgba(0,0,0,0.75) inset;
+  -moz-box-shadow: -30px -1px 90px -44px rgba(0,0,0,0.75) inset;
+  font-family: helvetica;
 }
 
 a {
@@ -45,11 +53,10 @@ a {
 #device-container {
   margin: auto;
   height: 100vh;
-  aspect-ratio: 1/1;
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1em;
+  column-gap: 8em;
 }
 
 #lightbulb {
@@ -60,6 +67,7 @@ a {
   position: absolute;
   width: 15em;
   inset: 0;
+  top: 7.5em;
   margin: auto;
 }
 
@@ -72,7 +80,6 @@ a {
   width: 20em;
   height: 20em;
   inset: 0;
-  top: -7.5em;
   border-radius: 100vw;
   margin: auto;
   content: "";
@@ -123,4 +130,15 @@ a {
   background-color: var(--col-gray-500);
   border-radius: 10px;
   border: var(--col-gray-900) 2px solid;
+}
+
+h1.title {
+  text-align: center;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+}
+
+.subtitle {
+  letter-spacing: 2px;
+  color: var(--col-gray-100);
+  font-family: helvetica;
 }
