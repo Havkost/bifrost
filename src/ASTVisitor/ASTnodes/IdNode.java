@@ -5,7 +5,7 @@ import ASTVisitor.Parser.Visitor;
 
 public class IdNode extends AST {
 
-    private String id;
+    private String value;
     private String parentId;
 
 
@@ -14,31 +14,31 @@ public class IdNode extends AST {
         v.visit(this);
     }
 
-    public IdNode(String id, int line) {
+    public IdNode(String value, int line) {
         super(line);
-        this.id = id;
+        this.value = value;
     }
 
-    public IdNode(String name) {
+    public IdNode(String value) {
         super(0);
-        this.id = name;
+        this.value = value;
     }
 
     // FIELD CONSTRUCTORS
-    public IdNode(String id, String parentId, int line) {
+    public IdNode(String value, String parentId, int line) {
         super(line);
-        this.id = id;
+        this.value = value;
         this.parentId = parentId;
     }
 
-    public IdNode(String name, String parentId) {
+    public IdNode(String value, String parentId) {
         super(0);
-        this.id = name;
+        this.value = value;
         this.parentId = parentId;
     }
 
-    public String getId() {
-        return id;
+    public String getValue() {
+        return value;
     }
 
     public String getParentId() {
@@ -48,13 +48,13 @@ public class IdNode extends AST {
     @Override
     public boolean equals(Object obj) {
         if(!(obj instanceof IdNode object)) return false;
-        return this.id.equals(object.getId());
+        return this.value.equals(object.getValue());
     }
 
     @Override
     public String toString() {
         return "IdNode{" +
-                "name='" + id + '\'' +
+                "name='" + value + '\'' +
                 '}';
     }
 }

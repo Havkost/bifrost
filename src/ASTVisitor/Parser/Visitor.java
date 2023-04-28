@@ -21,9 +21,6 @@ public abstract class Visitor {
 	public abstract void visit(HeltalDcl n);
 	public abstract void visit(DecimaltalDcl n);
 	public abstract void visit(BoolskDcl n);
-    public abstract void visit(FieldDclNode n);
-
-	public abstract void visit(FieldNode n);
 	public abstract void visit(DeviceNode n);
 
 }

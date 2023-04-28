@@ -440,7 +440,7 @@ public class TestTypechecker {
     void testFieldnode() {
 
         DeviceNode deviceNode = new DeviceNode("lampe1", List.of(),"ip:port/endpoint");
-        FieldNode fieldNode = new FieldNode("lysstyrke", "lampe1");
+        IdNode fieldNode = new IdNode("lysstyrke", "lampe1");
         ProgramNode prog = new ProgramNode(List.of(deviceNode, fieldNode));
 
         prog.accept(new SymbolTableFilling());
@@ -452,8 +452,8 @@ public class TestTypechecker {
     void testFieldNodeIllegal() {
         HeltalDcl fieldDclNode = new HeltalDcl(new HeltalLiteral("80"), "lampe1.lysstyrke");
         DeviceNode deviceNode = new DeviceNode("lampe1", List.of(fieldDclNode),"ip:port/endpoint");
-        FieldNode fieldNode = new FieldNode("lysstyrke", "lampe1");
-        ProgramNode prog = new ProgramNode(List.of(deviceNode, fieldNode));
+        IdNode idNode = new IdNode("lysstyrke", "lampe1");
+        ProgramNode prog = new ProgramNode(List.of(deviceNode, idNode));
 
         prog.accept(new SymbolTableFilling());
 

@@ -53,8 +53,8 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(AssignNode n) {
         String id;
-        if (n.getId() instanceof IdNode) id = ((IdNode) n.getId()).getId();
-        else id = ((FieldNode) n.getId()).getParentId() + "." + ((FieldNode) n.getId()).getId();
+        if (n.getId().getParentId() == null) id = n.getId().getValue();
+        else id = n.getId().getParentId() + "." + n.getId().getValue();
         if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
             emit("realloc(" + id + ", " + ((TekstLiteral) n.getValue()).getValue().length() + " * sizeof(char));\n");
             indent(blockIndent);
@@ -137,7 +137,7 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(IdNode n) {
-        emit(n.getId());
+        emit(n.getValue());
     }
 
     @Override
@@ -173,7 +173,7 @@ public class CCodeGenerator extends Visitor {
     public void visit(PrintNode n) {
         emit("printf(\"");
         if(n.getValue() instanceof IdNode) {
-            emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getId())));
+            emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getValue())));
         } else {
            emit(formatStrings.get(n.getValue().type));
         }
@@ -412,30 +412,6 @@ public class CCodeGenerator extends Visitor {
         n.getValue().accept(this);
         emit(";");
     }
-
-    @Override
-    public void visit(FieldDclNode n) {
-        String id = n.getParentId() + "." + n.getId();
-        emit(id+ " = ");
-        if (n.type == TEKST) {
-            emit("malloc((strlen(");
-            n.getValue().accept( this);
-            emit(")+1) * sizeof(char));\n");
-            indent(blockIndent);
-            emit("strcpy(" + id + ", ");
-            n.getValue().accept(this);
-            emit(");");
-            return;
-        }
-        n.getValue().accept(this);
-        emit(";");
-    }
-
-    @Override
-    public void visit(FieldNode n) {
-        emit(n.getParentId() + "." + n.getId());
-    }
-
 
     @Override
     public void visit(BoolskDcl n) {

@@ -81,7 +81,7 @@ public class ASTParser {
         expect(TokenType.TIL);
         AST value = expr();
         if (parentId != null)
-            return new AssignNode(new FieldNode(id, parentId, line), value, line);
+            return new AssignNode(new IdNode(id, parentId, line), value, line);
         return new AssignNode(new IdNode(id, line), value, line);
     }
 

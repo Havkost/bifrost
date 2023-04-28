@@ -10,10 +10,6 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
-    public void visit(FieldNode n) {
-    }
-
-    @Override
     public void visit(ProgramNode n) {
         for(AST ast : n.getChild()){
             ast.accept(this);
@@ -110,18 +106,6 @@ public class SymbolTableFilling extends Visitor {
         n.getValue().accept(this);
         n.type = BOOLSK;
     }
-
-    @Override
-    public void visit(FieldDclNode n) {
-        String id = n.getParentId() + "." + n.getId();
-
-        if (AST.getSymbolTable().get(id) == null) {
-            n.getValue().accept(this);
-            AST.getSymbolTable().put(id, n.getValue().getType());
-        }
-        else error("Variablen " + n.getId() + " er allerede deklareret.");
-    }
-
     @Override
     public void visit(DeviceNode n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),DEVICE);
