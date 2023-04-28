@@ -11,6 +11,7 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.io.CharArrayReader;
 import java.util.Arrays;
+import java.util.List;
 
 import static ASTVisitor.Lexer.TokenType.*;
 import static java.util.Arrays.*;
@@ -276,6 +277,26 @@ public class TestASTParser {
         ASTParser parser = makeASTParser("boolsk 3 er 2 som val");
         AST dcl = new BoolskDcl(new BinaryComputing("er", new HeltalLiteral("3"),
                     new HeltalLiteral("2")), "val");
+        assertEquals(dcl, parser.varDcl());
+    }
+
+    @Test
+    void testVarDclDevice() {
+        ASTParser parser = makeASTParser("""
+                enhed "test" med:
+                    heltal 3 som testInt
+                    boolsk sandt som testBool
+                    decimaltal 3,14 som testFlt
+                    tekst "hello" som testStr
+                som device1
+                """);
+        List<VariableDcl> fields = List.of(new HeltalDcl(new HeltalLiteral("3"), "testInt"),
+                new BoolskDcl(new BoolskLiteral("sandt"), "testBool"),
+                new DecimaltalDcl(new DecimaltalLiteral("3,14"), "testFlt"),
+                new TekstDcl(new TekstLiteral("hello"), "testStr"));
+
+        fields.forEach((field) -> field.setParentId("device1"));
+        AST dcl = new DeviceNode("device1", fields, "test");
         assertEquals(dcl, parser.varDcl());
     }
 

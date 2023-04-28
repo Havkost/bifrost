@@ -74,7 +74,7 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(IdNode n) {
-		emit(n.getName());
+		emit(n.getId());
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class Prettyprinting extends Visitor {
 	@Override
 	public void visit(AssignNode n) {
 		if (n.getId() instanceof IdNode)
-			emit("sæt " + ((IdNode) n.getId()).getName() + " til ");
+			emit("sæt " + ((IdNode) n.getId()).getId() + " til ");
 		else
 			emit("sæt " + ((FieldNode) n.getId()).getId() + " for " + ((FieldNode) n.getId()).getParentId() + " til ");
 		n.getValue().accept(this);
@@ -130,28 +130,40 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(TekstDcl n) {
-		emit("gem tekst ");
+		if (n.getParentId() != null)
+			emit("tekst ");
+		else
+			emit("gem tekst ");
 		n.getValue().accept(this);
 		emit(" som " + n.getId());
 	}
 
 	@Override
 	public void visit(HeltalDcl n) {
-		emit("gem heltal ");
+		if (n.getParentId() != null)
+			emit("heltal ");
+		else
+			emit("gem heltal ");
 		n.getValue().accept(this);
 		emit(" som " + n.getId());
 	}
 
 	@Override
 	public void visit(DecimaltalDcl n) {
-		emit("gem decimaltal ");
+		if (n.getParentId() != null)
+			emit("decimaltal ");
+		else
+			emit("gem decimaltal ");
 		n.getValue().accept(this);
 		emit(" som " + n.getId());
 	}
 
 	@Override
 	public void visit(BoolskDcl n) {
-		emit("gem boolsk ");
+		if (n.getParentId() != null)
+			emit("boolsk ");
+		else
+			emit("gem boolsk ");
 		n.getValue().accept(this);
 		emit(" som " + n.getId());
 	}

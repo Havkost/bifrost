@@ -19,12 +19,12 @@ public class TypeChecker extends Visitor{
         if (n.getId() instanceof FieldNode) {
             type = AST.getSymbolTable().get(((FieldNode) n.getId()).getParentId() + "." + ((FieldNode) n.getId()).getId());
         } else
-            type = AST.getSymbolTable().get(((IdNode) n.getId()).getName());
+            type = AST.getSymbolTable().get(((IdNode) n.getId()).getId());
 
         if (type != n.getValue().getType()){
             try {
                 if (n.getId() instanceof IdNode)
-                    throw new IllegalTypeAssignmentException(((IdNode) n.getId()).getName(), type, n.getValue(), n.getLine());
+                    throw new IllegalTypeAssignmentException(((IdNode) n.getId()).getId(), type, n.getValue(), n.getLine());
                 else
                     throw new IllegalTypeAssignmentException(((FieldNode) n.getId()), type, n.getValue(), n.getLine());
             } catch (NullPointerException e) {
@@ -94,15 +94,16 @@ public class TypeChecker extends Visitor{
     @Override
     public void visit(FuncNode n) {
         if (AST.getSymbolTable().get(n.getId()) != DataTypes.RUTINE) {
-            throw new UnknownSubroutineException(n.getId(), n.getLine());
+            throw new UnexpectedTypeException(n.getId(), n.getType(), DataTypes.RUTINE, n.getLine());
         }
-
         n.setType(DataTypes.RUTINE);
     }
 
     @Override
     public void visit(IdNode n) {
-        n.type = AST.getSymbolTable().get(n.getName());
+        if (n.getParentId() != null)
+            n.type = AST.getSymbolTable().get(n.getParentId() + "." + n.getId());
+        else n.type = AST.getSymbolTable().get(n.getId());
     }
 
     @Override
@@ -197,6 +198,9 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(FieldDclNode n) {
+        if (AST.getSymbolTable().get(n.getId()) != DataTypes.HELTAL || AST.getSymbolTable().get(n.getId()) != DataTypes.DECIMALTAL || AST.getSymbolTable().get(n.getId()) != DataTypes.BOOLSK || AST.getSymbolTable().get(n.getId()) != DataTypes.TEKST){
+            // TODO: throw new UnexpectedTypeException(n.getId(),  n.getLine());
+        }
         n.getValue().accept(this);
         n.type = n.getValue().type;
     }

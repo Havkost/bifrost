@@ -85,10 +85,10 @@ public class TestCCodeGenerator {
         prog.accept(generator);
 
         assertEquals("""
-                #include <string.h>
                 #include <stdlib.h>
                 #include <stdio.h>
                 #include <stdbool.h>
+                #include <string.h>
                                      
                 char* a;
                 char* b;
@@ -149,12 +149,14 @@ public class TestCCodeGenerator {
 
         prog.accept(new SymbolTableFilling());
         prog.accept(new TypeChecker());
+
+        System.out.println(AST.getSymbolTable());
         generator.visit(prog);
         assertEquals("""
-                #include <string.h>
                 #include <stdlib.h>
                 #include <stdio.h>
                 #include <stdbool.h>
+                #include <string.h>
                                      
                 int a;
                 char* b;
@@ -249,7 +251,6 @@ public class TestCCodeGenerator {
         programNode.accept(generator);
 
         assertEquals("""
-                #include <string.h>
                 #include <stdlib.h>
                 #include <stdio.h>
                 #include <stdbool.h>
@@ -291,7 +292,6 @@ public class TestCCodeGenerator {
         programNode.accept(generator);
 
         assertEquals("""
-                #include <string.h>
                 #include <stdlib.h>
                 #include <stdio.h>
                 #include <stdbool.h>

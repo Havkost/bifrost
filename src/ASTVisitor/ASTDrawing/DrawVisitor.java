@@ -108,7 +108,7 @@ public class DrawVisitor extends Visitor {
     @Override
     public void visit(IdNode n) {
         drawCircle("IdNode");
-        graphics.drawString(n.getName(), xCoord+23-(n.getName().length() * 3), yCoord+30);
+        graphics.drawString(n.getId(), xCoord+23-(n.getId().length() * 3), yCoord+30);
     }
 
     @Override

@@ -69,32 +69,46 @@ public class SymbolTableFilling extends Visitor {
     @Override
     public void visit(PrintNode n) {}
 
+    public String getId(VariableDcl n) {
+        if(n.getParentId() != null)
+            return n.getParentId() + "." + n.getId();
+        return n.getId();
+    }
+
     @Override
     public void visit(TekstDcl n) {
-        if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),TEKST);
-        else error("Variablen " + n.getId() + " er allerede deklareret.");
+        String id = getId(n);
+        if (AST.SymbolTable.get(id) == null) AST.SymbolTable.put(id, TEKST);
+        else error("Variablen " + id + " er allerede deklareret.");
         n.getValue().accept(this);
+        n.type = TEKST;
     }
 
     @Override
     public void visit(HeltalDcl n) {
-        if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),HELTAL);
-        else error("Variablen " + n.getId() + " er allerede deklareret.");
+        String id = getId(n);
+        if (AST.SymbolTable.get(id) == null) AST.SymbolTable.put(id, HELTAL);
+        else error("Variablen " + id + " er allerede deklareret.");
         n.getValue().accept(this);
+        n.type = HELTAL;
     }
 
     @Override
     public void visit(DecimaltalDcl n) {
-        if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),DECIMALTAL);
-        else error("Variablen " + n.getId() + " er allerede deklareret.");
+        String id = getId(n);
+        if (AST.SymbolTable.get(id) == null) AST.SymbolTable.put(id, DECIMALTAL);
+        else error("Variablen " + id + " er allerede deklareret.");
         n.getValue().accept(this);
+        n.type = DECIMALTAL;
     }
 
     @Override
     public void visit(BoolskDcl n) {
-        if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),BOOLSK);
-        else error("Variablen " + n.getId() + " er allerede deklareret.");
+        String id = getId(n);
+        if (AST.SymbolTable.get(id) == null) AST.SymbolTable.put(id, BOOLSK);
+        else error("Variablen " + id + " er allerede deklareret.");
         n.getValue().accept(this);
+        n.type = BOOLSK;
     }
 
     @Override

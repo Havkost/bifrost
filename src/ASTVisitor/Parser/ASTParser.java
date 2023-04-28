@@ -357,7 +357,7 @@ public class ASTParser {
         expect(TokenType.MED);
         expect(TokenType.BLOCKSTART);
         expect(TokenType.NEWLINE);
-        List<FieldDclNode> fields = fields();
+        List<VariableDcl> fields = fields();
         expect(TokenType.SOM);
         String id = expect(TokenType.ID).getVal();
 
@@ -369,8 +369,8 @@ public class ASTParser {
         return device;
     }
 
-    public List<FieldDclNode> fields() {
-        List<FieldDclNode> fields = new ArrayList<>();
+    public List<VariableDcl> fields() {
+        List<VariableDcl> fields = new ArrayList<>();
         while (ts.peek() == TokenType.HELTAL_DCL || ts.peek() == TokenType.DECIMALTAL_DCL || ts.peek() == TokenType.TEKST_DCL || ts.peek() == TokenType.BOOLSK_DCL) {
             String id;
             AST value;
@@ -381,7 +381,7 @@ public class ASTParser {
                     expect(TokenType.SOM);
                     id = expect(TokenType.ID).getVal();
                     expect(TokenType.NEWLINE);
-                    fields.add(new FieldDclNode(id, value, line));
+                    fields.add(new BoolskDcl(value, id, line));
                 }
                 case HELTAL_DCL -> {
                     expect(TokenType.HELTAL_DCL);
@@ -389,7 +389,7 @@ public class ASTParser {
                     expect(TokenType.SOM);
                     id = expect(TokenType.ID).getVal();
                     expect(TokenType.NEWLINE);
-                    fields.add(new FieldDclNode(id, value, line));
+                    fields.add(new HeltalDcl(value, id, line));
                 }
                 case DECIMALTAL_DCL -> {
                     expect(TokenType.DECIMALTAL_DCL);
@@ -397,7 +397,7 @@ public class ASTParser {
                     expect(TokenType.SOM);
                     id = expect(TokenType.ID).getVal();
                     expect(TokenType.NEWLINE);
-                    fields.add(new FieldDclNode(id, value, line));
+                    fields.add(new DecimaltalDcl(value, id, line));
                 }
                 case TEKST_DCL -> {
                     expect(TokenType.TEKST_DCL);
@@ -405,7 +405,7 @@ public class ASTParser {
                     expect(TokenType.SOM);
                     id = expect(TokenType.ID).getVal();
                     expect(TokenType.NEWLINE);
-                    fields.add(new FieldDclNode(id, value, line));
+                    fields.add(new TekstDcl(value, id, line));
                 }
             }
         }
@@ -467,7 +467,7 @@ public class ASTParser {
         String parent = parent();
 
         if (parent != null) {
-            res = new FieldNode(id, parent, line);
+            res = new IdNode(id, parent, line);
         } else {
             res = new IdNode(id, line);
         }

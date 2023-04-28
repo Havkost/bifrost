@@ -4,7 +4,7 @@ import ASTVisitor.ASTnodes.*;
 import ASTVisitor.Exceptions.IllegalOperationTypeException;
 import ASTVisitor.Exceptions.IllegalTypeAssignmentException;
 import ASTVisitor.Exceptions.MissingTypeException;
-import ASTVisitor.Exceptions.UnknownSubroutineException;
+import ASTVisitor.Exceptions.UnexpectedTypeException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import java.util.ArrayList;
@@ -421,7 +421,7 @@ public class TestTypechecker {
 
         prog.accept(new SymbolTableFilling());
 
-        assertThrows(UnknownSubroutineException.class, () -> funcNode.accept(new TypeChecker()));
+        assertThrows(UnexpectedTypeException.class, () -> funcNode.accept(new TypeChecker()));
     }
 
     @Test
@@ -435,4 +435,29 @@ public class TestTypechecker {
         assertThrows(Error.class, () -> new TypeChecker().findCommonDataType(AST.DataTypes.BOOLSK,
                 AST.DataTypes.DECIMALTAL, AST.Operators.PLUS));
     }
+
+    @Test
+    void testFieldnode() {
+
+        DeviceNode deviceNode = new DeviceNode("lampe1", List.of(),"ip:port/endpoint");
+        FieldNode fieldNode = new FieldNode("lysstyrke", "lampe1");
+        ProgramNode prog = new ProgramNode(List.of(deviceNode, fieldNode));
+
+        prog.accept(new SymbolTableFilling());
+
+        assertDoesNotThrow(() -> fieldNode.accept(new TypeChecker()));
+    }
+
+    @Test
+    void testFieldNodeIllegal() {
+        HeltalDcl fieldDclNode = new HeltalDcl(new HeltalLiteral("80"), "lampe1.lysstyrke");
+        DeviceNode deviceNode = new DeviceNode("lampe1", List.of(fieldDclNode),"ip:port/endpoint");
+        FieldNode fieldNode = new FieldNode("lysstyrke", "lampe1");
+        ProgramNode prog = new ProgramNode(List.of(deviceNode, fieldNode));
+
+        prog.accept(new SymbolTableFilling());
+
+       // assertThrows, () -> fieldNode.accept(new TypeChecker()));
+    }
+
 }

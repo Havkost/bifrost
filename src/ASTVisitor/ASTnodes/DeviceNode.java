@@ -5,21 +5,22 @@ import ASTVisitor.Parser.Visitor;
 
 import java.util.List;
 
+
 public class DeviceNode extends AST {
 
     private String id;
 
-    private List<FieldDclNode> fields;
+    private List<VariableDcl> fields;
     private String endpoint;
 
-    public DeviceNode(String id, List<FieldDclNode> fields, String endpoint, int line) {
+    public DeviceNode(String id, List<VariableDcl> fields, String endpoint, int line) {
         super(line);
         this.id = id;
         this.fields = fields;
         this.endpoint = endpoint;
     }
 
-    public DeviceNode(String id, List<FieldDclNode> fields, String endpoint) {
+    public DeviceNode(String id, List<VariableDcl> fields, String endpoint) {
         super(0);
         this.id = id;
         this.fields = fields;
@@ -30,7 +31,7 @@ public class DeviceNode extends AST {
         return id;
     }
 
-    public List<FieldDclNode> getFields() {
+    public List<VariableDcl> getFields() {
         return fields;
     }
 
@@ -41,5 +42,21 @@ public class DeviceNode extends AST {
     @Override
     public void accept(Visitor v) {
         v.visit(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof DeviceNode object)) return false;
+        return this.id.equals(object.getId()) && this.fields.equals(object.getFields()) && this.endpoint.equals(object.getEndpoint());
+    }
+
+    @Override
+    public String toString() {
+        return "DeviceNode{" +
+                "id='" + id + '\'' +
+                ", fields=" + fields +
+                ", endpoint='" + endpoint + '\'' +
+                ", type=" + type +
+                '}';
     }
 }

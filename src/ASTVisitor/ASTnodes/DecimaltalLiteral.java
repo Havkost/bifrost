@@ -28,12 +28,8 @@ public class DecimaltalLiteral extends AST {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof DecimaltalLiteral)) return false;
-        DecimaltalLiteral object = (DecimaltalLiteral) obj;
-        if (this.value.equals(object.getValue())) {
-            return true;
-        }
-        return false;
+        if (!(obj instanceof DecimaltalLiteral object)) return false;
+        return this.value.equals(object.getValue());
     }
     public String toString() {
         return value;

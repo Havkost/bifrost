@@ -3,6 +3,8 @@ package ASTVisitor.ASTnodes;
 import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
+import java.util.Objects;
+
 public class FieldDclNode extends AST {
 
     private String id;
@@ -41,5 +43,21 @@ public class FieldDclNode extends AST {
     @Override
     public void accept(Visitor v) {
         v.visit(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof FieldDclNode object)) return false;
+        return this.id.equals(object.getId()) && Objects.equals(this.parentId, object.getParentId()) && this.value.equals(object.getValue());
+    }
+
+    @Override
+    public String toString() {
+        return "FieldDclNode{" +
+                "id='" + id + '\'' +
+                ", value=" + value +
+                ", parentId='" + parentId + '\'' +
+                ", type=" + type +
+                '}';
     }
 }
