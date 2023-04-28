@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
 :root {
   --col-primary-700: #0E7490;
   --col-gray-900: #1C1917;
@@ -47,6 +49,7 @@ a {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 1em;
 }
 
 #lightbulb {
@@ -82,13 +85,42 @@ a {
   align-items: center;
 }
 
-
 #content {
-    font-family:Arial, Helvetica, sans-serif;
-    font-size: x-large;
-    color: #1C1917;
-    background-color: var(--col-gray-200);
+    font-family: 'VT323', monospace;
+    font-size: 25px;
+    text-align: center;
+    color: greenyellow;
+    background-color: var(--col-gray-700);
     border-radius: 10px;
     padding: 10px 40px;
-    border: #1C1917 2px solid;
+    border: var(--col-gray-900) 2px solid;
+    letter-spacing: 3px;
+}
+
+#thermometer {
+  display: grid;
+  place-content: center;
+}
+
+#thermometer input {
+  width: 250px;
+}
+
+#thermometer label {
+  text-align: center;
+  font-size: 20px;
+}
+
+#motion-sensor {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+#motion-sensor-area {
+  flex: 1;
+  margin: 1em;
+  background-color: var(--col-gray-500);
+  border-radius: 10px;
+  border: var(--col-gray-900) 2px solid;
 }
