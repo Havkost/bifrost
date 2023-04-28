@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
 :root {
   --col-primary-700: #0E7490;
   --col-gray-900: #1C1917;
@@ -25,6 +27,11 @@ body {
 #content-container {
   display: grid;
   place-content: center;
+  grid-template-columns: 1fr 2fr;
+}
+
+#description-container {
+  margin: auto;
 }
 
 a {
@@ -36,11 +43,13 @@ a {
 }
 
 #device-container {
+  margin: auto;
   height: 100vh;
   aspect-ratio: 1/1;
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 1em;
 }
 
 #lightbulb {
@@ -68,4 +77,50 @@ a {
   margin: auto;
   content: "";
   background: radial-gradient(rgba(227, 241, 255, 1) 0%, rgba(227, 241, 255, 0.9) 10%, rgba(255, 255, 255, 0) 70%);
+}
+
+#lcd-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#content {
+    font-family: 'VT323', monospace;
+    font-size: 25px;
+    text-align: center;
+    color: greenyellow;
+    background-color: var(--col-gray-700);
+    border-radius: 10px;
+    padding: 10px 40px;
+    border: var(--col-gray-900) 2px solid;
+    letter-spacing: 3px;
+}
+
+#thermometer {
+  display: grid;
+  place-content: center;
+}
+
+#thermometer input {
+  width: 250px;
+}
+
+#thermometer label {
+  text-align: center;
+  font-size: 20px;
+}
+
+#motion-sensor {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+#motion-sensor-area {
+  flex: 1;
+  margin: 1em;
+  background-color: var(--col-gray-500);
+  border-radius: 10px;
+  border: var(--col-gray-900) 2px solid;
 }

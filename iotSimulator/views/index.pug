@@ -11,5 +11,9 @@ block content
         #glow
       #lcd-display
         p#content ...
-      #thermometer 
-      #motion-sensor  
+      #thermometer
+        label#thermometer-label(for='thermometer')
+        input#thermometer-slider.slider(name='thermometer' type='range' min='-50' max='50' value='20.0' step='0.1') 
+      #motion-sensor
+        label#motion-sensor-label Motion detection area
+        #motion-sensor-area

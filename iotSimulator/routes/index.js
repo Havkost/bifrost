@@ -83,9 +83,9 @@ router.get('/lightbulb', function(req, res, next) {
 router.post('/display', function(req, res, next) {
   let content = req.body?.content;
 
-  if(content == null) return res.status(400).send('Content was not found!');
+  if(content == null) return res.status(400).send('No content was supplied.');
   content = ""+content; // Convert to string
-  if(content.length > 150) return res.status(400).send('Text is too large for the display!'); // max 150 characters in string
+  if(content.length > 30) return res.status(400).send('Text is too large for the display!'); // max 150 characters in string
   devices.display.content = content;
 
   updateSSEs('display', devices.display);
@@ -101,8 +101,15 @@ router.get('/display', function(req, res, next) {
 
 // THERMOMETER
 router.post('/thermometer', function(req, res, next) {
-  //TODO
+  let temperature = req.body?.temperature;
+  if(temperature == null) return res.status(400).send('No temperature was supplied.');
+  temperature = parseFloat(temperature);
+  if(Number.isNaN(temperature)) return res.status(400).send('Temperature must be a number.');
+  if(temperature < -50 || temperature > 50) res.status(400).send('Temperature must be between -50 to 50');
 
+  devices.thermometer.temperature = temperature;
+
+  res.status(204).send();
 });
 
 router.get('/thermometer', function(req, res, next) {
@@ -112,8 +119,18 @@ router.get('/thermometer', function(req, res, next) {
 
 // MOTION SENSOR
 router.post('/motionsensor', function(req, res, next) {
-  //TODO
+  let presence = req.body?.presence;
+  let lastUpdated = req.body?.lastUpdated;
+  
+  if(presence != null) {
+    if(typeof(presence) !== 'boolean') return res.status(400).send('Presence must be a boolean.');
+    devices.motionSensor.presence = presence;
+  }
 
+  console.log('Presence:', devices.motionSensor.presence);
+  console.log('Last Updated:', devices.motionSensor.lastUpdated);
+  
+  res.status(204).send();
 });
 
 router.get('/motionsensor', function(req, res, next) {
