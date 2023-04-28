@@ -16,10 +16,18 @@ public class TokenStream {
         advance();
     }
 
+    /**
+     * @return the type of the next <strong><code>Token</code></strong>
+     */
     public TokenType peek() {
         return nextToken.getType();
     }
 
+    /**
+     * Retrieves the next <code>Token</code> in the stream, and advances in the stream
+     * via the <code>.scan()</code> method
+     * @return the next <strong><code>Token</code></strong>
+     */
     public Token advance() {
         Token ans = nextToken;
         nextToken = CodeScanner.scan();
@@ -28,6 +36,10 @@ public class TokenStream {
         return ans;
     }
 
+    /**
+     * For debugging purposes
+     * @return a list of all tokens in the <strong><code>TokenStream</code></strong>
+     */
     public List<Token> getTokenList() {
         return tokenList;
     }

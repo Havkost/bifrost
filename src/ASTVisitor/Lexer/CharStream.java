@@ -8,6 +8,9 @@ public class CharStream {
     private char nextChar;
     private boolean eof;
 
+    /**
+     * @param reader readable stream
+     */
     public CharStream(Reader reader) {
         this.reader = reader;
         this.eof = false;
@@ -15,14 +18,26 @@ public class CharStream {
         advance();
     }
 
+    /**
+     * View next character in stream
+     * @return next character in stream
+     */
     public char peek() {
         return nextChar;
     }
 
+    /**
+     * Signals if stream has reached end of file
+     * @return <strong>true</strong> if EOF is reached, else <strong>false</strong>
+     */
     public boolean getEOF() {
         return eof;
     }
 
+    /**
+     * Read next character in stream, and advance in the stream
+     * @return next character in stream
+     */
     public char advance() {
         char ans = nextChar;
         try {

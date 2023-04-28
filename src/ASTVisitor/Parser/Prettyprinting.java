@@ -74,7 +74,9 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(IdNode n) {
-		emit(n.getValue());
+		if (n.getParentId() != null)
+			emit(n.getValue() + " for " + n.getParentId());
+		else emit(n.getValue());
 	}
 
 	@Override

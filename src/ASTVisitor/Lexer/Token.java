@@ -11,6 +11,11 @@ public class Token {
         this.type = type;
         this.val = "";
     }
+
+    /**
+     * @param type the type of literal, keyword, or identifier
+     * @param val the value of the token (e.g. the literal identifier)
+     */
     public Token(TokenType type, String val) {
         this.type = type;
         this.val = val;
@@ -24,6 +29,7 @@ public class Token {
         return val;
     }
 
+    @Override
     public String toString() {
         if(!val.equals("")) {
             return "Token{" +

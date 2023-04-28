@@ -23,9 +23,6 @@ public class CCodeGenerator extends Visitor {
         this.writer = writer;
     }
 
-    private boolean containsString;
-    private boolean containsDevice;
-
     private final boolean print;
     private FileWriter writer;
 
@@ -137,7 +134,9 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(IdNode n) {
-        emit(n.getValue());
+        if (n.getParentId() != null)
+            emit(n.getParentId() + "." + n.getValue());
+        else emit(n.getValue());
     }
 
     @Override
@@ -173,7 +172,11 @@ public class CCodeGenerator extends Visitor {
     public void visit(PrintNode n) {
         emit("printf(\"");
         if(n.getValue() instanceof IdNode) {
-            emit(formatStrings.get(AST.SymbolTable.get(((IdNode) n.getValue()).getValue())));
+            String id;
+            if (((IdNode) n.getValue()).getParentId() != null)
+                id = ((IdNode) n.getValue()).getParentId() + "." + ((IdNode) n.getValue()).getValue();
+            else id = ((IdNode) n.getValue()).getValue();
+            emit(formatStrings.get(AST.SymbolTable.get(id)));
         } else {
            emit(formatStrings.get(n.getValue().type));
         }
@@ -186,8 +189,8 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(ProgramNode n) {
-        this.containsString = AST.getSymbolTable().containsValue(TEKST);
-        this.containsDevice = AST.getSymbolTable().containsValue(DEVICE);
+        boolean containsString = AST.getSymbolTable().containsValue(TEKST);
+        boolean containsDevice = AST.getSymbolTable().containsValue(DEVICE);
         emit("#include <stdlib.h>\n");
         emit("#include <stdio.h>\n");
         emit("#include <stdbool.h>\n");
