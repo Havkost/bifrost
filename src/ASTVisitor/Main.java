@@ -20,6 +20,7 @@ public class Main {
         boolean debug = false;
         boolean astDraw = false;
 
+        // Checks for the absolute path of the current directory depending on the OS
         String absPath = System.getProperty("user.dir");
         if(System.getProperty("os.name").startsWith("Windows")) {
             absPath += "\\";
@@ -27,8 +28,7 @@ public class Main {
             absPath += "/";
         }
 
-        // Read text from source file into sourceString
-
+        // Running through each argument given, looking for flags or input files
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if (arg.charAt(0) == '-') {
@@ -53,7 +53,14 @@ public class Main {
             }
         }
 
+        // Iterates through each input file, compiling the program in the file.
         for (int i = 0; i < inputPaths.size(); i++) {
+            List<String> inputFileSplit = Arrays.stream(inputPaths.get(i).split("\\.")).toList();
+            if(!inputFileSplit.get(inputFileSplit.size()-1).equals("iot")) {
+                errorPrint("Ukendt filtype: " + ANSI.red("." + inputFileSplit.get(inputFileSplit.size()-1)) +
+                        ". Benyt venligst kun .iot filer.");
+            }
+
             try {
                 File sourceFile = new File(inputPaths.get(i));
                 Scanner scanner = new Scanner(sourceFile);
@@ -69,8 +76,6 @@ public class Main {
             }
 
             try {
-
-
                 CharArrayReader reader = new CharArrayReader(sourceString.toString().toCharArray());
                 CharStream charStream = new CharStream(reader);
 

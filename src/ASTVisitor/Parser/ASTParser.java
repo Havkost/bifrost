@@ -74,6 +74,8 @@ public class ASTParser {
         String parentId = null;
         expect(TokenType.SAET);
         String id = expect(TokenType.ID).getVal();
+
+        // Fields
         if (ts.peek() == TokenType.FOR) {
             expect(TokenType.FOR);
             parentId = expect(TokenType.ID).getVal();
@@ -484,6 +486,12 @@ public class ASTParser {
         return res;
     }
 
+    /**
+     * Checks an expected TokenType against the type of the next token in the stream, if they match,
+     * the token is returned. Otherwise, an error is thrown.
+     * @param type expected type
+     * @return <strong><code>Token</code></strong> from stream
+     */
     public Token expect(TokenType type) {
         Token token = ts.advance();
         if (token.getType() != type) {

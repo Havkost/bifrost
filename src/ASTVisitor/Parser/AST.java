@@ -7,7 +7,7 @@ import java.util.List;
 
 public abstract class AST {
 
-    private int line;
+    private final int line;
 
     public AST(int line) {
         this.line = line;
@@ -47,6 +47,11 @@ public abstract class AST {
         public final String textual;
         public final String Cversion;
 
+        /**
+         *
+         * @param textual text version of operator in EzIoT language
+         * @param Cversion operator in C
+         */
         Operators(String textual, String Cversion){
             this.textual = textual;
             this.Cversion = Cversion;
@@ -114,10 +119,6 @@ public abstract class AST {
         return SymbolTable;
     }
 
-    public static void setSymbolTable(HashMap<String, DataTypes> symbolTable) {
-        SymbolTable = symbolTable;
-    }
-
     public static DataTypes getOperationResultType(Operators operator, DataTypes type) {
         return operationResultType[operator.ordinal()][type.ordinal()];
     }
@@ -127,7 +128,7 @@ public abstract class AST {
     }
 
     public static void clearSymbolTable() {
-        setSymbolTable(new HashMap<String, DataTypes>());
+        SymbolTable.clear();
     }
 
 }

@@ -14,10 +14,17 @@ import static ASTVisitor.Parser.AST.DataTypes.*;
 
 public class CCodeGenerator extends Visitor {
 
+    /**
+     * @param print boolean declaring whether the code should be printed in the console.
+     */
     public CCodeGenerator(boolean print) {
         this.print = print;
     }
 
+    /**
+     * @param print boolean declaring whether the code should be printed in the console.
+     * @param writer (Optional) FileWriter to write the code to, if specified
+     */
     public CCodeGenerator(boolean print, FileWriter writer) {
         this.print = print;
         this.writer = writer;
@@ -52,10 +59,14 @@ public class CCodeGenerator extends Visitor {
         String id;
         if (n.getId().getParentId() == null) id = n.getId().getValue();
         else id = n.getId().getParentId() + "." + n.getId().getValue();
+
+        // If the assigned value is a string literal reallocate memory for it
         if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
             emit("realloc(" + id + ", " + ((TekstLiteral) n.getValue()).getValue().length() + " * sizeof(char));\n");
             indent(blockIndent);
-        } else if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST) && n.getValue().getType().equals(TEKST)) {
+        } // If the value has the type of string, reallocate memory for that TODO: Check if this works
+        else if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST)
+                && n.getValue().getType().equals(TEKST)) {
             emit(id + " = ");
             emit("realloc(");
             n.getValue().accept(this);
@@ -69,6 +80,7 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(BinaryComputing n) {
+        // String concatination
         if(n.getChild1().getType() == TEKST && n.getChild2().getType() == TEKST) {
             emit("concat(");
             n.getChild1().accept(this);
@@ -158,6 +170,8 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(LoopNode n) {
+        /* Generating a for loop based on the number of repeats with a call to the
+        function as the body                                                    */
         emit("for(int __i = 0; __i < (");
         n.getRepeats().accept(this);
         emit("); __i++) {\n");
@@ -173,6 +187,7 @@ public class CCodeGenerator extends Visitor {
         emit("printf(\"");
         if(n.getValue() instanceof IdNode) {
             String id;
+            // Generate dot notation if the id is a device field
             if (((IdNode) n.getValue()).getParentId() != null)
                 id = ((IdNode) n.getValue()).getParentId() + "." + ((IdNode) n.getValue()).getValue();
             else id = ((IdNode) n.getValue()).getValue();
@@ -206,6 +221,7 @@ public class CCodeGenerator extends Visitor {
             device.accept(this);
         });
 
+        // Declaration of variables
         AST.getSymbolTable().forEach((id, type) -> {
             if (id.contains(".")) {
                 // Do nothing
@@ -217,6 +233,7 @@ public class CCodeGenerator extends Visitor {
             else emit(dataTypeString.get(type) + " " + id + ";\n");
         });
 
+        // Freeing memory for strings in the program
         if (containsString) {
             emit("\nint free_memory () {\n");
             blockIndent++;
@@ -251,6 +268,7 @@ public class CCodeGenerator extends Visitor {
                 """);
         } else emit("\n");
 
+        // HTTP communication functions
         if (containsDevice) {
             emit("""
                 enum Datatype {
@@ -286,7 +304,7 @@ public class CCodeGenerator extends Visitor {
                   CURL *curl;
                   CURLcode res;
                                 
-                  char *protocol = "http://"; \s
+                  char *protocol = "http://";
                   char *url = calloc(strlen(protocol)+strlen(endpoint)+1, sizeof(char));
                   strcpy(url, protocol);
                   strcat(url, endpoint);
@@ -300,7 +318,7 @@ public class CCodeGenerator extends Visitor {
                     // curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
                     curl_easy_setopt(curl, CURLOPT_POST, 1);
                     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json);
-                \s
+               
                     res = curl_easy_perform(curl);
                     /* Check for errors */
                     if(res != CURLE_OK)
@@ -432,6 +450,7 @@ public class CCodeGenerator extends Visitor {
     }
     @Override
     public void visit(DeviceNode n) {
+        // Declaring device struct
         emit("typedef struct {\n");
         blockIndent++;
         indent(blockIndent);

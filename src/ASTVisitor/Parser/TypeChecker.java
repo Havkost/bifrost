@@ -14,8 +14,8 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(AssignNode n) {
-        n.getValue().accept(this);
         DataTypes type;
+        // Generating id, whether it is a field or a simple id
         if (n.getId().getParentId() != null) {
             type = AST.getSymbolTable().get(n.getId().getParentId() + "." + n.getId().getValue());
         } else
@@ -36,6 +36,8 @@ public class TypeChecker extends Visitor{
             }
 
         }
+
+        n.getValue().accept(this);
     }
 
     @Override
@@ -191,6 +193,15 @@ public class TypeChecker extends Visitor{
         n.type = DataTypes.DEVICE;
     }
 
+    /**
+     * Compares two DataTypes, and returns the type if they are the same. Otherwise, if one is a floating point
+     * number and the other an integer, implicit type conversion is used. If this is not the case, an error is
+     * thrown
+     * @param type1 first DataType to compare
+     * @param type2 second DataType to compare
+     * @param operator the operation
+     * @return
+     */
     public DataTypes findCommonDataType(DataTypes type1, DataTypes type2, Operators operator) {
         if (type1 == null || type2 == null) {
             throw new NullPointerException();
