@@ -127,6 +127,8 @@ router.post('/motionsensor', function(req, res, next) {
     devices.motionSensor.presence = presence;
   }
 
+  devices.motionSensor.lastUpdated = new Date().toLocaleString('da-DK');
+
   console.log('Presence:', devices.motionSensor.presence);
   console.log('Last Updated:', devices.motionSensor.lastUpdated);
   
