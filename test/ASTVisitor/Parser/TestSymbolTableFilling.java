@@ -121,5 +121,11 @@ public class TestSymbolTableFilling {
 
 
         assertThrows(VariableAlreadyDeclaredException.class, () -> prog.accept(new SymbolTableFilling()));
+
+        try {
+            prog.accept(new SymbolTableFilling());
+        } catch (VariableAlreadyDeclaredException e) {
+            assertEquals(0, e.getLine());
+        }
     }
 }
