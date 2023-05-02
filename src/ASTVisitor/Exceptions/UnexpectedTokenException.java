@@ -11,18 +11,4 @@ public class UnexpectedTokenException extends CustomException {
                 " men fik " +
                 actual + "." + " (Linje " + line + ")", line);
     }
-
-    public UnexpectedTokenException(List<String> expected, TokenType actual, int line) {
-        super("Forventede " + expectedTokensToString(expected)
-                + " men fik " +
-                actual + "." + " (Linje " + line + ")", line);
-    }
-
-    public static String expectedTokensToString(List<String> list) {
-        StringBuilder res = new StringBuilder();
-        list.forEach((token) -> res.append(token).append(", "));
-        res.deleteCharAt(res.length()-1); res.deleteCharAt(res.length()-1);
-        res.replace(res.lastIndexOf(","), res.lastIndexOf(",")+1, " eller");
-        return res.toString();
-    }
 }
