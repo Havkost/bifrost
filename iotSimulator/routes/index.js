@@ -121,11 +121,14 @@ router.get('/thermometer', function(req, res, next) {
 router.post('/motionsensor', function(req, res, next) {
   let presence = req.body?.presence;
   let lastUpdated = req.body?.lastUpdated;
+  let dateTemp = new Date().toTimeString().split(' ')[0];  // getting HH:MM:SS time format
   
   if(presence != null) {
     if(typeof(presence) !== 'boolean') return res.status(400).send('Presence must be a boolean.');
     devices.motionSensor.presence = presence;
   }
+
+  devices.motionSensor.lastUpdated = dateTemp.substring(0, dateTemp.lastIndexOf(':'));
 
   console.log('Presence:', devices.motionSensor.presence);
   console.log('Last Updated:', devices.motionSensor.lastUpdated);

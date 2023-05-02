@@ -145,6 +145,7 @@ public class CCodeGenerator extends Visitor {
     }
 
     @Override
+    // dot-notation for devices
     public void visit(IdNode n) {
         if (n.getParentId() != null)
             emit(n.getParentId() + "." + n.getValue());

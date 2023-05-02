@@ -132,6 +132,10 @@ a {
   border: var(--col-gray-900) 2px solid;
 }
 
+#motion-sensor-area:hover {
+  background-color: var(--col-gray-400);
+}
+
 h1.title {
   text-align: center;
   font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
