@@ -249,7 +249,6 @@ public class TestCCodeGenerator {
         prog.accept(new SymbolTableFilling());
         prog.accept(new TypeChecker());
 
-        System.out.println(AST.getSymbolTable());
         generator.visit(prog);
         assertEquals("""
                 #include <stdlib.h>

@@ -81,7 +81,7 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(BinaryComputing n) {
         // String concatination
-        if(n.getChild1().getType() == TEKST && n.getChild2().getType() == TEKST) {
+        if(n.getChild1().getType() == TEKST && n.getChild2().getType() == TEKST && n.getOperation() == Operators.PLUS) {
             emit("concat(");
             n.getChild1().accept(this);
             emit(", ");
