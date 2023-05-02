@@ -41,7 +41,8 @@ public enum TokenType {
     RPAREN(")"),
     EOF("\u001a"),
     DEVICE_DCL("enhed"),
-    MED("med");
+    MED("med"),
+    KLOKKEN("klokken");
 
     final String name;
 

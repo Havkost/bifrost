@@ -129,7 +129,8 @@ public class ASTParser {
     public AST expr() {
         AST expr;
         if (ts.peek() == TokenType.ID || ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.IKKE ||
-                ts.peek() == TokenType.LPAREN || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT) {
+                ts.peek() == TokenType.LPAREN || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT ||
+                ts.peek() == TokenType.TEKST_LIT || ts.peek() == TokenType.KLOKKEN) {
             expr = or_expr();
         } else throw new UnexpectedExpressionToken(ts.peek(), line);
 
@@ -309,7 +310,7 @@ public class ASTParser {
             expect(TokenType.LPAREN);
             expr = new UnaryComputing("paren", expr(), line);
             expect(TokenType.RPAREN);
-        } else if (ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT) {
+        } else if (ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT || ts.peek() == TokenType.KLOKKEN) {
             expr = value();
         } else if (ts.peek() == TokenType.ID) {
             expr = field();
@@ -425,7 +426,9 @@ public class ASTParser {
             valueAST = new DecimaltalLiteral(expect(TokenType.DECIMALTAL_LIT).getVal(), line);
         } else if (ts.peek() == TokenType.BOOLSK_LIT) {
             valueAST = new BoolskLiteral(expect(TokenType.BOOLSK_LIT).getVal(), line);
-        }
+        } else if (ts.peek() == TokenType.KLOKKEN) {
+            valueAST = new KlokkenNode(expect(TokenType.KLOKKEN).getVal(), line);
+        } else throw new UnexpectedExpressionToken(ts.peek(), line);
 
         return valueAST;
     }

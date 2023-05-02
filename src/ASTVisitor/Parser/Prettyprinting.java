@@ -191,6 +191,11 @@ public class Prettyprinting extends Visitor {
 		emit("som " + n.getId() + "\n");
 	}
 
+	@Override
+	public void visit(KlokkenNode n) {
+		emit("klokken");
+	}
+
 	public String getCode() {
 		return code;
 	}

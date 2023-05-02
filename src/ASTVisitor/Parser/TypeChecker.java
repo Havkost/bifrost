@@ -189,6 +189,11 @@ public class TypeChecker extends Visitor{
         n.type = DataTypes.DEVICE;
     }
 
+    @Override
+    public void visit(KlokkenNode n) {
+
+    }
+
     /**
      * Compares two DataTypes, and returns the type if they are the same. Otherwise, if one is a floating point
      * number and the other an integer, implicit type conversion is used. If this is not the case, an error is
@@ -207,6 +212,8 @@ public class TypeChecker extends Visitor{
             return type1;
         } else if (types.contains(DataTypes.DECIMALTAL) && types.contains(DataTypes.HELTAL)){
             return DataTypes.DECIMALTAL;
+        } else if (types.contains(DataTypes.TEKST) && types.contains(DataTypes.KLOKKEN)) {
+            return DataTypes.KLOKKEN;
         } else throw new Error("Ugyldig operation: " + operator + " mellem type " + type1 + " og type " + type2);
     }
 

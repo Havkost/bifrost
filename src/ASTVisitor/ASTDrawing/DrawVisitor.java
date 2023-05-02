@@ -236,4 +236,9 @@ public class DrawVisitor extends Visitor {
     public void visit(DeviceNode n) {
 
     }
+
+    @Override
+    public void visit(KlokkenNode n) {
+
+    }
 }

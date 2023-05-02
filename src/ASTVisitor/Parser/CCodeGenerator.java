@@ -40,14 +40,16 @@ public class CCodeGenerator extends Visitor {
             entry(HELTAL, "%d"),
             entry(DECIMALTAL, "%lf"),
             entry(TEKST, "%s"),
-            entry(BOOLSK, "%s")
+            entry(BOOLSK, "%s"),
+            entry(KLOKKEN, "%s")
     ));
 
     Map<AST.DataTypes, String> dataTypeString = new HashMap<>(Map.ofEntries(
             entry(HELTAL, "int"),
             entry(DECIMALTAL, "double"),
             entry(TEKST, "char*"),
-            entry(BOOLSK, "bool")
+            entry(BOOLSK, "bool"),
+            entry(KLOKKEN, "char*")
     ));
 
     public void emit(String c){
@@ -97,6 +99,17 @@ public class CCodeGenerator extends Visitor {
                 emit(")");
             }
             emit(")");
+            return;
+        } else if ((n.getChild1().getType() == KLOKKEN || n.getChild1().getType() == TEKST) &&
+                (n.getOperation() == Operators.EQUALS || n.getOperation() == Operators.NOT_EQUALS)) {
+            emit("strcmp(");
+            n.getChild1().accept(this);
+            emit(", ");
+            n.getChild2().accept(this);
+            emit(")");
+            if (n.getOperation() == Operators.EQUALS)
+                emit(" == 0");
+            else emit(" == 1");
             return;
         }
         n.getChild1().accept(this);
@@ -205,12 +218,15 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(ProgramNode n) {
+        boolean containsKlokken = AST.getSymbolTable().containsValue(KLOKKEN);
         boolean containsString = AST.getSymbolTable().containsValue(TEKST);
         boolean containsDevice = AST.getSymbolTable().containsValue(DEVICE);
         emit("#include <stdlib.h>\n");
         emit("#include <stdio.h>\n");
         emit("#include <stdbool.h>\n");
-        if(containsString)
+        if(containsKlokken)
+            emit("#include <time.h>\n");
+        if(containsString || containsKlokken)
             emit("#include <string.h>\n");
         if(containsDevice) {
             emit("#include <curl/curl.h>\n");
@@ -235,11 +251,11 @@ public class CCodeGenerator extends Visitor {
         });
 
         // Freeing memory for strings in the program
-        if (containsString) {
+        if (containsString || containsKlokken) {
             emit("\nint free_memory () {\n");
             blockIndent++;
             AST.getSymbolTable().forEach((id, type) -> {
-                if(type == TEKST) {
+                if(type == TEKST || type == KLOKKEN) {
                     indent(blockIndent);
                     emit("free(" + id + ");\n");
                 }
@@ -337,9 +353,31 @@ public class CCodeGenerator extends Visitor {
                 }
                 """);
         }
+        if(containsKlokken) {
+            emit("""
+                    char* time_generator()
+                    {
+                        struct tm* local;
+                        time_t t = time(NULL);
+                                        
+                        // Get the localtime
+                        local = localtime(&t);
+                                        
+                        // Format the time to HH:MM format
+                        char* time_str = malloc(sizeof(char) * 12);
+                        strftime(time_str, 12, "%H:%M", local);
+                                        
+                        return time_str;
+                    }
+                    """);
+        }
 
         emit("int main() {\n");
         blockIndent++;
+        if (containsKlokken) {
+            indent(blockIndent);
+            emit("klokken = time_generator();\n");
+        }
         for(AST ast : n.getChild()){
             if (ast instanceof DeviceNode) {
                 indent(blockIndent);
@@ -359,7 +397,7 @@ public class CCodeGenerator extends Visitor {
         }
         indent(blockIndent);
 
-        if (AST.getSymbolTable().containsValue(TEKST)) {
+        if (AST.getSymbolTable().containsValue(TEKST) || AST.getSymbolTable().containsValue(KLOKKEN)) {
             emit("free_memory();\n");
             indent(blockIndent);
         }
@@ -460,6 +498,11 @@ public class CCodeGenerator extends Visitor {
         indent(blockIndent);
         emit("} " + n.getId().substring(0,1).toUpperCase()
                 + n.getId().substring(1) + ";\n\n");
+    }
+
+    @Override
+    public void visit(KlokkenNode n) {
+        emit("klokken");
     }
 
     public String getCode() {

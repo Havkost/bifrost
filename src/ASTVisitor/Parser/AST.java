@@ -21,7 +21,8 @@ public abstract class AST {
         TEKST,
         BOOLSK,
         RUTINE,
-        DEVICE
+        DEVICE,
+        KLOKKEN
         ;
 
         @Override
@@ -88,11 +89,13 @@ public abstract class AST {
         operationResultType[Operators.EQUALS.ordinal()][DataTypes.DECIMALTAL.ordinal()] = DataTypes.BOOLSK;
         operationResultType[Operators.EQUALS.ordinal()][DataTypes.TEKST.ordinal()] = DataTypes.BOOLSK;
         operationResultType[Operators.EQUALS.ordinal()][DataTypes.BOOLSK.ordinal()] = DataTypes.BOOLSK;
+        operationResultType[Operators.EQUALS.ordinal()][DataTypes.KLOKKEN.ordinal()] = DataTypes.BOOLSK;
         // Not equals operations mapped to the datatype result
         operationResultType[Operators.NOT_EQUALS.ordinal()][DataTypes.HELTAL.ordinal()] = DataTypes.BOOLSK;
         operationResultType[Operators.NOT_EQUALS.ordinal()][DataTypes.DECIMALTAL.ordinal()] = DataTypes.BOOLSK;
         operationResultType[Operators.NOT_EQUALS.ordinal()][DataTypes.TEKST.ordinal()] = DataTypes.BOOLSK;
         operationResultType[Operators.NOT_EQUALS.ordinal()][DataTypes.BOOLSK.ordinal()] = DataTypes.BOOLSK;
+        operationResultType[Operators.NOT_EQUALS.ordinal()][DataTypes.KLOKKEN.ordinal()] = DataTypes.BOOLSK;
         // Not operations mapped to the datatype result
         operationResultType[Operators.NOT.ordinal()][DataTypes.BOOLSK.ordinal()] = DataTypes.BOOLSK;
         // Parenthesis operations mapped to the datatype result
@@ -104,6 +107,7 @@ public abstract class AST {
         operationResultType[Operators.OR.ordinal()][DataTypes.BOOLSK.ordinal()] = DataTypes.BOOLSK;
         // And operations mapped to the datatype result
         operationResultType[Operators.AND.ordinal()][DataTypes.BOOLSK.ordinal()] = DataTypes.BOOLSK;
+
     }
     public abstract void accept(Visitor v);
 

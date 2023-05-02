@@ -118,6 +118,12 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
+    public void visit(KlokkenNode n) {
+        if (!AST.SymbolTable.containsKey("klokken"))
+            AST.SymbolTable.put("klokken", AST.DataTypes.KLOKKEN);
+    }
+
+    @Override
     public void visit(DecimaltalLiteral n) {
         n.type = AST.DataTypes.DECIMALTAL;
     }

@@ -1,0 +1,6 @@
+gem heltal 10 som a
+
+hvis klokken er "14:18":
+    print a.
+
+print klokken
