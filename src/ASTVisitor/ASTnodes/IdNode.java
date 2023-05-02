@@ -45,6 +45,10 @@ public class IdNode extends AST {
         return parentId;
     }
 
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(!(obj instanceof IdNode object)) return false;

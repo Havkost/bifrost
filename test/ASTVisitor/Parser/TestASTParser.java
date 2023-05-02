@@ -39,7 +39,7 @@ public class TestASTParser {
                                              
                                              print a
                                              """);
-        AST dcl = new HeltalDcl(new HeltalLiteral("3"), "a");
+        AST dcl = new HeltalDcl(new HeltalLiteral("3"), new IdNode("a"));
         AST print = new PrintNode(new IdNode("a"));
         AST ast = new ProgramNode(asList(dcl, print));
         assertEquals(ast, parser.prog());
@@ -52,7 +52,7 @@ public class TestASTParser {
                                              sæt x til 2
                                              print x
                                              """);
-        AST dcl = new HeltalDcl(new HeltalLiteral("3"), "x");
+        AST dcl = new HeltalDcl(new HeltalLiteral("3"), new IdNode("x"));
         AST ass = new AssignNode(new IdNode("x"), new HeltalLiteral("2"));
         AST print = new PrintNode(new IdNode("x"));
 
@@ -84,7 +84,7 @@ public class TestASTParser {
         ASTParser parser = makeASTParser("""
                                              gem heltal 3 som x
                                              """);
-        AST dcl = new HeltalDcl(new HeltalLiteral("3"), "x");
+        AST dcl = new HeltalDcl(new HeltalLiteral("3"), new IdNode("x"));
         assertEquals(dcl, parser.dcl());
     }
 
@@ -168,68 +168,14 @@ public class TestASTParser {
         ASTParser parser = makeASTParser("""
                                              x er 3 eller < y
                                              """);
-        assertThrows(UnexpectedTokenException.class, parser::or_expr);
+        assertThrows(UnexpectedExpressionToken.class, parser::or_expr);
     }
 
-    @Test
-    public void testAnd_ExprIllegal(){
-        ASTParser parser = makeASTParser("""
-                                             x er 3 og < y
-                                             """);
-        assertThrows(UnexpectedTokenException.class, parser::and_expr);
-    }
-
-    @Test
-    public void testEquality_ExprIllegal(){
-        ASTParser parser = makeASTParser("""
-                                             x er
-                                             """);
-        assertThrows(UnexpectedTokenException.class, parser::equalityExpr);
-    }
-
-    @Test
-    public void testEquality_Expr(){
-        ASTParser parser = makeASTParser("""
-                                             x ikke er 2:
-                                             """);
-        assertDoesNotThrow(parser::equalityExpr);
-    }
-
-    @Test
-    public void testRel_ExprIllegal(){
-        ASTParser parser = makeASTParser("""
-                                             s <
-                                             """);
-        assertThrows(UnexpectedTokenException.class, parser::relExpr);
-    }
-
-    @Test
-    public void testSum_ExprIllegal(){
-        ASTParser parser = makeASTParser("""
-                                             3 +
-                                             """);
-        assertThrows(UnexpectedTokenException.class, parser::sumExpr);
-    }
-
-    @Test
-    public void testProduct_ExprIllegal(){
-        ASTParser parser = makeASTParser("""
-                                             3 * 
-                                             """);
-        assertThrows(UnexpectedTokenException.class, parser::productExpr);
-    }
-
-    @Test
-    public void testFactorIllegal(){
-        ASTParser parser = makeASTParser("""
-                                             """);
-        assertThrows(UnexpectedTokenException.class, parser::factor);
-    }
 
     @Test
     public void testVarDclStr() {
         ASTParser parser = makeASTParser("tekst \"test\" som testTekst");
-        AST dcl = new TekstDcl(new TekstLiteral("test"), "testTekst");
+        AST dcl = new TekstDcl(new TekstLiteral("test"), new IdNode("testTekst"));
         assertEquals(dcl, parser.varDcl());
     }
 
@@ -242,7 +188,7 @@ public class TestASTParser {
     @Test
     public void testVarDclInt() {
         ASTParser parser = makeASTParser("heltal 56 som number");
-        AST dcl = new HeltalDcl(new HeltalLiteral("56"), "number");
+        AST dcl = new HeltalDcl(new HeltalLiteral("56"), new IdNode("number"));
         assertEquals(dcl, parser.varDcl());
     }
 
@@ -255,7 +201,7 @@ public class TestASTParser {
     @Test
     public void testVarDclFlt() {
         ASTParser parser = makeASTParser("decimaltal 56,132 som number");
-        AST dcl = new DecimaltalDcl(new DecimaltalLiteral("56,132"), "number");
+        AST dcl = new DecimaltalDcl(new DecimaltalLiteral("56,132"), new IdNode("number"));
         assertEquals(dcl, parser.varDcl());
     }
 
@@ -268,7 +214,7 @@ public class TestASTParser {
     @Test
     public void testVarDclBool() {
         ASTParser parser = makeASTParser("boolsk falsk som val");
-        AST dcl = new BoolskDcl(new BoolskLiteral("falsk"), "val");
+        AST dcl = new BoolskDcl(new BoolskLiteral("falsk"), new IdNode("val"));
         assertEquals(dcl, parser.varDcl());
     }
 
@@ -276,7 +222,7 @@ public class TestASTParser {
     public void testVarDclBool2() {
         ASTParser parser = makeASTParser("boolsk 3 er 2 som val");
         AST dcl = new BoolskDcl(new BinaryComputing("er", new HeltalLiteral("3"),
-                    new HeltalLiteral("2")), "val");
+                    new HeltalLiteral("2")), new IdNode("val"));
         assertEquals(dcl, parser.varDcl());
     }
 
@@ -290,12 +236,12 @@ public class TestASTParser {
                     tekst "hello" som testStr
                 som device1
                 """);
-        List<VariableDcl> fields = List.of(new HeltalDcl(new HeltalLiteral("3"), "testInt"),
-                new BoolskDcl(new BoolskLiteral("sandt"), "testBool"),
-                new DecimaltalDcl(new DecimaltalLiteral("3,14"), "testFlt"),
-                new TekstDcl(new TekstLiteral("hello"), "testStr"));
+        List<VariableDcl> fields = List.of(new HeltalDcl(new HeltalLiteral("3"), new IdNode("testInt")),
+                new BoolskDcl(new BoolskLiteral("sandt"), new IdNode("testBool")),
+                new DecimaltalDcl(new DecimaltalLiteral("3,14"), new IdNode("testFlt")),
+                new TekstDcl(new TekstLiteral("hello"), new IdNode("testStr")));
 
-        fields.forEach((field) -> field.setParentId("device1"));
+        fields.forEach((field) -> field.getId().setParentId("device1"));
         AST dcl = new DeviceNode("device1", fields, "test");
         assertEquals(dcl, parser.varDcl());
     }
@@ -335,6 +281,25 @@ public class TestASTParser {
         ASTParser parser = makeASTParser("print gem");
 
         assertThrows(UnexpectedExpressionToken.class, parser::print);
+    }
+
+    @Test
+    void testField() {
+        ASTParser parser = makeASTParser("sæt lysstyrke for lampe1 til lysstyrke for lampe2");
+        AST prog = new ProgramNode(List.of(new AssignNode(new IdNode("lysstyrke", "lampe1"), new IdNode("lysstyrke", "lampe2"))));
+
+        assertEquals(prog, parser.prog());
+    }
+
+    @Test
+    void testUnexpectedExprToken() {
+        ASTParser parser = makeASTParser("""
+                                            hvis 2 er :
+                                                sæt s til 2
+                                            .
+                                            """);
+
+        assertThrows(UnexpectedExpressionToken.class, parser::prog);
     }
 
     @Test

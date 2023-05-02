@@ -21,23 +21,19 @@ public class TypeChecker extends Visitor{
         } else
             type = AST.getSymbolTable().get(n.getId().getValue());
 
-        if (type != n.getValue().getType()){
+        n.getValue().accept(this);
+
+        if (type == null || !type.equals(n.getValue().getType())){
             try {
                 if (n.getId().getParentId() == null)
                     throw new IllegalTypeAssignmentException(n.getId().getValue(), type, n.getValue(), n.getLine());
                 else
                     throw new IllegalTypeAssignmentException(n.getId() + "." + n.getId().getParentId(), type, n.getValue(), n.getLine());
             } catch (NullPointerException e) {
-                if (n.getValue() instanceof BinaryComputing)
-                    throw new MissingTypeException((BinaryComputing) n.getValue(), n.getLine());
-                else if (n.getValue() instanceof UnaryComputing)
-                    throw new MissingTypeException((UnaryComputing) n.getValue(), n.getLine());
-                else throw new MissingTypeException(n.getValue(), n.getLine());
+                throw new MissingTypeException(n.getValue(), n.getLine());
             }
 
         }
-
-        n.getValue().accept(this);
     }
 
     @Override
@@ -200,7 +196,7 @@ public class TypeChecker extends Visitor{
      * @param type1 first DataType to compare
      * @param type2 second DataType to compare
      * @param operator the operation
-     * @return
+     * @return a common datatype or float if int and float is given
      */
     public DataTypes findCommonDataType(DataTypes type1, DataTypes type2, Operators operator) {
         if (type1 == null || type2 == null) {

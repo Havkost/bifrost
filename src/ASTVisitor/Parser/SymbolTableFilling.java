@@ -1,6 +1,8 @@
 package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
+import ASTVisitor.Exceptions.VariableAlreadyDeclaredException;
+
 import static ASTVisitor.Parser.AST.DataTypes.*;
 
 public class SymbolTableFilling extends Visitor {
@@ -35,7 +37,7 @@ public class SymbolTableFilling extends Visitor {
     @Override
     public void visit(FuncDclNode n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(), RUTINE);
-        else error("Variablen " + n.getId() + " er allerede deklareret.");
+        else throw new VariableAlreadyDeclaredException(n.getId(), n.getLine());
         for (AST child : n.getBody()) {
             child.accept(this);
         }
@@ -66,16 +68,16 @@ public class SymbolTableFilling extends Visitor {
     public void visit(PrintNode n) {}
 
     public String getId(VariableDcl n) {
-        if(n.getParentId() != null)
-            return n.getParentId() + "." + n.getId();
-        return n.getId();
+        if(n.getId().getParentId() != null)
+            return n.getId().getParentId() + "." + n.getId().getValue();
+        return n.getId().getValue();
     }
 
     @Override
     public void visit(TekstDcl n) {
         String id = getId(n);
         if (AST.SymbolTable.get(id) == null) AST.SymbolTable.put(id, TEKST);
-        else error("Variablen " + id + " er allerede deklareret.");
+        else throw new VariableAlreadyDeclaredException(id, n.getLine());
         n.getValue().accept(this);
         n.type = TEKST;
     }
@@ -84,7 +86,7 @@ public class SymbolTableFilling extends Visitor {
     public void visit(HeltalDcl n) {
         String id = getId(n);
         if (AST.SymbolTable.get(id) == null) AST.SymbolTable.put(id, HELTAL);
-        else error("Variablen " + id + " er allerede deklareret.");
+        else throw new VariableAlreadyDeclaredException(id, n.getLine());
         n.getValue().accept(this);
         n.type = HELTAL;
     }
@@ -93,7 +95,7 @@ public class SymbolTableFilling extends Visitor {
     public void visit(DecimaltalDcl n) {
         String id = getId(n);
         if (AST.SymbolTable.get(id) == null) AST.SymbolTable.put(id, DECIMALTAL);
-        else error("Variablen " + id + " er allerede deklareret.");
+        else throw new VariableAlreadyDeclaredException(id, n.getLine());
         n.getValue().accept(this);
         n.type = DECIMALTAL;
     }
@@ -102,14 +104,14 @@ public class SymbolTableFilling extends Visitor {
     public void visit(BoolskDcl n) {
         String id = getId(n);
         if (AST.SymbolTable.get(id) == null) AST.SymbolTable.put(id, BOOLSK);
-        else error("Variablen " + id + " er allerede deklareret.");
+        else throw new VariableAlreadyDeclaredException(id, n.getLine());
         n.getValue().accept(this);
         n.type = BOOLSK;
     }
     @Override
     public void visit(DeviceNode n) {
         if (AST.SymbolTable.get(n.getId()) == null) AST.SymbolTable.put(n.getId(),DEVICE);
-        else error("Variablen " + n.getId() + " er allerede deklareret.");
+        else throw new VariableAlreadyDeclaredException(n.getId(), n.getLine());
         n.getFields().forEach((field) -> {
             field.accept(this);
         });
@@ -133,9 +135,5 @@ public class SymbolTableFilling extends Visitor {
     @Override
     public void visit(TekstLiteral n) {
         n.type = AST.DataTypes.TEKST;
-    }
-
-    private void error(String message) {
-        throw new Error(message);
     }
 }

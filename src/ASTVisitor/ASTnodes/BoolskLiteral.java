@@ -10,11 +10,13 @@ public class BoolskLiteral extends AST {
     public BoolskLiteral(String value, int line) {
         super(line);
         this.value = value;
+        this.type = DataTypes.BOOLSK;
     }
 
     public BoolskLiteral(String value) {
         super(0);
         this.value = value;
+        this.type = DataTypes.BOOLSK;
     }
 
     @Override

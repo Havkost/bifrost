@@ -5,22 +5,14 @@ import ASTVisitor.Parser.Visitor;
 
 public class HeltalDcl extends VariableDcl{
 
-    public HeltalDcl(AST value, String id, int line) {
+    public HeltalDcl(AST value, IdNode id, int line) {
         super(value, id, line);
     }
 
-    public HeltalDcl(AST value, String id) {
+    public HeltalDcl(AST value, IdNode id) {
         super(value, id);
     }
 
-    // FIELD CONSTRUCTORS
-    public HeltalDcl(AST value, String id, String parentId, int line) {
-        super(value, id, parentId, line);
-    }
-
-    public HeltalDcl(AST value, String id, String parentId) {
-        super(value, id, parentId);
-    }
 
     public void accept(Visitor v) {
         v.visit(this);

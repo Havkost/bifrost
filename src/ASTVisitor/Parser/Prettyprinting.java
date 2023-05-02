@@ -2,6 +2,8 @@ package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
 
+import javax.xml.crypto.Data;
+
 public class Prettyprinting extends Visitor {
 
 	private int blockIndent = 0;
@@ -132,42 +134,42 @@ public class Prettyprinting extends Visitor {
 
 	@Override
 	public void visit(TekstDcl n) {
-		if (n.getParentId() != null)
+		if (n.getId().getParentId() != null)
 			emit("tekst ");
 		else
 			emit("gem tekst ");
 		n.getValue().accept(this);
-		emit(" som " + n.getId());
+		emit(" som " + n.getId().getValue());
 	}
 
 	@Override
 	public void visit(HeltalDcl n) {
-		if (n.getParentId() != null)
+		if (n.getId().getParentId() != null)
 			emit("heltal ");
 		else
 			emit("gem heltal ");
 		n.getValue().accept(this);
-		emit(" som " + n.getId());
+		emit(" som " + n.getId().getValue());
 	}
 
 	@Override
 	public void visit(DecimaltalDcl n) {
-		if (n.getParentId() != null)
+		if (n.getId().getParentId() != null)
 			emit("decimaltal ");
 		else
 			emit("gem decimaltal ");
 		n.getValue().accept(this);
-		emit(" som " + n.getId());
+		emit(" som " + n.getId().getValue());
 	}
 
 	@Override
 	public void visit(BoolskDcl n) {
-		if (n.getParentId() != null)
+		if (n.getId().getParentId() != null)
 			emit("boolsk ");
 		else
 			emit("gem boolsk ");
 		n.getValue().accept(this);
-		emit(" som " + n.getId());
+		emit(" som " + n.getId().getValue());
 	}
 
 	public void indent(int indents) {

@@ -32,7 +32,7 @@ public class TestPrettyPrinting {
 
     @Test
     void testBoolskDcl() {
-        BoolskDcl boolskDcl = new BoolskDcl(new BoolskLiteral("sandt"), "a");
+        BoolskDcl boolskDcl = new BoolskDcl(new BoolskLiteral("sandt"), new IdNode("a"));
         boolskDcl.accept(prettyPrinter);
 
         assertEquals("gem boolsk sandt som a", prettyPrinter.getCode());
@@ -40,7 +40,7 @@ public class TestPrettyPrinting {
 
     @Test
     void testTekstDcl() {
-        TekstDcl tekstDcl = new TekstDcl(new TekstLiteral("test"), "a");
+        TekstDcl tekstDcl = new TekstDcl(new TekstLiteral("test"), new IdNode("a"));
         tekstDcl.accept(prettyPrinter);
 
         assertEquals("gem tekst \"test\" som a", prettyPrinter.getCode());
@@ -48,7 +48,7 @@ public class TestPrettyPrinting {
 
     @Test
     void testHeltalDcl() {
-        HeltalDcl heltalDcl = new HeltalDcl(new HeltalLiteral("37"), "a");
+        HeltalDcl heltalDcl = new HeltalDcl(new HeltalLiteral("37"), new IdNode("a"));
         heltalDcl.accept(prettyPrinter);
 
         assertEquals("gem heltal 37 som a", prettyPrinter.getCode());
@@ -56,7 +56,7 @@ public class TestPrettyPrinting {
 
     @Test
     void testDecimaltalDcl() {
-        DecimaltalDcl decimaltalDcl = new DecimaltalDcl(new DecimaltalLiteral("3,39"), "a");
+        DecimaltalDcl decimaltalDcl = new DecimaltalDcl(new DecimaltalLiteral("3,39"), new IdNode("a"));
         decimaltalDcl.accept(prettyPrinter);
 
         assertEquals("gem decimaltal 3,39 som a", prettyPrinter.getCode());
@@ -87,6 +87,15 @@ public class TestPrettyPrinting {
         assignNode.accept(prettyPrinter);
 
         assertEquals("sæt a til 5", prettyPrinter.getCode());
+    }
+
+    @Test
+    void testAssignField() {
+        AssignNode assignNode = new AssignNode(new IdNode("lysstyrke", "lampe1"),
+                new HeltalLiteral("50"));
+        assignNode.accept(prettyPrinter);
+
+        assertEquals("sæt lysstyrke for lampe1 til 50", prettyPrinter.getCode());
     }
 
     @Test
@@ -144,14 +153,36 @@ public class TestPrettyPrinting {
     }
 
     @Test
+    void testDeviceDcl() {
+        DeviceNode deviceNode = new DeviceNode("lampe1", List.of(
+                new TekstDcl(new TekstLiteral("test"), new IdNode("besked", "lampe1")),
+                new HeltalDcl(new HeltalLiteral("3"), new IdNode("lysstyrke", "lampe1")),
+                new DecimaltalDcl(new DecimaltalLiteral("11,35"), new IdNode("temperatur", "lampe1")),
+                new BoolskDcl(new BoolskLiteral("sandt"), new IdNode("tændt", "lampe1"))
+        ), "test");
+        deviceNode.accept(new SymbolTableFilling());
+        deviceNode.accept(new TypeChecker());
+        deviceNode.accept(prettyPrinter);
+
+        assertEquals("""
+                gem enhed "test" med:
+                    tekst "test" som besked
+                    heltal 3 som lysstyrke
+                    decimaltal 11,35 som temperatur
+                    boolsk sandt som tændt
+                som lampe1
+                """, prettyPrinter.getCode());
+    }
+
+    @Test
     void testProgramNode() {
         ProgramNode prog = new ProgramNode(List.of(
-                new TekstDcl(new TekstLiteral("Tekst"), "b"),
+                new TekstDcl(new TekstLiteral("Tekst"), new IdNode("b")),
                 new FuncDclNode("func", List.of(
                         new AssignNode(new IdNode("a"), new HeltalLiteral("5")),
                         new AssignNode(new IdNode("b"), new TekstLiteral("Test"))
                 )),
-                new HeltalDcl(new HeltalLiteral("3"), "a"),
+                new HeltalDcl(new HeltalLiteral("3"), new IdNode("a")),
                 new IfNode(new BinaryComputing("er", new DecimaltalLiteral("3,45"),
                                 new DecimaltalLiteral("5,34")),
                         List.of(new AssignNode(new IdNode("b"), new TekstLiteral("Hello world")))
@@ -171,5 +202,20 @@ public class TestPrettyPrinting {
                     sæt b til "Hello world"
                 .
                 """, prettyPrinter.getCode());
+    }
+
+    @Test
+    void testIdNode() {
+        IdNode idNode1 = new IdNode("test");
+        idNode1.accept(prettyPrinter);
+
+        assertEquals("test", prettyPrinter.getCode());
+    }
+    @Test
+    void testFieldIdNode() {
+        IdNode idNode1 = new IdNode("lysstyrke", "lampe1");
+        idNode1.accept(prettyPrinter);
+
+        assertEquals("lysstyrke for lampe1", prettyPrinter.getCode());
     }
 }

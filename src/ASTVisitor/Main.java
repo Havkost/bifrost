@@ -55,23 +55,25 @@ public class Main {
 
         // Iterates through each input file, compiling the program in the file.
         for (int i = 0; i < inputPaths.size(); i++) {
-            List<String> inputFileSplit = Arrays.stream(inputPaths.get(i).split("\\.")).toList();
-            if(!inputFileSplit.get(inputFileSplit.size()-1).equals("iot")) {
-                errorPrint("Ukendt filtype: " + ANSI.red("." + inputFileSplit.get(inputFileSplit.size()-1)) +
-                        ". Benyt venligst kun .iot filer.");
-            }
-
             try {
+                List<String> inputFileSplit = Arrays.stream(inputPaths.get(i).split("\\.")).toList();
+                if(!inputFileSplit.get(inputFileSplit.size()-1).equals("iot")) {
+                    throw new UnknownFileFormatException("." + inputFileSplit.get(inputFileSplit.size()-1));
+                }
+
                 File sourceFile = new File(inputPaths.get(i));
                 Scanner scanner = new Scanner(sourceFile);
                 while (scanner.hasNextLine()) {
                     sourceString.append(scanner.nextLine()).append("\n");
                 }
             } catch (FileNotFoundException e) {
-                System.out.println("[FEJL] Kunne ikke finde filen '" + inputPaths.get(i) + "'.");
+                errorPrint("Kunne ikke finde filen '" + inputPaths.get(i) + "'.");
                 return;
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("[FEJL] Kildefil blev ikke specificeret.");
+                errorPrint("Kildefil blev ikke specificeret.");
+                return;
+            } catch (UnknownFileFormatException e) {
+                errorPrint(e.getMessage());
                 return;
             }
 

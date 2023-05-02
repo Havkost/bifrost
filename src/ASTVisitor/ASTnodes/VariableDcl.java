@@ -5,49 +5,24 @@ import ASTVisitor.Parser.Visitor;
 
 public abstract class VariableDcl extends AST {
 
-    protected String id;
     private final AST value;
+    private IdNode id;
 
-    private String parentId;
 
-    public VariableDcl(AST value, String id, int line) {
+    public VariableDcl(AST value, IdNode id, int line) {
         super(line);
         this.id = id;
         this.value = value;
     }
 
-    public VariableDcl(AST value, String id) {
+    public VariableDcl(AST value, IdNode id) {
         super(0);
         this.id = id;
         this.value = value;
     }
 
-    // FIELD CONSTRUCTORS
-    public VariableDcl(AST value, String id, String parentId, int line) {
-        super(line);
-        this.id = id;
-        this.value = value;
-        this.parentId = parentId;
-    }
-
-    public VariableDcl(AST value, String id, String parentId) {
-        super(0);
-        this.id = id;
-        this.value = value;
-        this.parentId = parentId;
-    }
-
-
-    public String getId() {
+    public IdNode getId() {
         return id;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
     }
 
     public AST getValue() {

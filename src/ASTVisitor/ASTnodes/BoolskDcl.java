@@ -5,25 +5,12 @@ import ASTVisitor.Parser.Visitor;
 
 public class BoolskDcl extends VariableDcl {
 
-    private String id;
-    private AST value;
-    private String parentId;
-
-    public BoolskDcl(AST value, String id, int line) {
+    public BoolskDcl(AST value, IdNode id, int line) {
         super(value, id, line);
     }
 
-    public BoolskDcl(AST value, String id) {
+    public BoolskDcl(AST value, IdNode id) {
         super(value, id);
-    }
-
-    // FIELD CONSTRUCTORS
-    public BoolskDcl(AST value, String id, String parentId, int line) {
-        super(value, id, parentId, line);
-    }
-
-    public BoolskDcl(AST value, String id, String parentId) {
-        super(value, id, parentId);
     }
 
     public void accept(Visitor v) {

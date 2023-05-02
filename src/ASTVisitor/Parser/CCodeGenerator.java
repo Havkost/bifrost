@@ -402,43 +402,38 @@ public class CCodeGenerator extends Visitor {
 
     @Override
     public void visit(TekstDcl n) {
-        if (n.getParentId() != null)
-            emit(n.getParentId() + "." + n.getId() + " = ");
-        else emit(n.getId() + " = ");
+        n.getId().accept(this);
+        emit(" = ");
         emit("malloc(" + (((TekstLiteral) n.getValue()).getValue().length()+1) +
                 " * sizeof(char));\n");
         indent(blockIndent);
         emit("strcpy(");
-        if (n.getParentId() != null)
-            emit(n.getParentId() + "." + n.getId() + ", ");
-        else emit(n.getId() + ", ");
+        n.getId().accept(this);
+        emit(", ");
         n.getValue().accept(this);
         emit(");");
     }
 
     @Override
     public void visit(HeltalDcl n) {
-        if (n.getParentId() != null)
-            emit(n.getParentId() + "." + n.getId() + " = ");
-        else emit(n.getId() + " = ");
+        n.getId().accept(this);
+        emit(" = ");
         n.getValue().accept(this);
         emit(";");
     }
 
     @Override
     public void visit(DecimaltalDcl n) {
-        if (n.getParentId() != null)
-            emit(n.getParentId() + "." + n.getId() + " = ");
-        else emit(n.getId() + " = ");
+        n.getId().accept(this);
+        emit(" = ");
         n.getValue().accept(this);
         emit(";");
     }
 
     @Override
     public void visit(BoolskDcl n) {
-        if (n.getParentId() != null)
-            emit(n.getParentId() + "." + n.getId() + " = ");
-        else emit(n.getId() + " = ");
+        n.getId().accept(this);
+        emit(" = ");
         n.getValue().accept(this);
         emit(";");
     }
@@ -457,7 +452,7 @@ public class CCodeGenerator extends Visitor {
         emit("char endpoint__[" + (n.getEndpoint().length()+1) + "];\n");
         n.getFields().forEach((field) -> {
             indent(blockIndent);
-            emit(dataTypeString.get(field.getType()) + " " + field.getId() + ";");
+            emit(dataTypeString.get(field.getType()) + " " + field.getId().getValue() + ";");
             emit("\n");
         });
         blockIndent--;

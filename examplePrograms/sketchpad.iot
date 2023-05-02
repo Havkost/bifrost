@@ -1,1 +1,13 @@
-print 30
+
+gem enhed "ip:port/endpoint" med:
+    heltal 0 som lysstyrke
+    boolsk falsk som tændt
+    tekst "hej" som besked
+    decimaltal 3,3 som temperatur
+som lampe1
+
+
+hvis klokken er 11:55:
+    sæt power for lampe1 til sandt
+.
+

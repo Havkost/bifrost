@@ -10,11 +10,13 @@ public class HeltalLiteral extends AST {
     public HeltalLiteral(String value, int line) {
         super(line);
         this.value = value;
+        this.type = DataTypes.HELTAL;
     }
 
     public HeltalLiteral(String value) {
         super(0);
         this.value = value;
+        this.type = DataTypes.HELTAL;
     }
 
     @Override

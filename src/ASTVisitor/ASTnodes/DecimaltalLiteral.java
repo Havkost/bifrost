@@ -3,6 +3,8 @@ package ASTVisitor.ASTnodes;
 import ASTVisitor.Parser.AST;
 import ASTVisitor.Parser.Visitor;
 
+import java.lang.management.ThreadInfo;
+
 public class DecimaltalLiteral extends AST {
 
     private String value;
@@ -10,11 +12,13 @@ public class DecimaltalLiteral extends AST {
     public DecimaltalLiteral(String value, int line) {
         super(line);
         this.value = value;
+        this.type = DataTypes.DECIMALTAL;
     }
 
     public DecimaltalLiteral(String value) {
         super(0);
         this.value = value;
+        this.type = DataTypes.DECIMALTAL;
     }
 
     @Override

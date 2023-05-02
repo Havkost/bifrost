@@ -314,7 +314,7 @@ public class ASTParser {
         } else if (ts.peek() == TokenType.ID) {
             expr = field();
         } else {
-            throw new UnexpectedTokenException(List.of("heltal", "decimaltal", "boolsk værdi", "tekst", "parentes"), ts.peek(), line);
+            throw new UnexpectedExpressionToken(ts.peek(), line);
         }
 
         return expr;
@@ -327,25 +327,25 @@ public class ASTParser {
             AST value = expr();
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
-            dclAst = new TekstDcl(value, idToken.getVal(), line);
+            dclAst = new TekstDcl(value, new IdNode(idToken.getVal()), line);
         } else if(ts.peek() == TokenType.HELTAL_DCL){
             expect(TokenType.HELTAL_DCL);
             AST value = expr();
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
-            dclAst = new HeltalDcl(value, idToken.getVal(), line);
+            dclAst = new HeltalDcl(value, new IdNode(idToken.getVal()), line);
         } else if(ts.peek() == TokenType.DECIMALTAL_DCL){
             expect(TokenType.DECIMALTAL_DCL);
             AST value = expr();
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
-            dclAst = new DecimaltalDcl(value, idToken.getVal(), line);
+            dclAst = new DecimaltalDcl(value, new IdNode(idToken.getVal()), line);
         } else if (ts.peek() == TokenType.BOOLSK_DCL) {
             expect(TokenType.BOOLSK_DCL);
             AST value = expr();
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
-            dclAst = new BoolskDcl(value, idToken.getVal(), line);
+            dclAst = new BoolskDcl(value, new IdNode(idToken.getVal()), line);
         } else if (ts.peek() == TokenType.DEVICE_DCL) {
             expect(TokenType.DEVICE_DCL);
             dclAst = deviceDcl();
@@ -365,7 +365,7 @@ public class ASTParser {
 
         DeviceNode device = new DeviceNode(id, fields, endpoint, line);
         device.getFields().forEach((field) -> {
-            field.setParentId(id);
+            field.getId().setParentId(id);
         });
 
         return device;
@@ -374,14 +374,14 @@ public class ASTParser {
     public List<VariableDcl> fields() {
         List<VariableDcl> fields = new ArrayList<>();
         while (ts.peek() == TokenType.HELTAL_DCL || ts.peek() == TokenType.DECIMALTAL_DCL || ts.peek() == TokenType.TEKST_DCL || ts.peek() == TokenType.BOOLSK_DCL) {
-            String id;
+            IdNode id;
             AST value;
             switch (ts.peek()) {
                 case BOOLSK_DCL -> {
                     expect(TokenType.BOOLSK_DCL);
                     value = expr();
                     expect(TokenType.SOM);
-                    id = expect(TokenType.ID).getVal();
+                    id = new IdNode(expect(TokenType.ID).getVal());
                     expect(TokenType.NEWLINE);
                     fields.add(new BoolskDcl(value, id, line));
                 }
@@ -389,7 +389,7 @@ public class ASTParser {
                     expect(TokenType.HELTAL_DCL);
                     value = expr();
                     expect(TokenType.SOM);
-                    id = expect(TokenType.ID).getVal();
+                    id = new IdNode(expect(TokenType.ID).getVal());
                     expect(TokenType.NEWLINE);
                     fields.add(new HeltalDcl(value, id, line));
                 }
@@ -397,7 +397,7 @@ public class ASTParser {
                     expect(TokenType.DECIMALTAL_DCL);
                     value = expr();
                     expect(TokenType.SOM);
-                    id = expect(TokenType.ID).getVal();
+                    id = new IdNode(expect(TokenType.ID).getVal());
                     expect(TokenType.NEWLINE);
                     fields.add(new DecimaltalDcl(value, id, line));
                 }
@@ -405,7 +405,7 @@ public class ASTParser {
                     expect(TokenType.TEKST_DCL);
                     value = expr();
                     expect(TokenType.SOM);
-                    id = expect(TokenType.ID).getVal();
+                    id = new IdNode(expect(TokenType.ID).getVal());
                     expect(TokenType.NEWLINE);
                     fields.add(new TekstDcl(value, id, line));
                 }
@@ -425,7 +425,7 @@ public class ASTParser {
             valueAST = new DecimaltalLiteral(expect(TokenType.DECIMALTAL_LIT).getVal(), line);
         } else if (ts.peek() == TokenType.BOOLSK_LIT) {
             valueAST = new BoolskLiteral(expect(TokenType.BOOLSK_LIT).getVal(), line);
-        } else throw new UnexpectedExpressionToken(ts.peek(), line);
+        }
 
         return valueAST;
     }
@@ -464,7 +464,7 @@ public class ASTParser {
     }
 
     public AST field() {
-        AST res = null;
+        AST res;
         String id = expect(TokenType.ID).getVal();
         String parent = parent();
 
