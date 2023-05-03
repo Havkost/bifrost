@@ -1,7 +1,7 @@
 gem tekst "virker" som a
 gem tekst "virker ikke" som b
 
-gem tid 11:59 som tiden
+gem tid 14:09 som tiden
 
 print klokken
 
