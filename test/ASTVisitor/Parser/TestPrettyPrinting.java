@@ -122,7 +122,7 @@ public class TestPrettyPrinting {
         ifNode.accept(prettyPrinter);
 
         assertEquals("""
-                hvis ikke falsk:
+                hvis ikke falsk
                     sæt a til 3
                     kør func
                 .""", prettyPrinter.getCode());
@@ -146,7 +146,7 @@ public class TestPrettyPrinting {
 
         assertEquals("""
                 
-                rutine func:
+                rutine func
                     sæt a til 5
                     sæt b til \"Test\"
                 .""", prettyPrinter.getCode());
@@ -165,7 +165,7 @@ public class TestPrettyPrinting {
         deviceNode.accept(prettyPrinter);
 
         assertEquals("""
-                gem enhed "test" med:
+                gem enhed "test" med
                     tekst "test" som besked
                     heltal 3 som lysstyrke
                     decimaltal 11,35 som temperatur
@@ -193,12 +193,12 @@ public class TestPrettyPrinting {
         assertEquals("""
                 gem tekst "Tekst" som b
                 
-                rutine func:
+                rutine func
                     sæt a til 5
                     sæt b til "Test"
                 .
                 gem heltal 3 som a
-                hvis 3,45 er 5,34:
+                hvis 3,45 er 5,34
                     sæt b til "Hello world"
                 .
                 """, prettyPrinter.getCode());
