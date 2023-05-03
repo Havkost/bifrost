@@ -13,12 +13,9 @@ public class HeltalDcl extends VariableDcl{
         super(value, id);
     }
 
-
     public void accept(Visitor v) {
         v.visit(this);
     }
-
-
 
     @Override
     public boolean equals(Object obj) {

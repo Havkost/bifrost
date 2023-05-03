@@ -1,0 +1,11 @@
+gem enhed "127.0.0.1:3000/lightbulb" med:
+    heltal 0 som brightness
+    boolsk falsk som power
+som lampe1
+
+gem enhed "127.0.0.1:3000/thermometer" med:
+    decimaltal 0,0 som temperature
+som termometer1
+
+sæt power for lampe1 til sandt
+sæt temperature for termometer1 til 25,9
