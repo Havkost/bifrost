@@ -41,7 +41,7 @@ public class CCodeGenerator extends Visitor {
             entry(DECIMALTAL, "%lf"),
             entry(TEKST, "%s"),
             entry(BOOLSK, "%s"),
-            entry(KLOKKEN, "%s")
+            entry(TID, "%02d:%02d")
     ));
 
     Map<AST.DataTypes, String> dataTypeString = new HashMap<>(Map.ofEntries(
@@ -49,7 +49,7 @@ public class CCodeGenerator extends Visitor {
             entry(DECIMALTAL, "double"),
             entry(TEKST, "char*"),
             entry(BOOLSK, "bool"),
-            entry(KLOKKEN, "char*")
+            entry(TID, "Time")
     ));
 
     public void emit(String c){
@@ -100,7 +100,7 @@ public class CCodeGenerator extends Visitor {
             }
             emit(")");
             return;
-        } else if ((n.getChild1().getType() == KLOKKEN || n.getChild1().getType() == TEKST) &&
+        } else if (n.getChild1().getType() == TEKST &&
                 (n.getOperation() == Operators.EQUALS || n.getOperation() == Operators.NOT_EQUALS)) {
             emit("strcmp(");
             n.getChild1().accept(this);
@@ -110,6 +110,20 @@ public class CCodeGenerator extends Visitor {
             if (n.getOperation() == Operators.EQUALS)
                 emit(" == 0");
             else emit(" == 1");
+            return;
+        } else if (n.getChild1().getType() == TID) {
+            emit("time_compare(");
+            n.getChild1().accept(this);
+            emit(", ");
+            n.getChild2().accept(this);
+            emit(")");
+            if (n.getOperation() == Operators.EQUALS)
+                emit(" == 0");
+            else if (n.getOperation() == Operators.NOT_EQUALS)
+                emit(" != 0");
+            else if (n.getOperation() == Operators.LESS_THAN) {
+                emit(" == -1");
+            } else emit(" == 1");
             return;
         }
         n.getChild1().accept(this);
@@ -211,14 +225,19 @@ public class CCodeGenerator extends Visitor {
         }
         emit("\\n\", ");
 
-        n.getValue().accept(this);
+        if (n.getValue() instanceof TidNode value)
+            emit(value.getHour() + ", " + value.getMinute());
+        else if (n.getValue() instanceof KlokkenNode)
+            emit("klokken.hour, klokken.minute");
+        else n.getValue().accept(this);
+
         if(n.getValue().type == BOOLSK) emit("? \"Sandt\" : \"Falsk\"");
         emit(");");
     }
 
     @Override
     public void visit(ProgramNode n) {
-        boolean containsKlokken = AST.getSymbolTable().containsValue(KLOKKEN);
+        boolean containsKlokken = AST.getSymbolTable().containsValue(TID);
         boolean containsString = AST.getSymbolTable().containsValue(TEKST);
         boolean containsDevice = AST.getSymbolTable().containsValue(DEVICE);
         emit("#include <stdlib.h>\n");
@@ -238,6 +257,36 @@ public class CCodeGenerator extends Visitor {
             device.accept(this);
         });
 
+        if (containsKlokken) {
+            emit("""
+                    typedef struct {
+                        int hour;
+                        int minute;
+                    } Time;
+                    
+                    """);
+
+            emit("""
+                    int time_compare(Time t1, Time t2) {
+                        if (t1.hour > t2.hour || (t1.hour == t2.hour && t1.minute > t2.minute)) {
+                            return 1;
+                        } else if (t1.hour == t2.hour && t1.minute == t2.minute) {
+                            return 0;
+                        }
+                        return -1;
+                    }
+                    
+                    Time make_time(int hour, int minute) {
+                        Time res;
+                        res.hour = hour;
+                        res.minute = minute;
+                        
+                        return res;
+                    }
+                    
+                    """);
+        }
+
         // Declaration of variables
         AST.getSymbolTable().forEach((id, type) -> {
             if (id.contains(".")) {
@@ -255,7 +304,7 @@ public class CCodeGenerator extends Visitor {
             emit("\nint free_memory () {\n");
             blockIndent++;
             AST.getSymbolTable().forEach((id, type) -> {
-                if(type == TEKST || type == KLOKKEN) {
+                if(type == TEKST) {
                     indent(blockIndent);
                     emit("free(" + id + ");\n");
                 }
@@ -355,19 +404,25 @@ public class CCodeGenerator extends Visitor {
         }
         if(containsKlokken) {
             emit("""
-                    char* time_generator()
+                    Time time_generator()
                     {
+                        Time res;
                         struct tm* local;
                         time_t t = time(NULL);
                                         
                         // Get the localtime
                         local = localtime(&t);
                                         
-                        // Format the time to HH:MM format
+                        // Stringify current time
                         char* time_str = malloc(sizeof(char) * 12);
-                        strftime(time_str, 12, "%H:%M", local);
+                        strftime(time_str, 12, "%H", local);
+                        res.hour = atoi(time_str);       
+                        
+                        strftime(time_str, 12, "%M", local);
+                        res.minute = atoi(time_str);
                                         
-                        return time_str;
+                        free(time_str);
+                        return res;
                     }
                     """);
         }
@@ -397,7 +452,7 @@ public class CCodeGenerator extends Visitor {
         }
         indent(blockIndent);
 
-        if (AST.getSymbolTable().containsValue(TEKST) || AST.getSymbolTable().containsValue(KLOKKEN)) {
+        if (AST.getSymbolTable().containsValue(TEKST) || AST.getSymbolTable().containsValue(TID)) {
             emit("free_memory();\n");
             indent(blockIndent);
         }
@@ -503,6 +558,18 @@ public class CCodeGenerator extends Visitor {
     @Override
     public void visit(KlokkenNode n) {
         emit("klokken");
+    }
+
+    @Override
+    public void visit(TidNode n) {
+        emit("make_time(" + n.getHour() + ", " + n.getMinute() + ")");
+    }
+
+    @Override
+    public void visit(TidDcl n) {
+        n.getId().accept(this);
+        emit(" = make_time(" + ((TidNode) n.getValue()).getHour() + ", "
+                + ((TidNode) n.getValue()).getMinute() + ");");
     }
 
     public String getCode() {

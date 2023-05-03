@@ -119,8 +119,23 @@ public class SymbolTableFilling extends Visitor {
 
     @Override
     public void visit(KlokkenNode n) {
-        if (!AST.SymbolTable.containsKey("klokken"))
-            AST.SymbolTable.put("klokken", AST.DataTypes.KLOKKEN);
+        AST.SymbolTable.put("klokken", AST.DataTypes.TID);
+    }
+
+    @Override
+    public void visit(TidNode n) {
+        n.type = TID;
+    }
+
+    @Override
+    public void visit(TidDcl n) {
+        String id;
+        if (n.getId().getParentId() != null)
+            id = n.getId().getParentId() + "." + n.getId().getValue();
+        else id = n.getId().getValue();
+        if (!AST.SymbolTable.containsKey(id))
+            AST.SymbolTable.put(id, TID);
+        else throw new VariableAlreadyDeclaredException(id, n.getLine());
     }
 
     @Override

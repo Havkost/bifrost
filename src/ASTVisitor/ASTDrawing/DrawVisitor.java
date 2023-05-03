@@ -241,4 +241,14 @@ public class DrawVisitor extends Visitor {
     public void visit(KlokkenNode n) {
 
     }
+
+    @Override
+    public void visit(TidNode n) {
+
+    }
+
+    @Override
+    public void visit(TidDcl n) {
+
+    }
 }

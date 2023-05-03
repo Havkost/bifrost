@@ -56,7 +56,7 @@ public class Prettyprinting extends Visitor {
 	}
 	@Override
 	public void visit(FuncDclNode n) {
-		emit("\nrutine " +  n.getId() + ":");
+		emit("\nrutine " +  n.getId());
 		blockIndent++;
 		for (AST stmt : n.getBody()) {
 			emit("\n");
@@ -85,7 +85,6 @@ public class Prettyprinting extends Visitor {
 	public void visit(IfNode n) {
 		emit("hvis ");
 		n.getExpr().accept(this);
-		emit(":");
 		blockIndent++;
 		for (AST child : n.getBody()) {
 			emit("\n");
@@ -179,7 +178,7 @@ public class Prettyprinting extends Visitor {
 	}
 	@Override
 	public void visit(DeviceNode n) {
-		emit("gem enhed \"" + n.getEndpoint() + "\" med:\n");
+		emit("gem enhed \"" + n.getEndpoint() + "\" med\n");
 		blockIndent++;
 		n.getFields().forEach((field) -> {
 			indent(blockIndent);
@@ -194,6 +193,21 @@ public class Prettyprinting extends Visitor {
 	@Override
 	public void visit(KlokkenNode n) {
 		emit("klokken");
+	}
+
+	@Override
+	public void visit(TidNode n) {
+		emit(n.getHour() + ":" + n.getMinute());
+	}
+
+	@Override
+	public void visit(TidDcl n) {
+		if (n.getId().getParentId() != null)
+			emit("tid ");
+		else
+			emit("gem tid ");
+		n.getValue().accept(this);
+		emit(" som " + n.getId().getValue());
 	}
 
 	public String getCode() {

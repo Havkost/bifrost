@@ -10,12 +10,16 @@ public class KlokkenNode extends AST {
     public KlokkenNode(String value, int line) {
         super(line);
         this.value = value;
-        this.type = DataTypes.KLOKKEN;
+        this.type = DataTypes.TID;
     }
 
     public KlokkenNode(String value) {
         super(0);
         this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     @Override

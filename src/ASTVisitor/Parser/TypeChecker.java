@@ -191,7 +191,23 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(KlokkenNode n) {
+        n.type = DataTypes.TID;
+    }
 
+    @Override
+    public void visit(TidNode n) {
+        n.type = DataTypes.TID;
+    }
+
+    @Override
+    public void visit(TidDcl n) {
+        String id;
+        if (n.getId().getParentId() != null)
+            id = n.getId().getParentId() + "." + n.getId().getValue();
+        else id = n.getId().getValue();
+        n.getValue().accept(this);
+        if (n.getValue().type != DataTypes.TID)
+            throw new IllegalTypeAssignmentException(id, DataTypes.TID, n.getValue(), n.getLine());
     }
 
     /**
@@ -212,8 +228,8 @@ public class TypeChecker extends Visitor{
             return type1;
         } else if (types.contains(DataTypes.DECIMALTAL) && types.contains(DataTypes.HELTAL)){
             return DataTypes.DECIMALTAL;
-        } else if (types.contains(DataTypes.TEKST) && types.contains(DataTypes.KLOKKEN)) {
-            return DataTypes.KLOKKEN;
+        } else if (types.contains(DataTypes.TEKST) && types.contains(DataTypes.TID)) {
+            return DataTypes.TID;
         } else throw new Error("Ugyldig operation: " + operator + " mellem type " + type1 + " og type " + type2);
     }
 

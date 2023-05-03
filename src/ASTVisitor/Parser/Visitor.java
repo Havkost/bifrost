@@ -23,5 +23,6 @@ public abstract class Visitor {
 	public abstract void visit(BoolskDcl n);
 	public abstract void visit(DeviceNode n);
 	public abstract void visit(KlokkenNode n);
-
+    public abstract void visit(TidNode n);
+	public abstract void visit(TidDcl n);
 }

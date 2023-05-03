@@ -69,7 +69,7 @@ public class TestASTParser {
     @Test
     public void testLine() {
         ASTParser parser = makeASTParser("""
-                                             rutine test:
+                                             rutine test
                                                 sæt x til 3
                                              .
                                              """);
@@ -95,7 +95,7 @@ public class TestASTParser {
                                              sæt tekstTest til "grail"
                                              print tekstTest
                                              gentag is 3 gange
-                                             hvis 3 > 3:
+                                             hvis 3 > 3
                                                 sæt x til 3.
                                              kør test
                                              .
@@ -229,7 +229,7 @@ public class TestASTParser {
     @Test
     void testVarDclDevice() {
         ASTParser parser = makeASTParser("""
-                enhed "test" med:
+                enhed "test" med
                     heltal 3 som testInt
                     boolsk sandt som testBool
                     decimaltal 3,14 som testFlt

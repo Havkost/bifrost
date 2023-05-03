@@ -159,7 +159,8 @@ public class Main {
                         stackTrace.append("                ").append(line).append("\n");
                     }
                     errorPrint(e + "\n            " + ANSI.cyan("Linje " + e.getLine() + ": ") +
-                            Arrays.stream(sourceString.toString().split("\n")).toList().get(e.getLine()-1).trim() + "\n            Stack trace:\n" + stackTrace);
+                            Arrays.stream(sourceString.toString().split("\n")).toList().get(e.getLine()-1).trim()
+                            + "\n            Stack trace:\n" + stackTrace);
                 } else {
                     errorPrint(e.getMessage() + "\n            " + ANSI.cyan("Linje " + e.getLine() + ": ") +
                             Arrays.stream(sourceString.toString().split("\n")).toList().get(e.getLine()-1).trim());

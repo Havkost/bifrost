@@ -8,7 +8,7 @@ public enum TokenType {
     GEM("gem"),
     SOM("som"),
     RUTINE("rutine"),
-    BLOCKSTART(":"),
+    KOLON(":"),
     BLOCKSLUT("."),
     NEWLINE("\n"),
     SAET("sæt"),
@@ -27,6 +27,7 @@ public enum TokenType {
     HELTAL_DCL("heltal"),
     DECIMALTAL_DCL("decimaltal"),
     BOOLSK_DCL("boolsk"),
+    TID_DCL("tid"),
     TEKST_LIT(null),
     HELTAL_LIT(null),
     DECIMALTAL_LIT(null),
@@ -42,7 +43,8 @@ public enum TokenType {
     EOF("\u001a"),
     DEVICE_DCL("enhed"),
     MED("med"),
-    KLOKKEN("klokken");
+    KLOKKEN("klokken"),
+    TID(null);
 
     final String name;
 

@@ -139,6 +139,8 @@ public class TestTypechecker {
         TekstDcl tekst = new TekstDcl(new TekstLiteral("\"hej\""), new IdNode("c"));
         BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), new IdNode("d"));
         FuncDclNode funcDcl = new FuncDclNode("hej", null);
+        TidNode tid = new TidNode(9, 45);
+        KlokkenNode klokken = new KlokkenNode("10:45");
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {
                 if (type == AST.DataTypes.HELTAL) {
@@ -151,6 +153,9 @@ public class TestTypechecker {
                     binaryComputingTemplate(tekst.getValue(), op, type);
                 } else if (type == AST.DataTypes.RUTINE) {
                     binaryComputingTemplate(funcDcl, op, type);
+                } else if (type == AST.DataTypes.TID) {
+                    binaryComputingTemplate(tid, op, type);
+                    binaryComputingTemplate(klokken, op, type);
                 }
             }
         }
@@ -383,6 +388,8 @@ public class TestTypechecker {
         TekstDcl tekst = new TekstDcl(new TekstLiteral("\"hej\""), new IdNode("c"));
         BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), new IdNode("d"));
         FuncDclNode funcDcl = new FuncDclNode("hej", List.of(new AssignNode(new IdNode("a"), new DecimaltalLiteral("2,5"))));
+        TidNode tid = new TidNode(9, 45);
+        KlokkenNode klokken = new KlokkenNode("10:45");
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {
                 if (type == AST.DataTypes.HELTAL) {
@@ -395,6 +402,9 @@ public class TestTypechecker {
                     unaryComputingTemplate(tekst.getValue(), op, type);
                 } else if (type == AST.DataTypes.RUTINE) {
                     unaryComputingTemplate(funcDcl, op, type);
+                } else if (type == AST.DataTypes.TID) {
+                    unaryComputingTemplate(tid, op, type);
+                    unaryComputingTemplate(klokken, op, type);
                 }
             }
         }

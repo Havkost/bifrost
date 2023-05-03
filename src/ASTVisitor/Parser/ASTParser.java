@@ -116,7 +116,7 @@ public class ASTParser {
         } else if (ts.peek() == TokenType.HVIS) {
             expect(TokenType.HVIS);
             AST ifExpr = expr();
-            expect(TokenType.BLOCKSTART);
+            expect(TokenType.NEWLINE);
             ArrayList<AST> stmts = stmts();
             expect(TokenType.BLOCKSLUT);
             stmtAST = new IfNode(ifExpr, stmts, line);
@@ -130,7 +130,7 @@ public class ASTParser {
         AST expr;
         if (ts.peek() == TokenType.ID || ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.IKKE ||
                 ts.peek() == TokenType.LPAREN || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT ||
-                ts.peek() == TokenType.TEKST_LIT || ts.peek() == TokenType.KLOKKEN) {
+                ts.peek() == TokenType.TEKST_LIT || ts.peek() == TokenType.KLOKKEN || ts.peek() == TokenType.TID) {
             expr = or_expr();
         } else throw new UnexpectedExpressionToken(ts.peek(), line);
 
@@ -310,7 +310,7 @@ public class ASTParser {
             expect(TokenType.LPAREN);
             expr = new UnaryComputing("paren", expr(), line);
             expect(TokenType.RPAREN);
-        } else if (ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT || ts.peek() == TokenType.KLOKKEN) {
+        } else if (ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT || ts.peek() == TokenType.KLOKKEN || ts.peek() == TokenType.TID) {
             expr = value();
         } else if (ts.peek() == TokenType.ID) {
             expr = field();
@@ -350,7 +350,14 @@ public class ASTParser {
         } else if (ts.peek() == TokenType.DEVICE_DCL) {
             expect(TokenType.DEVICE_DCL);
             dclAst = deviceDcl();
-        } else throw new UnexpectedDeclarationToken(ts.peek(), line);
+        } else if (ts.peek() == TokenType.TID_DCL) {
+            expect(TokenType.TID_DCL);
+            AST value = expr();
+            expect(TokenType.SOM);
+            Token idToken = expect(TokenType.ID);
+            dclAst = new TidDcl(value, new IdNode(idToken.getVal()), line);
+        }
+        else throw new UnexpectedDeclarationToken(ts.peek(), line);
 
         return dclAst;
     }
@@ -358,7 +365,6 @@ public class ASTParser {
     public AST deviceDcl() {
         String endpoint = expect(TokenType.TEKST_LIT).getVal();
         expect(TokenType.MED);
-        expect(TokenType.BLOCKSTART);
         expect(TokenType.NEWLINE);
         List<VariableDcl> fields = fields();
         expect(TokenType.SOM);
@@ -421,7 +427,13 @@ public class ASTParser {
         if (ts.peek() == TokenType.TEKST_LIT) {
             valueAST = new TekstLiteral(expect(TokenType.TEKST_LIT).getVal(), line);
         } else if (ts.peek() == TokenType.HELTAL_LIT) {
-            valueAST = new HeltalLiteral(expect(TokenType.HELTAL_LIT).getVal(), line);
+            String num = expect(TokenType.HELTAL_LIT).getVal();
+            if (ts.peek() == TokenType.KOLON) {
+                expect(TokenType.KOLON);
+                int minute = Integer.parseInt(expect(TokenType.HELTAL_LIT).getVal());
+                return new TidNode(Integer.parseInt(num), minute, line);
+            }
+            valueAST = new HeltalLiteral(num, line);
         } else if (ts.peek() == TokenType.DECIMALTAL_LIT) {
             valueAST = new DecimaltalLiteral(expect(TokenType.DECIMALTAL_LIT).getVal(), line);
         } else if (ts.peek() == TokenType.BOOLSK_LIT) {
@@ -436,7 +448,7 @@ public class ASTParser {
     private AST funcDcl(){
         expect(TokenType.RUTINE);
         Token idToken = expect(TokenType.ID);
-        expect(TokenType.BLOCKSTART);
+        expect(TokenType.NEWLINE);
         ArrayList<AST> body = stmts();
         expect(TokenType.BLOCKSLUT);
 

@@ -1,6 +1,13 @@
-gem heltal 10 som a
+gem tekst "virker" som a
+gem tekst "virker ikke" som b
 
-hvis klokken er "14:18":
-    print a.
+gem tid 11:59 som tiden
 
 print klokken
+
+hvis klokken er tiden
+    print a
+.
+hvis klokken ikke er tiden
+    print b
+.
