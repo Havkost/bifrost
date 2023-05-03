@@ -256,54 +256,13 @@ public class CCodeGenerator extends Visitor {
         boolean containsKlokken = AST.getSymbolTable().containsValue(TID);
         boolean containsString = AST.getSymbolTable().containsValue(TEKST);
         boolean containsDevice = AST.getSymbolTable().containsValue(DEVICE);
-        /*emit("#include <stdlib.h>\n");
-        emit("#include <stdio.h>\n");
-        emit("#include <stdbool.h>\n");
-        if(containsKlokken)
-            emit("#include <time.h>\n");
-        if(containsString || containsKlokken)
-            emit("#include <string.h>\n");
-        if(containsDevice) {
-            emit("#include <curl/curl.h>\n");
-            emit("#include <cjson/cJSON.h>\n");
-        }*/
 
         emit("#include \"Lib/Eziot.h\"\n\n");
 
         n.getChild().stream().filter(ast -> ast instanceof DeviceNode).forEach((device) -> {
             device.accept(this);
         });
-        /*
-        if (containsKlokken) {
-            emit("""
-                    typedef struct {
-                        int hour;
-                        int minute;
-                    } Time;
-                    
-                    """);
 
-            emit("""
-                    int time_compare(Time t1, Time t2) {
-                        if (t1.hour > t2.hour || (t1.hour == t2.hour && t1.minute > t2.minute)) {
-                            return 1;
-                        } else if (t1.hour == t2.hour && t1.minute == t2.minute) {
-                            return 0;
-                        }
-                        return -1;
-                    }
-                    
-                    Time make_time(int hour, int minute) {
-                        Time res;
-                        res.hour = hour;
-                        res.minute = minute;
-                        
-                        return res;
-                    }
-                    
-                    """);
-        }
-        */
         // Declaration of variables
         AST.getSymbolTable().forEach((id, type) -> {
             if (id.contains(".")) {
@@ -330,25 +289,6 @@ public class CCodeGenerator extends Visitor {
             emit("return 0;\n");
             blockIndent--;
             emit("}\n\n");
-            /*
-            emit("""
-                char* concat(char* str1, char* str2) {
-                    size_t len = strlen(str1) + strlen(str2) + 1;
-                    char* res = malloc(len);
-                    strcpy(res, str1);
-                    strcat(res, str2);
-                                
-                    return res;
-                }
-                
-                """);
-
-            emit("""
-                int customStrLen(char* str1, int len2) {
-                    return strlen(str1) + len2;
-                }
-                
-                """);*/
         } else emit("\n");
 
 

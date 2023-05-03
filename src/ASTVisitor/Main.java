@@ -19,6 +19,7 @@ public class Main {
         StringBuilder outName = null;
         boolean debug = false;
         boolean astDraw = false;
+        boolean preserveCFile = false;
 
         // Checks for the absolute path of the current directory depending on the OS
         String absPath = System.getProperty("user.dir");
@@ -47,6 +48,9 @@ public class Main {
                         break;
                     case "-a", "--ast":
                         astDraw = true;
+                        break;
+                    case "-p", "--preserve":
+                        preserveCFile = true;
                 }
             } else {
                 inputPaths.add(arg);
@@ -117,11 +121,14 @@ public class Main {
                         outName = new StringBuilder(Arrays.stream(outName.toString().split("\\.")).toList().get(0));
                     if (inputPaths.size() > 1)
                         outName.append(i).append(".c");
+                    File file = new File(outName.toString());
                     try {
                         FileWriter writer;
                         writer = new FileWriter("" + outName + ".c");
                         ast.accept(new CCodeGenerator(debug, writer));
                         if (debug) System.out.println("Genererer fil: " + outName + ".c");
+                        executeCommand("gcc -L./Lib -l eziotlib " + outName);
+                        if (!preserveCFile) file.deleteOnExit();
                     } catch (FileWriterIOException e) {
                         errorPrint("Filen " + outName + " kunne ikke oprettes.");
                     }
@@ -134,10 +141,13 @@ public class Main {
                     }
                     String name = Arrays.stream(names.get(names.size()-1).split("\\.")).toList().get(0) + ".c";
                     name = absPath + name;
+                    File file = new File(name);
                     try {
                         FileWriter writer = new FileWriter(name);
                         ast.accept(new CCodeGenerator(debug, writer));
                         if (debug) System.out.println("Genererer fil: " + name);
+                        executeCommand("gcc -L./Lib -l eziotlib " + name);
+                        if (!preserveCFile) file.deleteOnExit();
                     } catch (FileWriterIOException e) {
                         errorPrint("Kan ikke skrive til filen " + name);
                     }
@@ -151,6 +161,12 @@ public class Main {
 
                 AST.clearSymbolTable();
                 sourceString.setLength(0);
+
+                System.out.println();
+
+                if (System.getProperty("os.name").contains("windows"))
+                    executeCommand("a.exe");
+                else executeCommand("./a.out");
 
             } catch (CustomException e) {
                 if (debug) {
@@ -184,4 +200,34 @@ public class Main {
         System.out.println(ANSI.red("[FEJL]: ") + msg);
     }
     // TODO: Evt. skriv bedre error handling og fejlbeskeder
+
+    public static void executeCommand(String command) throws IOException {
+
+        File tempScript = createTempScript(command);
+
+        try {
+            ProcessBuilder pb = new ProcessBuilder("bash", tempScript.toString());
+            pb.inheritIO();
+            Process process = pb.start();
+            process.waitFor();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            tempScript.delete();
+        }
+    }
+
+    public static File createTempScript(String command) throws IOException {
+        File tempScript = File.createTempFile("script", null);
+
+        Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+                tempScript));
+        PrintWriter printWriter = new PrintWriter(streamWriter);
+
+        printWriter.println(command);
+
+        printWriter.close();
+
+        return tempScript;
+    }
 }
