@@ -119,7 +119,7 @@ public class Main {
 
                 Script scriptMaker;
 
-                if (System.getProperty("os.name").contains("windows"))
+                if (System.getProperty("os.name").contains("Windows"))
                     scriptMaker = new WindowsScript();
                 else scriptMaker = new UnixScript();
 

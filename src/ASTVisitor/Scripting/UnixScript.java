@@ -19,7 +19,7 @@ public class UnixScript implements Script {
         sendCommand(tempScript);
     }
 
-    @Override
+    //@Override
     public void sendCommand(File tempScript) {
         try {
             ProcessBuilder pb = new ProcessBuilder("bash", tempScript.toString());
