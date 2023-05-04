@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -389,9 +390,35 @@ public class TestCCodeGenerator {
 
     @Test
     void testAssignField() {
-        AssignNode assignNode = new AssignNode(new IdNode("lysstyrke", "lampe1"), new HeltalLiteral("3"));
-        assignNode.accept(generator);
+        IdNode id = new IdNode("lysstyrke", "lampe1");
+        List<VariableDcl> list = new ArrayList<>(List.of(new HeltalDcl(new HeltalLiteral("5"), id)));
+        DeviceNode device = new DeviceNode(id.getParentId(), list, "test");
+        AssignNode assignNode = new AssignNode(id, new HeltalLiteral("3"));
 
-        assertEquals("lampe1.lysstyrke = 3;", generator.getCode());
+        ProgramNode prog = new ProgramNode(List.of(device, assignNode));
+        prog.accept(new SymbolTableFilling());
+        prog.accept(new TypeChecker());
+        prog.accept(generator);
+
+        assertEquals("""
+                #include "Lib/Eziot.h"
+                     
+                typedef struct {
+                    char endpoint__[5];
+                    int lysstyrke;
+                } Lampe1;
+                 
+                Lampe1 lampe1;
+                 
+                int main() {
+                    strcpy(lampe1.endpoint__, "test");
+                    lampe1.lysstyrke = 5;
+                    
+                    lampe1.lysstyrke = 3;
+                    send_field_to_endpoint(lampe1.endpoint__, "lysstyrke", &lampe1.lysstyrke, TYPE_INTEGER);
+                    return 0;
+                }
+                 
+                """, generator.getCode());
     }
 }

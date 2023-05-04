@@ -30,7 +30,7 @@ public class TypeChecker extends Visitor{
                 else
                     throw new IllegalTypeAssignmentException(n.getId() + "." + n.getId().getParentId(), type, n.getValue(), n.getLine());
             } catch (NullPointerException e) {
-                throw new MissingTypeException(n.getValue(), n.getLine());
+                throw new MissingTypeException(n.getId(), n.getLine());
             }
 
         }

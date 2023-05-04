@@ -57,6 +57,11 @@ public class IdNode extends AST {
 
     @Override
     public String toString() {
+        if (this.parentId != null)
+            return "IdNode{" +
+                    "name='" + value + '\'' + ", " +
+                    "parentId='" + parentId + "'" +
+                    '}';
         return "IdNode{" +
                 "name='" + value + '\'' +
                 '}';
