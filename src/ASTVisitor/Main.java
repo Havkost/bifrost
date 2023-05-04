@@ -5,8 +5,9 @@ import ASTVisitor.Exceptions.*;
 import ASTVisitor.Lexer.CharStream;
 import ASTVisitor.Lexer.CodeScanner;
 import ASTVisitor.Parser.*;
-
-import static ASTVisitor.ANSI.*;
+import ASTVisitor.Scripting.UnixScript;
+import ASTVisitor.Scripting.Script;
+import ASTVisitor.Scripting.WindowsScript;
 
 import java.io.*;
 import java.util.*;
@@ -116,6 +117,12 @@ public class Main {
                     System.out.println("=======================");
                 }
 
+                Script scriptMaker;
+
+                if (System.getProperty("os.name").contains("windows"))
+                    scriptMaker = new WindowsScript();
+                else scriptMaker = new UnixScript();
+
                 if (outName != null) {
                     if (outName.toString().contains("."))
                         outName = new StringBuilder(Arrays.stream(outName.toString().split("\\.")).toList().get(0));
@@ -127,7 +134,7 @@ public class Main {
                         writer = new FileWriter("" + outName + ".c");
                         ast.accept(new CCodeGenerator(debug, writer));
                         if (debug) System.out.println("Genererer fil: " + outName + ".c");
-                        executeCommand("gcc -L./Lib -l eziotlib " + outName);
+                        scriptMaker.compileCFile(outName.toString());
                         if (!preserveCFile) file.deleteOnExit();
                     } catch (FileWriterIOException e) {
                         errorPrint("Filen " + outName + " kunne ikke oprettes.");
@@ -146,7 +153,7 @@ public class Main {
                         FileWriter writer = new FileWriter(name);
                         ast.accept(new CCodeGenerator(debug, writer));
                         if (debug) System.out.println("Genererer fil: " + name);
-                        executeCommand("gcc -L./Lib -l eziotlib " + name);
+                        scriptMaker.compileCFile(name);
                         if (!preserveCFile) file.deleteOnExit();
                     } catch (FileWriterIOException e) {
                         errorPrint("Kan ikke skrive til filen " + name);
@@ -164,9 +171,7 @@ public class Main {
 
                 System.out.println();
 
-                if (System.getProperty("os.name").contains("windows"))
-                    executeCommand("a.exe");
-                else executeCommand("./a.out");
+                scriptMaker.runProgram();
 
             } catch (CustomException e) {
                 if (debug) {
@@ -200,34 +205,4 @@ public class Main {
         System.out.println(ANSI.red("[FEJL]: ") + msg);
     }
     // TODO: Evt. skriv bedre error handling og fejlbeskeder
-
-    public static void executeCommand(String command) throws IOException {
-
-        File tempScript = createTempScript(command);
-
-        try {
-            ProcessBuilder pb = new ProcessBuilder("bash", tempScript.toString());
-            pb.inheritIO();
-            Process process = pb.start();
-            process.waitFor();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
-            tempScript.delete();
-        }
-    }
-
-    public static File createTempScript(String command) throws IOException {
-        File tempScript = File.createTempFile("script", null);
-
-        Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
-                tempScript));
-        PrintWriter printWriter = new PrintWriter(streamWriter);
-
-        printWriter.println(command);
-
-        printWriter.close();
-
-        return tempScript;
-    }
 }
