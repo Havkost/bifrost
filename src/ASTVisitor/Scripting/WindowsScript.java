@@ -10,29 +10,33 @@ public class WindowsScript implements Script {
     public void compileCFile(String fileName) throws IOException {
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
-        System.out.println(s);
         sendCommand(createTempScript(
-                "gcc --version"//"gcc -L./Lib -l Eziotlib " + fileName.replace("\\", "\\\\")
-        ));
+                "gcc " + fileName.replace("\\", "/") + " -L./Lib -leziotlib"), false
+        );
     }
 
     @Override
     public void runProgram() throws IOException {
 
-        sendCommand(createTempScript("a.exe"));
+        sendCommand(createTempScript("a.exe"), true);
     }
 
 
-    public void sendCommand(File file) {
+    public void sendCommand(File inputFile, boolean show) {
         try {
-            ProcessBuilder pb = new ProcessBuilder(file.toString());
-            pb.inheritIO();
+            ProcessBuilder pb = new ProcessBuilder(inputFile.toString());
+            if(!show) {
+                pb.redirectOutput();
+            }
+            else {
+                pb.inheritIO();
+            }
             Process process = pb.start();
             process.waitFor();
         } catch (InterruptedException | IOException e) {
             throw new RuntimeException(e);
         } finally {
-            file.delete();
+            inputFile.delete();
         }
     }
 }

@@ -3,11 +3,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <string.h>
-
-typedef struct {
-    int hour;
-    int minute;
-} Time;
+#include "Eziot.h"
 
 int time_compare(Time t1, Time t2) {
     if (t1.hour > t2.hour) {

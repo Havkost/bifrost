@@ -142,7 +142,7 @@ public class Main {
                 } else {
                     List<String> names;
                     if (System.getProperty("os.name").startsWith("Windows")) {
-                        names = Arrays.stream(inputPaths.get(i).split("\\\\")).toList();
+                        names = Arrays.stream(inputPaths.get(i).split("/")).toList();
                     } else {
                         names = Arrays.stream(inputPaths.get(i).split("/")).toList();
                     }
