@@ -2,8 +2,8 @@ gem boolsk falsk som a
 gem heltal 42 som b
 gem decimaltal 56,34 som c
 
-rutine test:
-    hvis b < 4:
+rutine test
+    hvis b < 4
         sæt b til 7
         sæt a til sandt
     .
@@ -11,8 +11,8 @@ rutine test:
 
 gentag test 3 gange
 
-hvis 10 er 10:
-    hvis ikke a:
+hvis 10 er 10
+    hvis ikke a
     .
 .
 

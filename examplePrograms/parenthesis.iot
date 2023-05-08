@@ -2,8 +2,8 @@ gem heltal 10 som a
 gem heltal 20 som b
 gem boolsk sandt som c
 
-hvis 3*(5+2)/7 er 3:
-    hvis (sandt er falsk) eller (sandt og falsk) eller (sandt og sandt):
+hvis 3*(5+2)/7 er 3
+    hvis (sandt er falsk) eller (sandt og falsk) eller (sandt og sandt)
         print "success"
     .
 .

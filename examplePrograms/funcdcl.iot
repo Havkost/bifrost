@@ -7,22 +7,22 @@ gem decimaltal 30,0 som c
 gem decimaltal 40,0 som d
 gem tekst "test af Tekst specifier" som tekstTest
 
-rutine rut1:
+rutine rut1
   sæt a til b
   sæt b til a - 5 + 12 * 10
 .
 
-rutine rut2:
+rutine rut2
     print a / 12
     print b er a
 .
 
-rutine rut3:
-    hvis 10 ikke er 10:
+rutine rut3
+    hvis 10 ikke er 10
         .
 .
 
-rutine rut4:
+rutine rut4
     sæt a til a + b
 .
 

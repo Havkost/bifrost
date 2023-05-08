@@ -1,18 +1,18 @@
 gem heltal 3 som a
 gem heltal 4 som b
 
-rutine test:
-    hvis a > 3:
+rutine test
+    hvis a > 3
         sæt a til 2
     .
-    hvis a < 4:
+    hvis a < 4
         sæt a til 7
     .
 .
 gem heltal 5 som c
 
-rutine test2:
-    hvis 10 ikke er 10:
+rutine test2
+    hvis 10 ikke er 10
     .
 .
 

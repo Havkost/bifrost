@@ -1,6 +1,6 @@
 gem tekst "test" som a
 
-hvis a + "hej" er "testhej":
+hvis a + "hej" er "testhej"
     sæt a til "ja"
 .
  print a

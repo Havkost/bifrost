@@ -17,12 +17,12 @@ print b
 
 sæt c til d
 
-hvis erLukket og erTændt:
-    hvis erLukket eller erTændt:
-        hvis a > b:
-            hvis c er d:
-                hvis c er a:
-                    hvis erLukket er erTændt:
+hvis erLukket og erTændt
+    hvis erLukket eller erTændt
+        hvis a > b
+            hvis c er d
+                hvis c er a
+                    hvis erLukket er erTændt
                         sæt d til b + c + d + a * c / d
                     .
                 .

@@ -3,16 +3,16 @@ gem decimaltal 23,3 som temperatur
 gem boolsk sandt som lysTændt
 gem tekst "hello world" som hej
 
-rutine optælling:
+rutine optælling
 	sæt optæller til optæller + 1
 .
 
 kør optælling
 
-hvis temperatur > 100 og lysTændt er sandt:
+hvis temperatur > 100 og lysTændt er sandt
 	print hej
 .
 
-hvis lysTændt er sandt:
+hvis lysTændt er sandt
 	gentag optælling 3 gange
 .

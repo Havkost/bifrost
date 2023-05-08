@@ -1,11 +1,11 @@
 gem heltal 30 som a
 gem decimaltal 30,3 som b
 
-hvis ikke sandt:
+hvis ikke sandt
 .
-hvis ikke falsk:
+hvis ikke falsk
 .
-hvis ikke sandt eller falsk eller ikke falsk er ikke sandt:
+hvis ikke sandt eller falsk eller ikke falsk er ikke sandt
 .
-hvis ikke (a > b):
+hvis ikke (a > b)
 .

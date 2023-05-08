@@ -1,8 +1,8 @@
 gem tekst "Hej" som a
 gem tekst "test" som b
 
-rutine test:
-    hvis 3 < 4:
+rutine test
+    hvis 3 < 4
         sæt b til a + " verden"
     .
 .
