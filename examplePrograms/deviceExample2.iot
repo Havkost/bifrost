@@ -1,9 +1,9 @@
-gem enhed "127.0.0.1:3000/lightbulb" med:
+gem enhed "127.0.0.1:3000/lightbulb" med
     heltal 0 som brightness
     boolsk falsk som power
 som lampe1
 
-gem enhed "127.0.0.1:3000/thermometer" med:
+gem enhed "127.0.0.1:3000/thermometer" med
     decimaltal 0,0 som temperature
 som termometer1
 

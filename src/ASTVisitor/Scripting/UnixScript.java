@@ -14,7 +14,7 @@ public class UnixScript implements Script {
 
     @Override
     public void runProgram() throws IOException {
-        File tempScript = createTempScript("./a.out");
+        File tempScript = createTempScript("./a.out && rm a.out");
 
         sendCommand(tempScript);
     }
