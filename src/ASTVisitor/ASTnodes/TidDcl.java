@@ -17,4 +17,10 @@ public class TidDcl extends VariableDcl {
     public void accept(Visitor v) {
         v.visit(this);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof TidDcl object)) return false;
+        return this.getId().equals(object.getId()) && this.getValue().equals(object.getValue());
+    }
 }

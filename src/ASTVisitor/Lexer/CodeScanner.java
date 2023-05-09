@@ -97,6 +97,12 @@ public class CodeScanner {
                 num.append(charStream.advance());
             }
             type = DECIMALTAL_LIT;
+        } else if (charStream.peek() == ':') {
+            num.append(charStream.advance());
+            while (isDigit(charStream.peek())) {
+                num.append(charStream.advance());
+            }
+            type = TID;
         } else {
             type = HELTAL_LIT;
         }

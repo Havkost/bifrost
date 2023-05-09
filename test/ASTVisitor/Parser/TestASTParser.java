@@ -247,6 +247,16 @@ public class TestASTParser {
     }
 
     @Test
+    void testVarDclTid() {
+        ASTParser parser = makeASTParser("gem tid 11:30 som a");
+        AST prog = new ProgramNode(List.of(
+                new TidDcl(new TidNode(11, 30), new IdNode("a"))
+        ));
+
+        assertEquals(prog, parser.prog());
+    }
+
+    @Test
     public void testFunc() {
         ASTParser parser = makeASTParser("kør oogaBooga");
         AST func = new FuncNode("oogaBooga");
@@ -328,5 +338,48 @@ public class TestASTParser {
         ASTParser parser = makeASTParser("gem heltal 3 som x");
 
         assertThrows(UnexpectedTokenException.class, () -> parser.expect(SAET));
+    }
+
+    @Test
+    void testKlokken() {
+        ASTParser parser = makeASTParser("hvis klokken er 11:30 \n .");
+
+        AST exp = new IfNode(new BinaryComputing(AST.Operators.EQUALS, new KlokkenNode(""),
+                new TidNode(11, 30)),
+                List.of()
+                );
+        assertEquals(exp, parser.stmt());
+    }
+
+    @Test
+    void testNegativeInt() {
+        ASTParser parser = makeASTParser("-5");
+        AST exp = new HeltalLiteral("-5");
+
+        assertEquals(exp, parser.expr());
+    }
+
+    @Test
+    void testNegativeFlt() {
+        ASTParser parser = makeASTParser("-5,9");
+        AST exp = new DecimaltalLiteral("-5,9");
+
+        assertEquals(exp, parser.expr());
+    }
+
+    @Test
+    void testNegativeNumsInExpr() {
+        ASTParser parser = makeASTParser("-5 - -3,3 + -1");
+        AST exp = new BinaryComputing(AST.Operators.MINUS, new HeltalLiteral("-5"),
+                        new BinaryComputing(AST.Operators.PLUS, new DecimaltalLiteral("-3,3"),
+                        new HeltalLiteral("-1")));
+
+        assertEquals(exp, parser.expr());
+    }
+
+    @Test
+    void testIllegalValue() {
+        ASTParser parser = makeASTParser("/31");
+        assertThrows(UnexpectedExpressionToken.class, parser::value);
     }
 }

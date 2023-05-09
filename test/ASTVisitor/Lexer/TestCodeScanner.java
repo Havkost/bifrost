@@ -62,20 +62,21 @@ public class TestCodeScanner
 
     // Integration tests
 
+    public void initCodeScanner(String inputStr) {
+        CharArrayReader reader = new CharArrayReader(inputStr.toCharArray());
+        CharStream charStream = new CharStream(reader);
+        CodeScanner.initialize(charStream);
+    }
+
     @Test
     public void testScanString() {
-        String newInput = "\"this is a test string\"";
-        CharArrayReader reader2 = new CharArrayReader(newInput.toCharArray());
-        CharStream newCharStream = new CharStream(reader2);
-        CodeScanner.initialize(newCharStream);
+        initCodeScanner("\"this is a test string\"");
         assertEquals("this is a test string", CodeScanner.scanString().getVal());
     }
 
     @Test
     public void testScan() {
-        CharArrayReader reader = new CharArrayReader(input.toCharArray());
-        CharStream charStream = new CharStream(reader);
-        CodeScanner.initialize(charStream);
+        initCodeScanner(input);
         Token token = CodeScanner.scan();
 
         assertEquals(GEM, token.getType());
@@ -84,9 +85,7 @@ public class TestCodeScanner
 
     @Test
     public void testScan2() {
-        CharArrayReader reader = new CharArrayReader(input.toCharArray());
-        CharStream charStream = new CharStream(reader);
-        CodeScanner.initialize(charStream);
+        initCodeScanner(input);
         CodeScanner.scan();
         Token token = CodeScanner.scan();
 
@@ -96,9 +95,7 @@ public class TestCodeScanner
 
     @Test
     public void testScanBool() {
-        CharArrayReader reader = new CharArrayReader("gem boolsk sandt som a".toCharArray());
-        CharStream charStream = new CharStream(reader);
-        CodeScanner.initialize(charStream);
+        initCodeScanner("gem boolsk sandt som a");
         CodeScanner.scan();
         CodeScanner.scan();
         Token token = CodeScanner.scan();
@@ -109,9 +106,7 @@ public class TestCodeScanner
 
     @Test
     public void testScanId() {
-        CharArrayReader reader = new CharArrayReader("gem boolsk sandt som a".toCharArray());
-        CharStream charStream = new CharStream(reader);
-        CodeScanner.initialize(charStream);
+        initCodeScanner("gem boolsk sandt som a");
         for (int i = 0; i < 4; i++) {
             CodeScanner.scan();
         }
@@ -123,9 +118,7 @@ public class TestCodeScanner
 
     @Test
     public void testScan_String() {
-        CharArrayReader reader = new CharArrayReader("gem tekst \"hej\" som a".toCharArray());
-        CharStream charStream = new CharStream(reader);
-        CodeScanner.initialize(charStream);
+        initCodeScanner("gem tekst \"hej\" som a");
         CodeScanner.scan();
         CodeScanner.scan();
         Token token = CodeScanner.scan();
@@ -136,9 +129,7 @@ public class TestCodeScanner
 
     @Test
     public void testScanIllegalChar() {
-        CharArrayReader reader = new CharArrayReader("asd?kp".toCharArray());
-        CharStream charStream = new CharStream(reader);
-        CodeScanner.initialize(charStream);
+        initCodeScanner("asd?kp");
         Token token = CodeScanner.scan();
 
         assertEquals(ID, token.getType());
@@ -149,9 +140,7 @@ public class TestCodeScanner
 
     @Test
     public void testScanDigitsInt() {
-        CharArrayReader reader = new CharArrayReader("483".toCharArray());
-        CharStream charStream = new CharStream(reader);
-        CodeScanner.initialize(charStream);
+        initCodeScanner("483");
         Token token = CodeScanner.scanDigits();
         assertEquals(HELTAL_LIT, token.getType());
         assertEquals("483", token.getVal());
@@ -159,9 +148,7 @@ public class TestCodeScanner
 
     @Test
     public void testScanDigitsIntLeadingZeros() {
-        CharArrayReader reader = new CharArrayReader("007".toCharArray());
-        CharStream charStream = new CharStream(reader);
-        CodeScanner.initialize(charStream);
+        initCodeScanner("007");
         Token token = CodeScanner.scanDigits();
         assertEquals(HELTAL_LIT, token.getType());
         assertEquals("007", token.getVal());
@@ -169,11 +156,20 @@ public class TestCodeScanner
 
     @Test
     public void testScanDigitsDbl() {
-        CharArrayReader reader = new CharArrayReader("123879,328".toCharArray());
-        CharStream charStream = new CharStream(reader);
-        CodeScanner.initialize(charStream);
+        initCodeScanner("123879,328");
         Token token = CodeScanner.scanDigits();
         assertEquals(DECIMALTAL_LIT, token.getType());
         assertEquals("123879,328", token.getVal());
+    }
+
+    @Test
+    void testTimeScan() {
+        initCodeScanner("gem tid 11:30 som a");
+        CodeScanner.scan();
+        CodeScanner.scan();
+        Token token = CodeScanner.scan();
+
+        assertEquals("11:30", token.getVal());
+        assertEquals(TID, token.getType());
     }
 }

@@ -1,8 +1,8 @@
 gem enhed "ip:port/endpoint" med
-    heltal 0 som lysstyrke
+    heltal 50 som lysstyrke
     boolsk falsk som tændt
     tekst "hej" som besked
-    decimaltal 3,3 som temperatur
+    decimaltal -3,3 som temperatur
 som lampe1
 
 gem enhed "ip:port/endpoint" med
@@ -17,3 +17,5 @@ hvis lysstyrke for lampe1 < 80
 .
 
 print lysstyrke for lampe1
+
+print -5 - -3
