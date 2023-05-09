@@ -245,6 +245,10 @@ public class CCodeGenerator extends Visitor {
             emit(value.getHour() + ", " + value.getMinute());
         else if (n.getValue() instanceof KlokkenNode)
             emit("klokken.hour, klokken.minute");
+        else if (n.getValue() instanceof BinaryComputing && n.getValue().type == DECIMALTAL) {
+            emit("(double) ");
+            n.getValue().accept(this);
+        }
         else n.getValue().accept(this);
 
         if(n.getValue().type == BOOLSK) emit("? \"Sandt\" : \"Falsk\"");

@@ -181,7 +181,7 @@ public class ASTParser {
         return op;
     }
 
-    public AST or_expr() {
+    /*public AST or_expr() {
         AST expr;
         AST andExpr = and_expr();
         AST orExpr = or_expr2();
@@ -346,7 +346,7 @@ public class ASTParser {
             expr = new UnaryComputing(TokenType.IKKE.name(), factor, line);
         } else expr = factor();
         return expr;
-    }
+    }*/
 
     public AST factor() {
         AST expr;
@@ -355,7 +355,7 @@ public class ASTParser {
             expr = new UnaryComputing(Operators.NOT, expr(Operators.NOT.prec), line);
         } else if (ts.peek() == TokenType.LPAREN) {
             expect(TokenType.LPAREN);
-            expr = new UnaryComputing("paren", expr(0), line);
+            expr = new UnaryComputing(Operators.PAREN, expr(0), line);
             expect(TokenType.RPAREN);
         } else if (ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.DECIMALTAL_LIT ||
                    ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT || ts.peek() == TokenType.KLOKKEN ||

@@ -31,7 +31,7 @@ hvis erLukket og erTændt
     .
 .
 
-rutine rut1:
+rutine rut1
     print a / 12
     print b er a
 .
