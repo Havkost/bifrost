@@ -128,4 +128,28 @@ public class TestSymbolTableFilling {
             assertEquals(0, e.getLine());
         }
     }
+
+    @Test
+    void testVariableAlreadyAssignedTidnode() {
+        TidNode klok = new TidNode(10,10);
+        TidDcl tid = new TidDcl(klok, new IdNode("hej"));
+        TidDcl tid1 = new TidDcl(klok, new IdNode("hej"));
+        ProgramNode prog = new ProgramNode(List.of(tid, tid1));
+
+        assertThrows(VariableAlreadyDeclaredException.class, () -> prog.accept(new SymbolTableFilling()));
+
+        try {
+            prog.accept(new SymbolTableFilling());
+        } catch (VariableAlreadyDeclaredException e) {
+            assertEquals(0, e.getLine());
+        }
+    }
+
+    @Test
+    void testTidNodeDataType() {
+        TidNode tid = new TidNode(10, 30);
+        tid.accept(new SymbolTableFilling());
+        tid.accept(new TypeChecker());
+        assertEquals(tid.type, AST.DataTypes.TID);
+    }
 }
