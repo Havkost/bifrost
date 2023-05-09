@@ -168,7 +168,7 @@ public class TestASTParser {
         ASTParser parser = makeASTParser("""
                                              x er 3 eller < y
                                              """);
-        assertThrows(UnexpectedExpressionToken.class, parser::or_expr);
+        assertThrows(UnexpectedExpressionToken.class, () -> parser.expr(0));
     }
 
 
@@ -381,5 +381,11 @@ public class TestASTParser {
     void testIllegalValue() {
         ASTParser parser = makeASTParser("/31");
         assertThrows(UnexpectedExpressionToken.class, parser::value);
+    }
+
+    @Test
+    void testIllegalBinaryComputingType() {
+        assertThrows(UnexpectedExpressionToken.class, () -> new ASTParser(new CharStream(
+                new CharArrayReader("".toCharArray()))).getBinaryOperator(SOM, false));
     }
 }
