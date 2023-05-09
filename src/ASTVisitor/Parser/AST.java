@@ -29,30 +29,32 @@ public abstract class AST {
     }
 
     public enum Operators {
-        PLUS("+", "+"),
-        MINUS("-", "-"),
-        TIMES("*", "*"),
-        DIVISION("/", "/"),
-        OR("eller", "||"),
-        AND("og", "&&"),
-        LESS_THAN("<", "<"),
-        GREATER_THAN(">", ">"),
-        EQUALS("er", "=="),
-        NOT_EQUALS("ikke er", "!="),
-        NOT("ikke", "!"),
-        PAREN("paren", null);
+        PLUS("+", "+", 5),
+        MINUS("-", "-", 5),
+        TIMES("*", "*", 4),
+        DIVISION("/", "/", 4),
+        OR("eller", "||", 0),
+        AND("og", "&&", 1),
+        LESS_THAN("<", "<", 3),
+        GREATER_THAN(">", ">", 3),
+        EQUALS("er", "==", 2),
+        NOT_EQUALS("ikke er", "!=", 2),
+        NOT("ikke", "!", 0),
+        PAREN("paren", null, 0);
 
         public final String textual;
         public final String Cversion;
+        public final int prec;
 
         /**
-         *
-         * @param textual text version of operator in EzIoT language
+         * @param textual  text version of operator in EzIoT language
          * @param Cversion operator in C
+         * @param prec precedence of operator
          */
-        Operators(String textual, String Cversion){
+        Operators(String textual, String Cversion, int prec){
             this.textual = textual;
             this.Cversion = Cversion;
+            this.prec = prec;
         }
     }
 

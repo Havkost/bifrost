@@ -154,13 +154,13 @@ public class TestASTParser {
         AST not = new UnaryComputing("ikke", paren1);
         AST er = new BinaryComputing("er", not, new BoolskLiteral("falsk"));
 
-        assertEquals(er, parser.expr());
+        assertEquals(er, parser.expr(0));
     }
 
     @Test
     public void testExprIllegal() {
         ASTParser parser = makeASTParser("gem");
-        assertThrows(UnexpectedExpressionToken.class, parser::expr);
+        assertThrows(UnexpectedExpressionToken.class, () -> parser.expr(0));
     }
 
     @Test
@@ -356,7 +356,7 @@ public class TestASTParser {
         ASTParser parser = makeASTParser("-5");
         AST exp = new HeltalLiteral("-5");
 
-        assertEquals(exp, parser.expr());
+        assertEquals(exp, parser.expr(0));
     }
 
     @Test
@@ -364,7 +364,7 @@ public class TestASTParser {
         ASTParser parser = makeASTParser("-5,9");
         AST exp = new DecimaltalLiteral("-5,9");
 
-        assertEquals(exp, parser.expr());
+        assertEquals(exp, parser.expr(0));
     }
 
     @Test
@@ -374,7 +374,7 @@ public class TestASTParser {
                         new BinaryComputing(AST.Operators.PLUS, new DecimaltalLiteral("-3,3"),
                         new HeltalLiteral("-1")));
 
-        assertEquals(exp, parser.expr());
+        assertEquals(exp, parser.expr(0));
     }
 
     @Test
