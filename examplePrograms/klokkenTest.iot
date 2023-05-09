@@ -1,5 +1,7 @@
 gem tekst "virker" som a
 gem tekst "virker ikke" som b
+gem heltal -3 som c
+gem decimaltal -3,3 som d
 
 gem tid 14:09 som tiden
 

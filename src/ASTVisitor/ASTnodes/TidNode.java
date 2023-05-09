@@ -33,4 +33,10 @@ public class TidNode extends AST {
     public void accept(Visitor v) {
         v.visit(this);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof TidNode object)) return false;
+        return this.hour == object.hour && this.minute == object.minute;
+    }
 }

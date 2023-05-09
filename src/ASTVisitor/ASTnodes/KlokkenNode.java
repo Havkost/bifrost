@@ -26,4 +26,10 @@ public class KlokkenNode extends AST {
     public void accept(Visitor v) {
         v.visit(this);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof KlokkenNode object)) return false;
+        return this.value.equals(object.getValue());
+    }
 }
