@@ -421,4 +421,101 @@ public class TestCCodeGenerator {
                  
                 """, generator.getCode());
     }
+
+    @Test
+    public void testIfTekstEqualsTekst() {
+        IfNode ifNode = new IfNode(new BinaryComputing("er",
+                new TekstLiteral("\"hej\""), new TekstLiteral("\"med dig\"")),
+                List.of(new FuncNode("test")));
+        ifNode.accept(generator);
+
+        assertEquals("""
+                if (strcmp(""hej"", ""med dig"") == 0) {
+                    test();
+                }""", generator.getCode());
+    }
+
+    @Test
+    public void testIfTekstNotEqualsTekst() {
+        IfNode ifNode = new IfNode(new BinaryComputing("ikke er",
+                new TekstLiteral("\"hej\""), new TekstLiteral("\"med dig\"")),
+                List.of(new FuncNode("test")));
+        ifNode.accept(generator);
+
+        assertEquals("""
+                if (strcmp(""hej"", ""med dig"") == 1) {
+                    test();
+                }""", generator.getCode());
+    }
+
+    @Test
+    public void testIfTidEqualsTid() {
+        IfNode ifNode = new IfNode(new BinaryComputing("er",
+                new TidNode(12,20), new KlokkenNode("klokken")),
+                List.of(new FuncNode("test")));
+        ifNode.accept(generator);
+
+        assertEquals("""
+                if (time_compare(make_time(12, 20), klokken) == 0) {
+                    test();
+                }""", generator.getCode());
+    }
+
+    @Test
+    public void testIfTidNotEqualsTid() {
+        IfNode ifNode = new IfNode(new BinaryComputing("ikke er",
+                new TidNode(12,20), new KlokkenNode("klokken")),
+                List.of(new FuncNode("test")));
+        ifNode.accept(generator);
+
+        assertEquals("""
+                if (time_compare(make_time(12, 20), klokken) != 0) {
+                    test();
+                }""", generator.getCode());
+    }
+
+    @Test
+    public void testIfTidLesserThanTid() {
+        IfNode ifNode = new IfNode(new BinaryComputing("<",
+                new TidNode(12,20), new KlokkenNode("klokken")),
+                List.of(new FuncNode("test")));
+        ifNode.accept(generator);
+
+        assertEquals("""
+                if (time_compare(make_time(12, 20), klokken) == -1) {
+                    test();
+                }""", generator.getCode());
+    }
+
+    @Test
+    public void testIfTidGreaterThanTid() {
+        IfNode ifNode = new IfNode(new BinaryComputing(">",
+                new TidNode(12,20), new KlokkenNode("klokken")),
+                List.of(new FuncNode("test")));
+        ifNode.accept(generator);
+
+        assertEquals("""
+                if (time_compare(make_time(12, 20), klokken) == 1) {
+                    test();
+                }""", generator.getCode());
+    }
+
+    @Test
+    public void testPrintNodeWithTidNode() {
+        PrintNode print = new PrintNode(new TidNode(10,10));
+        print.accept(generator);
+
+        assertEquals("""
+                printf("%02d:%02d\\n", 10, 10);""", generator.getCode());
+    }
+
+    @Test
+    public void testPrintNodeWithKlokkenNode() {
+        PrintNode print = new PrintNode(new KlokkenNode("10:30"));
+        print.accept(new TypeChecker());
+        print.accept(generator);
+
+        assertEquals("""
+                printf("%02d:%02d\\n", klokken.hour, klokken.minute);""", generator.getCode());
+    }
 }
