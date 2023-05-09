@@ -518,4 +518,42 @@ public class TestCCodeGenerator {
         assertEquals("""
                 printf("%02d:%02d\\n", klokken.hour, klokken.minute);""", generator.getCode());
     }
+
+    @Test
+    public void testKlokkenNode() {
+        KlokkenNode klokken = new KlokkenNode("klokken");
+        ProgramNode prog = new ProgramNode(List.of(klokken));
+        prog.accept(new TypeChecker());
+        prog.accept(new SymbolTableFilling());
+        prog.accept(generator);
+
+        assertEquals("""
+                #include "Lib/Eziot.h"
+                                                                     
+                Time klokken;
+                
+                int free_memory () {
+                    return 0;
+                }
+                
+                int main() {
+                    klokken = time_generator();
+                    klokken
+                    free_memory();
+                    return 0;
+                }
+                
+                """, generator.getCode());
+    }
+
+    @Test
+    public void testTidDclGenerator() {
+        TidDcl tid = new TidDcl(new TidNode(12, 30), new IdNode("tiden"));
+        tid.accept(new TypeChecker());
+        tid.accept(new SymbolTableFilling());
+        tid.accept(generator);
+
+        assertEquals("""
+                tiden = make_time(12, 30);""", generator.getCode());
+    }
 }
