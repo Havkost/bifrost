@@ -141,6 +141,7 @@ public class TestTypechecker {
         FuncDclNode funcDcl = new FuncDclNode("hej", null);
         TidNode tid = new TidNode(9, 45);
         KlokkenNode klokken = new KlokkenNode("10:45");
+        DeviceNode device = new DeviceNode("hej", List.of(heltal), "endpoint");
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {
                 if (type == AST.DataTypes.HELTAL) {
@@ -156,11 +157,12 @@ public class TestTypechecker {
                 } else if (type == AST.DataTypes.TID) {
                     binaryComputingTemplate(tid, op, type);
                     binaryComputingTemplate(klokken, op, type);
+                } else if (type == AST.DataTypes.DEVICE) {
+                    binaryComputingTemplate(device, op, type);
                 }
             }
         }
     }
-
 
     @Test
     public void testAssignNodeTypeCheckDecimal() {
@@ -390,6 +392,7 @@ public class TestTypechecker {
         FuncDclNode funcDcl = new FuncDclNode("hej", List.of(new AssignNode(new IdNode("a"), new DecimaltalLiteral("2,5"))));
         TidNode tid = new TidNode(9, 45);
         KlokkenNode klokken = new KlokkenNode("10:45");
+        DeviceNode device = new DeviceNode("hej", List.of(heltal), "endpoint");
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {
                 if (type == AST.DataTypes.HELTAL) {
@@ -405,6 +408,8 @@ public class TestTypechecker {
                 } else if (type == AST.DataTypes.TID) {
                     unaryComputingTemplate(tid, op, type);
                     unaryComputingTemplate(klokken, op, type);
+                } else if (type == AST.DataTypes.DEVICE) {
+                    unaryComputingTemplate(device, op, type);
                 }
             }
         }
@@ -441,6 +446,12 @@ public class TestTypechecker {
     void testFindCommonDataTypeIllegal() {
         assertThrows(Error.class, () -> new TypeChecker().findCommonDataType(AST.DataTypes.BOOLSK,
                 AST.DataTypes.DECIMALTAL, AST.Operators.PLUS));
+    }
+
+    @Test
+    void testFindCommonDataTypeTidWithTekst() {
+        assertEquals(
+                new TypeChecker().findCommonDataType(AST.DataTypes.TEKST, AST.DataTypes.TID, AST.Operators.EQUALS), AST.DataTypes.TID);
     }
 
     @Test
@@ -514,5 +525,34 @@ public class TestTypechecker {
 
         prog.accept(new SymbolTableFilling());
         assertThrows(IllegalStringConcatenationException.class, () -> prog.accept(new TypeChecker()));
+    }
+
+    @Test
+    void testTidDclDoesNotThrow() {
+        ProgramNode prog = new ProgramNode(List.of(
+                new TidDcl(new TidNode(10,10
+                ), new IdNode("test"))
+        ));
+        prog.accept(new SymbolTableFilling());
+        assertDoesNotThrow(() -> prog.accept(new TypeChecker()));
+    }
+
+    @Test
+    void testTidDclDoesNotThrowWithParent() {
+        ProgramNode prog = new ProgramNode(List.of(
+                new TidDcl(new TidNode(10,10
+                ), new IdNode("test", "device1"))
+        ));
+        prog.accept(new SymbolTableFilling());
+        assertDoesNotThrow(() -> prog.accept(new TypeChecker()));
+    }
+
+    @Test
+    void testTidDclThrows() {
+        ProgramNode prog = new ProgramNode(List.of(
+                new TidDcl(new HeltalLiteral("12"
+                ), new IdNode("hej"))));
+        prog.accept(new SymbolTableFilling());
+        assertThrows(IllegalTypeAssignmentException.class, () -> prog.accept(new TypeChecker()));
     }
 }
