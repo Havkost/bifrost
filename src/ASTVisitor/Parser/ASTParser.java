@@ -82,7 +82,7 @@ public class ASTParser {
             parentId = expect(TokenType.ID).getVal();
         }
         expect(TokenType.TIL);
-        AST value = expr();
+        AST value = expr(0);
         if (parentId != null)
             return new AssignNode(new IdNode(id, parentId, line), value, line);
         return new AssignNode(new IdNode(id, line), value, line);
@@ -116,7 +116,7 @@ public class ASTParser {
             stmtAST = func();
         } else if (ts.peek() == TokenType.HVIS) {
             expect(TokenType.HVIS);
-            AST ifExpr = expr();
+            AST ifExpr = expr(0);
             expect(TokenType.NEWLINE);
             ArrayList<AST> stmts = stmts();
             expect(TokenType.BLOCKSLUT);
@@ -127,16 +127,58 @@ public class ASTParser {
         return stmtAST;
     }
 
-    public AST expr() {
-        AST expr;
+    public AST expr(int p) {
+        AST lhs;
         if (ts.peek() == TokenType.ID || ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.IKKE ||
                 ts.peek() == TokenType.LPAREN || ts.peek() == TokenType.DECIMALTAL_LIT || ts.peek() == TokenType.BOOLSK_LIT ||
                 ts.peek() == TokenType.TEKST_LIT || ts.peek() == TokenType.KLOKKEN || ts.peek() == TokenType.TID ||
                 ts.peek() == TokenType.MINUS) {
-            expr = or_expr();
+            lhs = factor();
         } else throw new UnexpectedExpressionToken(ts.peek(), line);
 
-        return expr;
+        while (isBinaryOperator(ts.peek()) && getBinaryOperator(ts.peek(), false).prec >= p) {
+            Operators op =  getBinaryOperator(ts.peek(), true);
+            int q = 1 + op.prec;
+            AST rhs = expr(q);
+            lhs = new BinaryComputing(op, lhs, rhs);
+        }
+
+        return lhs;
+    }
+
+    boolean isBinaryOperator(TokenType type) {
+        switch (type) {
+            case ELLER, OG, ER, IKKE, DIVIDE, TIMES, PLUS, MINUS, LESS_THAN, GREATER_THAN -> {
+                return true;
+            }
+            default -> {
+                return false;
+            }
+        }
+    }
+
+    Operators getBinaryOperator(TokenType type, boolean consume) {
+        Operators op;
+        switch (type) {
+            case ELLER -> op = Operators.OR;
+            case OG -> op = Operators.AND;
+            case ER -> op = Operators.EQUALS;
+            case IKKE -> {
+                op = Operators.NOT_EQUALS;
+                if (consume)
+                    expect(TokenType.IKKE);
+            }
+            case DIVIDE -> op = Operators.DIVISION;
+            case TIMES -> op = Operators.TIMES;
+            case PLUS -> op = Operators.PLUS;
+            case MINUS -> op = Operators.MINUS;
+            case LESS_THAN -> op = Operators.LESS_THAN;
+            case GREATER_THAN -> op = Operators.GREATER_THAN;
+            default -> throw new UnexpectedExpressionToken(type, line);
+        }
+        if (consume)
+            expect(ts.peek());
+        return op;
     }
 
     public AST or_expr() {
@@ -307,10 +349,13 @@ public class ASTParser {
     }
 
     public AST factor() {
-        AST expr = null;
-        if (ts.peek() == TokenType.LPAREN) {
+        AST expr;
+        if (ts.peek() == TokenType.IKKE) {
+            expect(TokenType.IKKE);
+            expr = new UnaryComputing(Operators.NOT, expr(Operators.NOT.prec), line);
+        } else if (ts.peek() == TokenType.LPAREN) {
             expect(TokenType.LPAREN);
-            expr = new UnaryComputing("paren", expr(), line);
+            expr = new UnaryComputing("paren", expr(0), line);
             expect(TokenType.RPAREN);
         } else if (ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.DECIMALTAL_LIT ||
                    ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT || ts.peek() == TokenType.KLOKKEN ||
@@ -330,7 +375,7 @@ public class ASTParser {
         boolean negative = false;
         if(ts.peek() == TokenType.TEKST_DCL){
             expect(TokenType.TEKST_DCL);
-            AST value = expr();
+            AST value = expr(0);
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
             return new TekstDcl(value, new IdNode(idToken.getVal()), line);
@@ -339,25 +384,25 @@ public class ASTParser {
             return deviceDcl();
         } if (ts.peek() == TokenType.TID_DCL) {
             expect(TokenType.TID_DCL);
-            AST value = expr();
+            AST value = expr(0);
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
             return new TidDcl(value, new IdNode(idToken.getVal()), line);
         } if(ts.peek() == TokenType.HELTAL_DCL){
             expect(TokenType.HELTAL_DCL);
-            AST value = expr();
+            AST value = expr(0);
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
             return new HeltalDcl(value, new IdNode(idToken.getVal()), line);
         } if(ts.peek() == TokenType.DECIMALTAL_DCL){
             expect(TokenType.DECIMALTAL_DCL);
-            AST value = expr();
+            AST value = expr(0);
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
             return new DecimaltalDcl(value, new IdNode(idToken.getVal()), line);
         } if (ts.peek() == TokenType.BOOLSK_DCL) {
             expect(TokenType.BOOLSK_DCL);
-            AST value = expr();
+            AST value = expr(0);
             expect(TokenType.SOM);
             Token idToken = expect(TokenType.ID);
             return new BoolskDcl(value, new IdNode(idToken.getVal()), line);
@@ -389,7 +434,7 @@ public class ASTParser {
             switch (ts.peek()) {
                 case BOOLSK_DCL -> {
                     expect(TokenType.BOOLSK_DCL);
-                    value = expr();
+                    value = expr(0);
                     expect(TokenType.SOM);
                     id = new IdNode(expect(TokenType.ID).getVal());
                     expect(TokenType.NEWLINE);
@@ -397,7 +442,7 @@ public class ASTParser {
                 }
                 case HELTAL_DCL -> {
                     expect(TokenType.HELTAL_DCL);
-                    value = expr();
+                    value = expr(0);
                     expect(TokenType.SOM);
                     id = new IdNode(expect(TokenType.ID).getVal());
                     expect(TokenType.NEWLINE);
@@ -405,7 +450,7 @@ public class ASTParser {
                 }
                 case DECIMALTAL_DCL -> {
                     expect(TokenType.DECIMALTAL_DCL);
-                    value = expr();
+                    value = expr(0);
                     expect(TokenType.SOM);
                     id = new IdNode(expect(TokenType.ID).getVal());
                     expect(TokenType.NEWLINE);
@@ -413,7 +458,7 @@ public class ASTParser {
                 }
                 case TEKST_DCL -> {
                     expect(TokenType.TEKST_DCL);
-                    value = expr();
+                    value = expr(0);
                     expect(TokenType.SOM);
                     id = new IdNode(expect(TokenType.ID).getVal());
                     expect(TokenType.NEWLINE);
@@ -472,7 +517,7 @@ public class ASTParser {
 
     public AST print() {
         expect(TokenType.PRINT);
-        AST value = expr();
+        AST value = expr(0);
 
         return new PrintNode(value, line);
     }
@@ -480,7 +525,7 @@ public class ASTParser {
     public AST repeat() {
         expect(TokenType.GENTAG);
         Token funcCall = expect(TokenType.ID);
-        AST repeatCount = expr();
+        AST repeatCount = expr(0);
         expect(TokenType.GANGE);
 
         return new LoopNode(funcCall.getVal(), repeatCount, line);
