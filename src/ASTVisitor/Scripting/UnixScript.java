@@ -6,7 +6,7 @@ public class UnixScript implements Script {
 
     @Override
     public void compileCFile(String fileName) throws IOException {
-        String command = "gcc -L./Lib -l eziotlib " + fileName;
+        String command = "gcc -L./Lib -l eziotlib_unix " + fileName;
         File tempScript = createTempScript(command);
 
         sendCommand(tempScript);
