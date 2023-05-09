@@ -255,7 +255,6 @@ public class CCodeGenerator extends Visitor {
     public void visit(ProgramNode n) {
         boolean containsKlokken = AST.getSymbolTable().containsValue(TID);
         boolean containsString = AST.getSymbolTable().containsValue(TEKST);
-        boolean containsDevice = AST.getSymbolTable().containsValue(DEVICE);
 
         emit("#include \"Lib/Eziot.h\"\n\n");
 
