@@ -29,17 +29,17 @@ public abstract class AST {
     }
 
     public enum Operators {
-        PLUS("+", "+", 5),
-        MINUS("-", "-", 5),
-        TIMES("*", "*", 4),
-        DIVISION("/", "/", 4),
+        PLUS("+", "+", 4),
+        MINUS("-", "-", 4),
+        TIMES("*", "*", 5),
+        DIVISION("/", "/", 5),
         OR("eller", "||", 0),
         AND("og", "&&", 1),
         LESS_THAN("<", "<", 3),
         GREATER_THAN(">", ">", 3),
         EQUALS("er", "==", 2),
         NOT_EQUALS("ikke er", "!=", 2),
-        NOT("ikke", "!", 0),
+        NOT("ikke", "!", 6),
         PAREN("paren", null, 0);
 
         public final String textual;

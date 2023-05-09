@@ -370,9 +370,9 @@ public class TestASTParser {
     @Test
     void testNegativeNumsInExpr() {
         ASTParser parser = makeASTParser("-5 - -3,3 + -1");
-        AST exp = new BinaryComputing(AST.Operators.MINUS, new HeltalLiteral("-5"),
-                        new BinaryComputing(AST.Operators.PLUS, new DecimaltalLiteral("-3,3"),
-                        new HeltalLiteral("-1")));
+        AST exp = new BinaryComputing(AST.Operators.PLUS, new BinaryComputing(
+                AST.Operators.MINUS, new HeltalLiteral("-5"), new DecimaltalLiteral("-3,3")),
+                        new HeltalLiteral("-1"));
 
         assertEquals(exp, parser.expr(0));
     }
