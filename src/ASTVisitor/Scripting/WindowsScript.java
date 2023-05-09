@@ -11,14 +11,13 @@ public class WindowsScript implements Script {
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
         sendCommand(createTempScript(
-                "gcc " + fileName.replace("\\", "/") + " -L./Lib -leziotlib"), false
+                "gcc " + fileName.replace("\\", "/") + " -L./Lib -leziotlib_windows"), false
         );
     }
 
     @Override
     public void runProgram() throws IOException {
-
-        sendCommand(createTempScript("a.exe"), true);
+        sendCommand(createTempScript("a.exe && del a.exe"), true);
     }
 
 
