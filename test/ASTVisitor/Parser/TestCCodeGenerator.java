@@ -451,7 +451,7 @@ public class TestCCodeGenerator {
     @Test
     public void testIfTidEqualsTid() {
         IfNode ifNode = new IfNode(new BinaryComputing("er",
-                new TidNode(12,20), new KlokkenNode("klokken")),
+                new TidNode(12,20), new KlokkenNode()),
                 List.of(new FuncNode("test")));
         ifNode.accept(generator);
 
@@ -464,7 +464,7 @@ public class TestCCodeGenerator {
     @Test
     public void testIfTidNotEqualsTid() {
         IfNode ifNode = new IfNode(new BinaryComputing("ikke er",
-                new TidNode(12,20), new KlokkenNode("klokken")),
+                new TidNode(12,20), new KlokkenNode()),
                 List.of(new FuncNode("test")));
         ifNode.accept(generator);
 
@@ -477,7 +477,7 @@ public class TestCCodeGenerator {
     @Test
     public void testIfTidLesserThanTid() {
         IfNode ifNode = new IfNode(new BinaryComputing("<",
-                new TidNode(12,20), new KlokkenNode("klokken")),
+                new TidNode(12,20), new KlokkenNode()),
                 List.of(new FuncNode("test")));
         ifNode.accept(generator);
 
@@ -490,7 +490,7 @@ public class TestCCodeGenerator {
     @Test
     public void testIfTidGreaterThanTid() {
         IfNode ifNode = new IfNode(new BinaryComputing(">",
-                new TidNode(12,20), new KlokkenNode("klokken")),
+                new TidNode(12,20), new KlokkenNode()),
                 List.of(new FuncNode("test")));
         ifNode.accept(generator);
 
@@ -511,7 +511,7 @@ public class TestCCodeGenerator {
 
     @Test
     public void testPrintNodeWithKlokkenNode() {
-        PrintNode print = new PrintNode(new KlokkenNode("10:30"));
+        PrintNode print = new PrintNode(new KlokkenNode());
         print.accept(new TypeChecker());
         print.accept(generator);
 
@@ -521,7 +521,7 @@ public class TestCCodeGenerator {
 
     @Test
     public void testKlokkenNode() {
-        KlokkenNode klokken = new KlokkenNode("klokken");
+        KlokkenNode klokken = new KlokkenNode();
         ProgramNode prog = new ProgramNode(List.of(klokken));
         prog.accept(new TypeChecker());
         prog.accept(new SymbolTableFilling());

@@ -344,7 +344,7 @@ public class TestASTParser {
     void testKlokken() {
         ASTParser parser = makeASTParser("hvis klokken er 11:30 \n .");
 
-        AST exp = new IfNode(new BinaryComputing(AST.Operators.EQUALS, new KlokkenNode(""),
+        AST exp = new IfNode(new BinaryComputing(AST.Operators.EQUALS, new KlokkenNode(),
                 new TidNode(11, 30)),
                 List.of()
                 );

@@ -140,7 +140,7 @@ public class TestTypechecker {
         BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), new IdNode("d"));
         FuncDclNode funcDcl = new FuncDclNode("hej", null);
         TidNode tid = new TidNode(9, 45);
-        KlokkenNode klokken = new KlokkenNode("10:45");
+        KlokkenNode klokken = new KlokkenNode();
         DeviceNode device = new DeviceNode("hej", List.of(heltal), "endpoint");
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {
@@ -391,7 +391,7 @@ public class TestTypechecker {
         BoolskDcl bool = new BoolskDcl(new BoolskLiteral("sandt"), new IdNode("d"));
         FuncDclNode funcDcl = new FuncDclNode("hej", List.of(new AssignNode(new IdNode("a"), new DecimaltalLiteral("2,5"))));
         TidNode tid = new TidNode(9, 45);
-        KlokkenNode klokken = new KlokkenNode("10:45");
+        KlokkenNode klokken = new KlokkenNode();
         DeviceNode device = new DeviceNode("hej", List.of(heltal), "endpoint");
         for (AST.Operators op : AST.Operators.values()) {
             for (AST.DataTypes type : AST.DataTypes.values()) {

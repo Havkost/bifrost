@@ -185,7 +185,8 @@ public class ASTParser {
             expr = new UnaryComputing("paren", expr(0), line);
             expect(TokenType.RPAREN);
         } else if (ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.DECIMALTAL_LIT ||
-                   ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT || ts.peek() == TokenType.KLOKKEN ||
+                   ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT ||
+                   ts.peek() == TokenType.KLOKKEN ||
                    ts.peek() == TokenType.TID || ts.peek() == TokenType.MINUS) {
             expr = value();
         } else if (ts.peek() == TokenType.ID) {
@@ -307,7 +308,8 @@ public class ASTParser {
             List<String> value = Arrays.stream(expect(TokenType.TID).getVal().split(":")).toList();
             return new TidNode(Integer.parseInt(value.get(0)), Integer.parseInt(value.get(1)), line);
         } if (ts.peek() == TokenType.KLOKKEN) {
-            return new KlokkenNode(expect(TokenType.KLOKKEN).getVal(), line);
+            expect(TokenType.KLOKKEN);
+            return new KlokkenNode(line);
         } if (ts.peek() == TokenType.MINUS) {
             expect(TokenType.MINUS);
             negative = true;

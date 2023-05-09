@@ -218,4 +218,11 @@ public class TestPrettyPrinting {
 
         assertEquals("lysstyrke for lampe1", prettyPrinter.getCode());
     }
+
+    @Test
+    void testKlokken() {
+        new KlokkenNode().accept(prettyPrinter);
+
+        assertEquals("klokken", prettyPrinter.getCode());
+    }
 }
