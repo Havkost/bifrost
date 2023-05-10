@@ -10,6 +10,7 @@ import static ASTVisitor.Parser.AST.*;
 
 public class TypeChecker extends Visitor{
 
+    private int i = 1;
     private boolean stringConcatenationAllowed = true;
 
     @Override
@@ -106,6 +107,7 @@ public class TypeChecker extends Visitor{
 
     @Override
     public void visit(IfNode n) {
+        n.setNum(i++);
         stringConcatenationAllowed = false;
         n.getExpr().accept(this);
         stringConcatenationAllowed = true;

@@ -10,6 +10,8 @@ public class IfNode extends AST {
     private AST expr;
     private List<AST> body;
 
+    private int num;
+
     @Override
     public void accept(Visitor v) {
         v.visit(this);
@@ -33,6 +35,14 @@ public class IfNode extends AST {
 
     public List<AST> getBody() {
         return body;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    public int getNum() {
+        return num;
     }
 
     @Override

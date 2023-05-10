@@ -1,4 +1,6 @@
 #include "Eziot.h"
+#include "common.h"
+#include "common_threads.h"
 
 int time_compare(Time t1, Time t2) {
     if (t1.hour > t2.hour) {
@@ -193,4 +195,65 @@ int get_field_from_endpoint(char *endpoint, char *field, void *value_ptr, enum D
     free(response.ptr);
     
     return 0;
+}
+
+run_if_thread_args *init_run_if_thread_args(int *thread_count, void (*body)(), pthread_mutex_t *thread_count_lock) {
+    run_if_thread_args *args = malloc(sizeof(run_if_thread_args));
+    args->thread_count = thread_count;
+    args->body = body;
+    return args;
+}
+
+void init_queue(if_queue *queue) {
+    queue->head = -1;
+    queue->tail = -1;
+}
+
+bool is_queue_full(if_queue *queue) {
+    return (queue->tail+1) % IF_QUEUE_SIZE == queue->head;
+}
+
+bool is_queue_empty(if_queue *queue) {
+    return queue->head == -1;
+}
+
+bool add_to_queue(if_queue *queue, if_statement *element) {
+    if(is_queue_full(queue)) return false;
+    else if(element->condition()) {
+        if(is_queue_empty(queue)) queue->head = 0;
+        queue->tail = (queue->tail+1)%IF_QUEUE_SIZE;
+        queue->if_bodies[queue->tail] = element->body;
+        element->last_state = true;
+        return true;
+    }
+    element->last_state = false;
+    return false;
+}
+
+bool pop_from_queue(if_queue *queue) {
+    if(is_queue_empty(queue)) return false;
+    if(queue->head == queue->tail) init_queue(queue);
+    else queue->head = (queue->head+1)%IF_QUEUE_SIZE;
+    return true;
+}
+
+void (*get_from_queue(if_queue *queue))() {
+    return queue->if_bodies[queue->head];
+}
+
+void init_if_statement(if_statement *statement, void *condition, void *body) {
+    statement->condition = condition;
+    statement->body = body;
+    statement->last_state = false;
+}
+void *run_if_thread(void *_args) {
+    run_if_thread_args *args = (run_if_thread_args *) _args;
+    printf("Running body function...\n");
+    args->body();
+    printf("Finished running body function...\n");
+    pthread_mutex_lock(args->thread_count_lock);
+    args->thread_count--;
+    pthread_mutex_unlock(args->thread_count_lock);
+    free(args);
+    return _args;
 }

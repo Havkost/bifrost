@@ -274,6 +274,36 @@ public class CCodeGenerator extends Visitor {
             else emit(dataTypeString.get(type) + " " + id + ";\n");
         });
 
+        emit("\n");
+
+        n.getChild().forEach((ast) -> {
+            if (ast instanceof IfNode ifNode) {
+                indent(blockIndent);
+                emit("bool ifCond" + ifNode.getNum() + "() {\n");
+                blockIndent++;
+                indent(blockIndent);
+                emit("return ");
+                ifNode.getExpr().accept(this);
+                emit(";\n");
+                blockIndent--;
+                indent(blockIndent);
+                emit("}\n");
+                indent(blockIndent);
+                emit("void ifBody" + ifNode.getNum() + "() {\n");
+                blockIndent++;
+                indent(blockIndent);
+                ifNode.getBody().forEach((child) -> {
+                    child.accept(this);
+                });
+                emit(";\n");
+                blockIndent--;
+                indent(blockIndent);
+                emit("}\n");
+                indent(blockIndent);
+                emit("if_statement " + "ifStatement" + ifNode.getNum() + ";\n");
+            }
+        });
+
         // Freeing memory for strings in the program
         if (containsString || containsKlokken) {
             emit("\nint free_memory () {\n");
@@ -290,6 +320,12 @@ public class CCodeGenerator extends Visitor {
             emit("}\n\n");
         } else emit("\n");
 
+        indent(blockIndent);
+        emit("int thread_count = 1;\n");
+        indent(blockIndent);
+        emit("pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;\n");
+        indent(blockIndent);
+        emit("bool running = true;\n\n");
 
         emit("int main() {\n");
         blockIndent++;
@@ -297,6 +333,20 @@ public class CCodeGenerator extends Visitor {
             indent(blockIndent);
             emit("klokken = time_generator();\n");
         }
+
+        indent(blockIndent);
+        emit("if_queue task_queue;\n");
+        indent(blockIndent);
+        emit("init_queue(&task_queue);\n");
+
+        n.getChild().forEach((ast) -> {
+            if (ast instanceof IfNode ifNode) {
+                indent(blockIndent);
+                emit("init_if_statement(&ifStatement" + ifNode.getNum() + ", ifCond" + ifNode.getNum()
+                        + ", ifBody" + ifNode.getNum() + ");\n");
+            }
+        });
+
         for(AST ast : n.getChild()){
             if (ast instanceof DeviceNode) {
                 indent(blockIndent);
@@ -308,14 +358,37 @@ public class CCodeGenerator extends Visitor {
                     emit("\n");
                 });
                 emit("\n");
+            } else if (ast instanceof IfNode ifNode) {
+                indent(blockIndent);
+                emit("add_to_queue(&task_queue, &ifStatement" + ifNode.getNum() + ");\n");
+
             } else if(!(ast instanceof FuncDclNode)) {
                 indent(blockIndent);
                 ast.accept(this);
                 emit("\n");
             }
         }
-        indent(blockIndent);
+        // Loop
 
+        emit("""
+                    while(!is_queue_empty(&task_queue)) {
+                        printf("Tjek 1\\n");
+                        if(thread_count >= MAX_THREADS) break;
+                        printf("Tjek 2\\n");
+                        pthread_t thread;
+                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                            get_from_queue(&task_queue), &thread_count_lock);
+                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        if(thread_created == 0) {
+                            pop_from_queue(&task_queue);
+                            pthread_mutex_lock(&thread_count_lock);
+                            thread_count++;
+                            pthread_mutex_unlock(&thread_count_lock);
+                        }
+                    }
+                """);
+
+        indent(blockIndent);
         if (AST.getSymbolTable().containsValue(TEKST) || AST.getSymbolTable().containsValue(TID)) {
             emit("free_memory();\n");
             indent(blockIndent);
