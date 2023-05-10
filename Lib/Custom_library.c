@@ -194,3 +194,72 @@ int get_field_from_endpoint(char *endpoint, char *field, void *value_ptr, enum D
     
     return 0;
 }
+
+// Event loop
+
+/*
+    If statement structs
+*/
+
+void init_if_statement(if_statement *statement, void *condition, void *body) {
+    statement->condition = condition;
+    statement->body = body;
+    statement->last_state = false;
+}
+
+/*
+    If statement queues
+*/
+
+void init_if_queue(if_queue *queue) {
+    queue->head = -1;
+    queue->tail = -1;
+}
+
+bool is_queue_full(if_queue *queue) {
+    return (queue->tail+1) % IF_QUEUE_SIZE == queue->head;
+}
+
+bool is_queue_empty(if_queue *queue) {
+    return queue->head == -1;
+}
+
+bool add_to_queue(if_queue *queue, void (*element)()) {
+    if(is_queue_full(queue)) return false;
+    if(is_queue_empty(queue)) queue->head = 0;
+    queue->tail = (queue->tail+1)%IF_QUEUE_SIZE;
+    queue->if_bodies[queue->tail] = element;
+    return true;
+}
+
+bool remove_from_queue(if_queue *queue) {
+    if(is_queue_empty(queue)) return false;
+    if(queue->head == queue->tail) init_if_queue(queue);
+    else queue->head = (queue->head+1)%IF_QUEUE_SIZE;
+    return true;
+}
+
+void (*get_from_queue(if_queue *queue))() {
+    return queue->if_bodies[queue->head];
+}
+
+/*
+    Multi threading
+*/
+
+run_if_thread_args *init_run_if_thread_args(int *thread_count, void (*body)(), pthread_mutex_t *thread_count_lock) {
+    run_if_thread_args *args = malloc(sizeof(run_if_thread_args));
+    args->body = body;
+    args->thread_count = thread_count;
+    args->thread_count_lock = thread_count_lock;
+    return args;
+}
+
+void *run_if_thread(void *_args) {
+    run_if_thread_args *args = (run_if_thread_args *) _args;
+    args->body();
+    pthread_mutex_lock(args->thread_count_lock);
+    (*(args->thread_count))--;
+    pthread_mutex_unlock(args->thread_count_lock);
+    free(args);
+}
