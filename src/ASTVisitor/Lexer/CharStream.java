@@ -53,7 +53,6 @@ public class CharStream {
 
         //  On any problem, just assume end of input
         catch (Throwable t) {
-            System.out.println("Error encountered " + t);
             eof = true;
             return 0;
         }

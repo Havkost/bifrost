@@ -392,7 +392,6 @@ public class ASTParser {
     public Token expect(TokenType type) {
         Token token = ts.advance();
         if (token.getType() != type) {
-            System.out.println(ts.getTokenList());
             throw new UnexpectedTokenException(type, token.getType(), line);
         }
         if (type.equals(TokenType.NEWLINE)) line++;

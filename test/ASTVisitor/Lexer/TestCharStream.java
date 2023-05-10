@@ -44,8 +44,8 @@ public class TestCharStream {
         CharStream charStream = makeCharStream("");
         try {
             charStream.getReader().close();
-        } catch (Throwable e) {
-
+        } catch (IOException e) {
+            System.out.print("");
         }
         assertEquals(0, charStream.advance());
     }

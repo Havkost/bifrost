@@ -1,5 +1,4 @@
 package ASTVisitor.Parser;
-
 import ASTVisitor.ASTnodes.*;
 import ASTVisitor.ASTnodes.ProgramNode;
 import ASTVisitor.Exceptions.*;
