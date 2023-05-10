@@ -90,14 +90,21 @@ public class TestCCodeGenerator {
                                      
                 char* a;
                 char* b;
+                      
                                      
                 int free_memory () {
                     free(a);
                     free(b);
                     return 0;
                 }
+                                
+                int thread_count = 1;
+                pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
+                bool running = true;
                                      
                 int main() {
+                    if_queue task_queue;
+                    init_queue(&task_queue);
                     a = malloc(4 * sizeof(char));
                     strcpy(a, "Haj");
                     b = malloc(6 * sizeof(char));
@@ -106,6 +113,21 @@ public class TestCCodeGenerator {
                     a = "hej";
                     printf("%s\\n", a);
                     printf("%s\\n", b);
+                    while(!is_queue_empty(&task_queue)) {
+                        printf("Tjek 1\\n");
+                        if(thread_count >= MAX_THREADS) break;
+                        printf("Tjek 2\\n");
+                        pthread_t thread;
+                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                            get_from_queue(&task_queue), &thread_count_lock);
+                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        if(thread_created == 0) {
+                            pop_from_queue(&task_queue);
+                            pthread_mutex_lock(&thread_count_lock);
+                            thread_count++;
+                            pthread_mutex_unlock(&thread_count_lock);
+                        }
+                    }
                     free_memory();
                     return 0;
                 }
@@ -135,24 +157,46 @@ public class TestCCodeGenerator {
         generator.visit(prog);
 
         assertEquals("""
-                 #include "Lib/Eziot.h"
-                 
-                 typedef struct {
-                     char endpoint__[5];
-                     int lysstyrke;
-                 } Lampe1;
-                 
-                 Lampe1 lampe1;
-                 
-                 int main() {
-                     strcpy(lampe1.endpoint__, "test");
-                     lampe1.lysstyrke = 50;
-                 
-                     printf("%d\\n", lampe1.lysstyrke);
-                     return 0;
-                 }
-                 
-                        """, generator.getCode());
+           #include "Lib/Eziot.h"
+           
+           typedef struct {
+               char endpoint__[5];
+               int lysstyrke;
+           } Lampe1;
+           
+           Lampe1 lampe1;
+           
+           
+           int thread_count = 1;
+           pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
+           bool running = true;
+           
+           int main() {
+               if_queue task_queue;
+               init_queue(&task_queue);
+               strcpy(lampe1.endpoint__, "test");
+               lampe1.lysstyrke = 50;
+           
+               printf("%d\\n", lampe1.lysstyrke);
+               while(!is_queue_empty(&task_queue)) {
+                   printf("Tjek 1\\n");
+                   if(thread_count >= MAX_THREADS) break;
+                   printf("Tjek 2\\n");
+                   pthread_t thread;
+                   run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                       get_from_queue(&task_queue), &thread_count_lock);
+                   int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                   if(thread_created == 0) {
+                       pop_from_queue(&task_queue);
+                       pthread_mutex_lock(&thread_count_lock);
+                       thread_count++;
+                       pthread_mutex_unlock(&thread_count_lock);
+                   }
+               }
+               return 0;
+           }
+           
+               """, generator.getCode());
     }
 
     @Test
@@ -175,18 +219,40 @@ public class TestCCodeGenerator {
                 char* b;
                 double c;
                 bool d;
+                
                                      
                 int free_memory () {
                     free(b);
                     return 0;
                 }
+                      
+                int thread_count = 1;
+                pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
+                bool running = true;      
                                      
                 int main() {
+                    if_queue task_queue;
+                    init_queue(&task_queue);
                     a = 3;
                     b = malloc(5 * sizeof(char));
                     strcpy(b, "test");
                     c = 11.5;
                     d = false;
+                    while(!is_queue_empty(&task_queue)) {
+                        printf("Tjek 1\\n");
+                        if(thread_count >= MAX_THREADS) break;
+                        printf("Tjek 2\\n");
+                        pthread_t thread;
+                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                            get_from_queue(&task_queue), &thread_count_lock);
+                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        if(thread_created == 0) {
+                            pop_from_queue(&task_queue);
+                            pthread_mutex_lock(&thread_count_lock);
+                            thread_count++;
+                            pthread_mutex_unlock(&thread_count_lock);
+                        }
+                    }
                     free_memory();
                     return 0;
                 }
@@ -253,25 +319,47 @@ public class TestCCodeGenerator {
         programNode.accept(generator);
 
         assertEquals("""
-                #include "Lib/Eziot.h"                
-                                
+                #include "Lib/Eziot.h"
+                 
                 typedef struct {
                     char endpoint__[5];
                     int lysstyrke;
                 } Lampe1;
-                              
+                
                 int a;
                 Lampe1 lampe1;
                 void func();
-                
+                 
+                 
+                int thread_count = 1;
+                pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
+                bool running = true;
+                 
                 int main() {
+                    if_queue task_queue;
+                    init_queue(&task_queue);
                     a = 3;
                     strcpy(lampe1.endpoint__, "test");
                     lampe1.lysstyrke = 70;
-                    
+                 
+                    while(!is_queue_empty(&task_queue)) {
+                        printf("Tjek 1\\n");
+                        if(thread_count >= MAX_THREADS) break;
+                        printf("Tjek 2\\n");
+                        pthread_t thread;
+                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                            get_from_queue(&task_queue), &thread_count_lock);
+                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        if(thread_created == 0) {
+                            pop_from_queue(&task_queue);
+                            pthread_mutex_lock(&thread_count_lock);
+                            thread_count++;
+                            pthread_mutex_unlock(&thread_count_lock);
+                        }
+                    }
                     return 0;
                 }
-                                
+                 
                 void func() {
                     a = 8;
                     if (3 == 3) {
@@ -301,10 +389,32 @@ public class TestCCodeGenerator {
         programNode.accept(generator);
         assertEquals("""
                 #include "Lib/Eziot.h"
-                                     
-                                     
+                                
+                                
+                                
+                int thread_count = 1;
+                pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
+                bool running = true;
+                                
                 int main() {
+                    if_queue task_queue;
+                    init_queue(&task_queue);
                     a = 3;
+                    while(!is_queue_empty(&task_queue)) {
+                        printf("Tjek 1\\n");
+                        if(thread_count >= MAX_THREADS) break;
+                        printf("Tjek 2\\n");
+                        pthread_t thread;
+                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                            get_from_queue(&task_queue), &thread_count_lock);
+                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        if(thread_created == 0) {
+                            pop_from_queue(&task_queue);
+                            pthread_mutex_lock(&thread_count_lock);
+                            thread_count++;
+                            pthread_mutex_unlock(&thread_count_lock);
+                        }
+                    }
                     return 0;
                 }
                                 
@@ -313,7 +423,7 @@ public class TestCCodeGenerator {
                     if (3 == 3) {
                         a = 5;
                     }
-                }
+                }                
                 """, Files.readString(file.toPath()));
 
     }
@@ -371,16 +481,38 @@ public class TestCCodeGenerator {
                 #include "Lib/Eziot.h"
                                 
                 char* test;
+                     
                                 
                 int free_memory () {
                     free(test);
                     return 0;
                 }
                 
+                int thread_count = 1;
+                pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
+                bool running = true;
+                
                 int main() {
+                    if_queue task_queue;
+                    init_queue(&task_queue);
                     test = malloc(1 * sizeof(char));
                     strcpy(test, "");
                     test = realloc(concat("hej", concat(" ", "verden"), customStrLen(" ", strlen("verden"))), customStrLen("hej", concat(" ", "verden"), customStrLen(" ", strlen("verden"))));
+                    while(!is_queue_empty(&task_queue)) {
+                        printf("Tjek 1\\n");
+                        if(thread_count >= MAX_THREADS) break;
+                        printf("Tjek 2\\n");
+                        pthread_t thread;
+                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                            get_from_queue(&task_queue), &thread_count_lock);
+                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        if(thread_created == 0) {
+                            pop_from_queue(&task_queue);
+                            pthread_mutex_lock(&thread_count_lock);
+                            thread_count++;
+                            pthread_mutex_unlock(&thread_count_lock);
+                        }
+                    }
                     free_memory();
                     return 0;
                 }
@@ -410,12 +542,34 @@ public class TestCCodeGenerator {
                  
                 Lampe1 lampe1;
                  
+                 
+                int thread_count = 1;
+                pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
+                bool running = true; 
+                 
                 int main() {
+                    if_queue task_queue;
+                    init_queue(&task_queue);
                     strcpy(lampe1.endpoint__, "test");
                     lampe1.lysstyrke = 5;
                     
                     lampe1.lysstyrke = 3;
                     send_field_to_endpoint(lampe1.endpoint__, "lysstyrke", &lampe1.lysstyrke, TYPE_INTEGER);
+                    while(!is_queue_empty(&task_queue)) {
+                        printf("Tjek 1\\n");
+                        if(thread_count >= MAX_THREADS) break;
+                        printf("Tjek 2\\n");
+                        pthread_t thread;
+                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                            get_from_queue(&task_queue), &thread_count_lock);
+                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        if(thread_created == 0) {
+                            pop_from_queue(&task_queue);
+                            pthread_mutex_lock(&thread_count_lock);
+                            thread_count++;
+                            pthread_mutex_unlock(&thread_count_lock);
+                        }
+                    }
                     return 0;
                 }
                  
@@ -531,18 +685,40 @@ public class TestCCodeGenerator {
                 #include "Lib/Eziot.h"
                                                                      
                 Time klokken;
-                
+                  
+                                
                 int free_memory () {
                     return 0;
                 }
                 
+                int thread_count = 1;
+                pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
+                bool running = true;
+                                
                 int main() {
                     klokken = time_generator();
+                    if_queue task_queue;
+                    init_queue(&task_queue);
                     klokken
+                    while(!is_queue_empty(&task_queue)) {
+                        printf("Tjek 1\\n");
+                        if(thread_count >= MAX_THREADS) break;
+                        printf("Tjek 2\\n");
+                        pthread_t thread;
+                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                            get_from_queue(&task_queue), &thread_count_lock);
+                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        if(thread_created == 0) {
+                            pop_from_queue(&task_queue);
+                            pthread_mutex_lock(&thread_count_lock);
+                            thread_count++;
+                            pthread_mutex_unlock(&thread_count_lock);
+                        }
+                    }
                     free_memory();
                     return 0;
                 }
-                
+                                
                 """, generator.getCode());
     }
 
@@ -555,5 +731,58 @@ public class TestCCodeGenerator {
 
         assertEquals("""
                 tiden = make_time(12, 30);""", generator.getCode());
+    }
+
+    @Test
+    public void testIfNodeProgram() {
+        IfNode ifNode = new IfNode(new BinaryComputing("er",
+                new HeltalLiteral("3"), new HeltalLiteral("3")),
+                List.of(new HeltalDcl(new HeltalLiteral("5"), new IdNode("hej"))));
+        ProgramNode prog = new ProgramNode(List.of(ifNode));
+        prog.accept(new TypeChecker());
+        prog.accept(new SymbolTableFilling());
+        prog.accept(generator);
+
+        assertEquals("""
+                #include "Lib/Eziot.h"
+                                    
+                int hej;
+                                    
+                bool ifCond1() {
+                    return 3 == 3;
+                }
+                void ifBody1() {
+                    hej = 5;;
+                }
+                if_statement ifStatement1;
+                                    
+                int thread_count = 1;
+                pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
+                bool running = true;
+                                    
+                int main() {
+                    if_queue task_queue;
+                    init_queue(&task_queue);
+                    init_if_statement(&ifStatement1, ifCond1, ifBody1);
+                    add_to_queue(&task_queue, &ifStatement1);
+                    while(!is_queue_empty(&task_queue)) {
+                        printf("Tjek 1\\n");
+                        if(thread_count >= MAX_THREADS) break;
+                        printf("Tjek 2\\n");
+                        pthread_t thread;
+                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                            get_from_queue(&task_queue), &thread_count_lock);
+                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        if(thread_created == 0) {
+                            pop_from_queue(&task_queue);
+                            pthread_mutex_lock(&thread_count_lock);
+                            thread_count++;
+                            pthread_mutex_unlock(&thread_count_lock);
+                        }
+                    }
+                    return 0;
+                }
+                                    
+                """, generator.getCode());
     }
 }
