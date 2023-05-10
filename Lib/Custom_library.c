@@ -1,8 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <time.h>
-#include <string.h>
 #include "Eziot.h"
 
 int time_compare(Time t1, Time t2) {
@@ -54,4 +49,148 @@ Time time_generator() {
 
     free(time_str);
     return res;
+}
+
+int send_field_to_endpoint(char *endpoint, char *field, void *value_ptr, enum Datatype datatype) {
+    char *json;
+    cJSON *root;
+
+    // Create JSON from field and value
+    root = cJSON_CreateObject();
+    switch(datatype) {
+    case TYPE_INTEGER:
+        cJSON_AddItemToObject(root, field, cJSON_CreateNumber((double) *((int *) value_ptr)));
+        break;
+    case TYPE_DOUBLE:
+        cJSON_AddItemToObject(root, field, cJSON_CreateNumber(*((double *) value_ptr)));
+        break;
+    case TYPE_STRING:
+        cJSON_AddItemToObject(root, field, cJSON_CreateString((char *) value_ptr));
+        break;
+    case TYPE_BOOL:
+        cJSON_AddItemToObject(root, field, cJSON_CreateBool(*((bool *) value_ptr)));
+        break;
+    }
+    json = cJSON_Print(root);
+
+    // Send to endpoint
+    CURL *curl;
+    CURLcode res;
+
+    char *protocol = "http://";
+    char *url = calloc(strlen(protocol)+strlen(endpoint)+1, sizeof(char));
+    strcpy(url, protocol);
+    strcat(url, endpoint);
+
+    curl = curl_easy_init();
+    if(curl) {
+        struct curl_slist *hs=NULL;
+        hs = curl_slist_append(hs, "Content-Type: application/json");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, hs);
+        curl_easy_setopt(curl, CURLOPT_URL, url);
+        // curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_POST, 1);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json);
+
+        res = curl_easy_perform(curl);
+        /* Check for errors */
+        if(res != CURLE_OK)
+            fprintf(stderr, "curl_easy_perform() failed: %s\n",
+                    curl_easy_strerror(res));
+    }
+
+    // Cleanup
+    curl_easy_cleanup(curl);
+    free(json);
+    cJSON_Delete(root);
+    free(url);
+
+    return 0;
+}
+
+struct string {
+    char *ptr;
+    size_t len;
+};
+
+void init_string(struct string *s) {
+    s->len = 0;
+    s->ptr = malloc(s->len+1);
+    if (s->ptr == NULL) {
+        fprintf(stderr, "malloc() failed\n");
+        exit(EXIT_FAILURE);
+    }
+    s->ptr[0] = '\0';
+}
+    
+size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s)
+{
+    size_t new_len = s->len + size*nmemb;
+    s->ptr = realloc(s->ptr, new_len+1);
+    if (s->ptr == NULL) {
+        fprintf(stderr, "realloc() failed\n");
+        exit(EXIT_FAILURE);
+    }
+    memcpy(s->ptr+s->len, ptr, size*nmemb);
+    s->ptr[new_len] = '\0';
+    s->len = new_len;
+    
+    return size*nmemb;
+}
+    
+int get_field_from_endpoint(char *endpoint, char *field, void *value_ptr, enum Datatype datatype)
+{
+    // Send to endpoint
+    CURL *curl;
+    CURLcode res;
+    struct string response;
+    init_string(&response);
+    
+    char *protocol = "http://";
+    char *url = calloc(strlen(protocol) + strlen(endpoint) + 1, sizeof(char));
+    strcpy(url, protocol);
+    strcat(url, endpoint);
+    
+    curl = curl_easy_init();
+    if (curl)
+    {
+        struct curl_slist *hs = NULL;
+        curl_easy_setopt(curl, CURLOPT_URL, url);
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+    
+        res = curl_easy_perform(curl);
+    
+        /* Check for errors */
+        if (res != CURLE_OK)
+            fprintf(stderr, "curl_easy_perform() failed: %s\n",
+                    curl_easy_strerror(res));
+    }
+    
+    cJSON *root = cJSON_Parse(response.ptr);
+    
+    // Read data from JSON result
+    switch (datatype) {
+        case TYPE_INTEGER:
+            *((int *) value_ptr) = cJSON_GetObjectItem(root,field)->valueint;
+            break;
+        case TYPE_DOUBLE:
+            *((double *) value_ptr) = cJSON_GetObjectItem(root,field)->valuedouble;
+            break;
+        case TYPE_STRING:
+            value_ptr = cJSON_GetObjectItem(root,field)->valuestring;
+            break;
+        case TYPE_BOOL:
+            *((bool *) value_ptr) = cJSON_GetObjectItem(root,field)->valueint;
+            break;
+    }
+    
+    // Cleanup
+    curl_easy_cleanup(curl);
+    cJSON_Delete(root);
+    free(url);
+    free(response.ptr);
+    
+    return 0;
 }
