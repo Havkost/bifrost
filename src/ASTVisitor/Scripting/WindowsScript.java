@@ -11,7 +11,7 @@ public class WindowsScript implements Script {
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
         sendCommand(createTempScript(
-                "gcc " + fileName.replace("\\", "/") + " -L./Lib -leziotlib_windows"), false
+                "gcc " + fileName.replace("\\", "/") + " -L./Lib -leziotlib_windows -lcurl -lcjson "), false
         );
     }
 
