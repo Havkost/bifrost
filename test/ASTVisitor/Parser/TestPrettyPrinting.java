@@ -225,4 +225,25 @@ public class TestPrettyPrinting {
 
         assertEquals("klokken", prettyPrinter.getCode());
     }
+
+    @Test
+    void testTidNode() {
+        new TidNode(11, 30).accept(prettyPrinter);
+
+        assertEquals("11:30", prettyPrinter.getCode());
+    }
+
+    @Test
+    void testTidDclNode() {
+        new TidDcl(new TidNode(11, 30), new IdNode("test")).accept(prettyPrinter);
+
+        assertEquals("gem tid 11:30 som test", prettyPrinter.getCode());
+    }
+
+    @Test
+    void testTidDclFieldNode() {
+        new TidDcl(new TidNode(11, 30), new IdNode("id", "parent")).accept(prettyPrinter);
+
+        assertEquals("tid 11:30 som id", prettyPrinter.getCode());
+    }
 }
