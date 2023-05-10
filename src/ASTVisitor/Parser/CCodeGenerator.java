@@ -92,7 +92,7 @@ public class CCodeGenerator extends Visitor {
             emit(", \""+n.getId().getValue()+"\"");
             emit(", &"+id);
             emit(", "+datatypeEnumRepresentationC.get(SymbolTable.get(id)));
-            emit(");");
+            emit(");\n");
         }
     }
 
@@ -292,10 +292,12 @@ public class CCodeGenerator extends Visitor {
                 emit("void ifBody" + ifNode.getNum() + "() {\n");
                 blockIndent++;
                 indent(blockIndent);
+                emit("printf(\"Test\\n\");\n");
                 ifNode.getBody().forEach((child) -> {
+                    indent(blockIndent);
                     child.accept(this);
                 });
-                emit(";\n");
+                emit("\n");
                 blockIndent--;
                 indent(blockIndent);
                 emit("}\n");
@@ -321,14 +323,21 @@ public class CCodeGenerator extends Visitor {
         } else emit("\n");
 
         indent(blockIndent);
-        emit("int thread_count = 1;\n");
-        indent(blockIndent);
         emit("pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;\n");
         indent(blockIndent);
         emit("bool running = true;\n\n");
 
+        emit("""
+                void test() {
+                    printf("Kører test\\n");
+                }
+                """);
+
         emit("int main() {\n");
         blockIndent++;
+        indent(blockIndent);
+        emit("int thread_count = 1;\n");
+
         if (containsKlokken) {
             indent(blockIndent);
             emit("klokken = time_generator();\n");
@@ -337,7 +346,7 @@ public class CCodeGenerator extends Visitor {
         indent(blockIndent);
         emit("if_queue task_queue;\n");
         indent(blockIndent);
-        emit("init_queue(&task_queue);\n");
+        emit("init_if_queue(&task_queue);\n");
 
         n.getChild().forEach((ast) -> {
             if (ast instanceof IfNode ifNode) {
@@ -371,20 +380,28 @@ public class CCodeGenerator extends Visitor {
         // Loop
 
         emit("""
-                    while(!is_queue_empty(&task_queue)) {
-                        printf("Tjek 1\\n");
-                        if(thread_count >= MAX_THREADS) break;
-                        printf("Tjek 2\\n");
-                        pthread_t thread;
-                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
-                                                            get_from_queue(&task_queue), &thread_count_lock);
-                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
-                        if(thread_created == 0) {
-                            pop_from_queue(&task_queue);
+                    int i = 0;
+                    while(true) {
+                        while(!queue_is_empty(&task_queue)) {
+                            printf("Tjek 1\\n");
                             pthread_mutex_lock(&thread_count_lock);
-                            thread_count++;
+                            if(thread_count >= MAX_THREADS) break;
                             pthread_mutex_unlock(&thread_count_lock);
+                            printf("Tjek 2\\n");
+                            pthread_t thread;
+                            run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                                get_from_queue(&task_queue), &thread_count_lock);
+                            int thread_created = pthread_create(&thread, NULL, (void *) run_if_thread, (void *) args);
+                            if(thread_created == 0) {
+                                remove_from_queue(&task_queue);
+                                pthread_mutex_lock(&thread_count_lock);
+                                thread_count++;
+                                pthread_mutex_unlock(&thread_count_lock);
+                            } else {
+                                printf("Error\\n");
+                            }
                         }
+                        i++;
                     }
                 """);
 

@@ -226,9 +226,9 @@ bool queue_is_empty(if_queue *queue) {
 }
 
 bool add_to_queue(if_queue *queue, if_statement *element) {
-    if(is_queue_full(queue)) return false;
+    if(queue_is_full(queue)) return false;
     else if(element->condition()) {
-        if(is_queue_empty(queue)) queue->head = 0;
+        if(queue_is_empty(queue)) queue->head = 0;
         queue->tail = (queue->tail+1)%IF_QUEUE_SIZE;
         queue->if_bodies[queue->tail] = element->body;
         element->last_state = true;
@@ -239,7 +239,7 @@ bool add_to_queue(if_queue *queue, if_statement *element) {
 }
 
 bool remove_from_queue(if_queue *queue) {
-    if(is_queue_empty(queue)) return false;
+    if(queue_is_empty(queue)) return false;
     if(queue->head == queue->tail) init_if_queue(queue);
     else queue->head = (queue->head+1)%IF_QUEUE_SIZE;
     return true;
@@ -261,7 +261,7 @@ run_if_thread_args *init_run_if_thread_args(int *thread_count, void (*body)(), p
     return args;
 }
 
-void *run_if_thread(void *_args) {
+void run_if_thread(void *_args) {
     run_if_thread_args *args = (run_if_thread_args *) _args;
     args->body();
     pthread_mutex_lock(args->thread_count_lock);
