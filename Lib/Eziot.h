@@ -10,6 +10,9 @@
 #define IF_QUEUE_SIZE 16
 #define MAX_THREADS 4
 
+#include <pthread.h>
+#include <windows.h>
+
 typedef struct {
     int hour;
     int minute;
