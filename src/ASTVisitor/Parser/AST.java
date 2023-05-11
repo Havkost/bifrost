@@ -80,9 +80,11 @@ public abstract class AST {
         // Less than operations mapped to the datatype result
         operationResultType[Operators.LESS_THAN.ordinal()][DataTypes.HELTAL.ordinal()] = DataTypes.BOOLSK;
         operationResultType[Operators.LESS_THAN.ordinal()][DataTypes.DECIMALTAL.ordinal()] = DataTypes.BOOLSK;
+        operationResultType[Operators.LESS_THAN.ordinal()][DataTypes.TID.ordinal()] = DataTypes.BOOLSK;
         // Greater than operations mapped to the datatype result
         operationResultType[Operators.GREATER_THAN.ordinal()][DataTypes.HELTAL.ordinal()] = DataTypes.BOOLSK;
         operationResultType[Operators.GREATER_THAN.ordinal()][DataTypes.DECIMALTAL.ordinal()] = DataTypes.BOOLSK;
+        operationResultType[Operators.GREATER_THAN.ordinal()][DataTypes.TID.ordinal()] = DataTypes.BOOLSK;
         // Equals operations mapped to the datatype result
         operationResultType[Operators.EQUALS.ordinal()][DataTypes.HELTAL.ordinal()] = DataTypes.BOOLSK;
         operationResultType[Operators.EQUALS.ordinal()][DataTypes.DECIMALTAL.ordinal()] = DataTypes.BOOLSK;
