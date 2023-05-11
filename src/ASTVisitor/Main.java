@@ -24,11 +24,7 @@ public class Main {
 
         // Checks for the absolute path of the current directory depending on the OS
         String absPath = System.getProperty("user.dir");
-        if(System.getProperty("os.name").startsWith("Windows")) {
-            absPath += "\\";
-        } else {
-            absPath += "/";
-        }
+        absPath += "/";
 
         // Running through each argument given, looking for flags or input files
         for (int i = 0; i < args.length; i++) {
