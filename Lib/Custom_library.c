@@ -202,10 +202,12 @@ int get_field_from_endpoint(char *endpoint, char *field, void *value_ptr, enum D
     If statement structs
 */
 
-void init_if_statement(if_statement *statement, void *condition, void *body) {
+void init_if_statement(if_statement *statement, void *condition, void *body, unsigned int update_delay) {
     statement->condition = condition;
     statement->body = body;
     statement->last_state = false;
+    statement->last_time_checked = 0;
+    statement->update_delay = update_delay;
 }
 
 /*
