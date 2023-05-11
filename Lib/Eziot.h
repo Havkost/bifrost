@@ -19,6 +19,8 @@ typedef struct {
     bool (*condition)();
     void (*body)();
     bool last_state;
+    int last_time_checked;
+    int update_delay;
 } if_statement;
 
 typedef struct {
@@ -55,5 +57,5 @@ bool queue_is_empty(if_queue *queue);
 bool add_to_queue(if_queue *queue, if_statement *element);
 bool remove_from_queue(if_queue *queue);
 void (*get_from_queue(if_queue *queue))();
-void init_if_statement(if_statement *statement, void *condition, void *body);
+void init_if_statement(if_statement *statement, void *condition, void *body, unsigned int update_delay);
 void run_if_thread(void *_args);
