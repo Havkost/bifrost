@@ -291,7 +291,6 @@ public class CCodeGenerator extends Visitor {
                 indent(blockIndent);
                 emit("void ifBody" + ifNode.getNum() + "() {\n");
                 blockIndent++;
-                indent(blockIndent);
                 ifNode.getBody().forEach((child) -> {
                     indent(blockIndent);
                     child.accept(this);
@@ -325,6 +324,7 @@ public class CCodeGenerator extends Visitor {
         emit("pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;\n");
         indent(blockIndent);
         emit("bool running = true;\n\n");
+
         emit("int main() {\n");
         blockIndent++;
         indent(blockIndent);
@@ -332,7 +332,11 @@ public class CCodeGenerator extends Visitor {
 
         if (containsKlokken) {
             indent(blockIndent);
-            emit("klokken = time_generator();\n");
+            emit("""
+                    if_statement klokken_updater;
+                    init_if_statement(&klokken_updater, true_cond, update_klokken, 5);
+                    """);
+
         }
 
         indent(blockIndent);
@@ -360,8 +364,7 @@ public class CCodeGenerator extends Visitor {
                 });
                 emit("\n");
             } else if (ast instanceof IfNode ifNode) {
-                indent(blockIndent);
-                emit("add_to_queue(&task_queue, &ifStatement" + ifNode.getNum() + ");\n");
+
 
             } else if(!(ast instanceof FuncDclNode)) {
                 indent(blockIndent);
@@ -373,26 +376,39 @@ public class CCodeGenerator extends Visitor {
 
         emit("""
                     int i = 0;
-                    while(true) {
-                        while(!queue_is_empty(&task_queue)) {
-                            pthread_mutex_lock(&thread_count_lock);
-                            if(thread_count >= MAX_THREADS) break;
-                            pthread_mutex_unlock(&thread_count_lock);
-                            pthread_t thread;
-                            run_if_thread_args *args = init_run_if_thread_args(&thread_count,
-                                                                get_from_queue(&task_queue), &thread_count_lock);
-                            int thread_created = pthread_create(&thread, NULL, (void *) run_if_thread, (void *) args);
-                            if(thread_created == 0) {
-                                remove_from_queue(&task_queue);
-                                pthread_mutex_lock(&thread_count_lock);
-                                thread_count++;
-                                pthread_mutex_unlock(&thread_count_lock);
-                            } else {
-                                printf("Error\\n");
-                            }
+                    while(running) {
+                    """);
+        indent(blockIndent);
+        emit("add_to_queue(&task_queue, &klokken_updater);\n");
+        n.getChild().forEach((ast -> {
+            if (ast instanceof IfNode ifNode) {
+                indent(blockIndent);
+                emit("add_to_queue(&task_queue, &ifStatement" + ifNode.getNum() + ");\n");
+            }
+        }));
+        emit("""
+                    while(!queue_is_empty(&task_queue)) {
+                        printf("%d\\n", thread_count);
+                        pthread_mutex_lock(&thread_count_lock);
+                        if(thread_count >= MAX_THREADS) {
+                            break;
                         }
-                        i++;
+                        pthread_mutex_unlock(&thread_count_lock);
+                        pthread_t thread;
+                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                            get_from_queue(&task_queue), &thread_count_lock);
+                        int thread_created = pthread_create(&thread, NULL, (void *) run_if_thread, (void *) args);
+                        if(thread_created == 0) {
+                            remove_from_queue(&task_queue);
+                            pthread_mutex_lock(&thread_count_lock);
+                            thread_count++;
+                            pthread_mutex_unlock(&thread_count_lock);
+                        } else {
+                            printf("Error\\n");
+                        }
                     }
+                    i++;
+                }
                 """);
 
         indent(blockIndent);

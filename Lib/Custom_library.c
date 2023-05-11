@@ -1,5 +1,7 @@
 #include "Eziot.h"
 
+Time klokken;
+
 int time_compare(Time t1, Time t2) {
     if (t1.hour > t2.hour) {
         return 1;
@@ -49,6 +51,15 @@ Time time_generator() {
 
     free(time_str);
     return res;
+}
+
+void update_klokken() {
+    klokken = time_generator();
+    printf("Opdaterer tid\n");
+}
+
+bool true_cond() {
+    return true;
 }
 
 int send_field_to_endpoint(char *endpoint, char *field, void *value_ptr, enum Datatype datatype) {
