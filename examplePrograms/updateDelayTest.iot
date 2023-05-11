@@ -1,0 +1,11 @@
+gem boolsk falsk som a
+
+hvis a
+    print "a"
+    sæt a til falsk
+.
+
+hvis ikke a
+    print "b"
+    sæt a til sandt
+.

@@ -230,29 +230,37 @@ void init_if_queue(if_queue *queue) {
     queue->tail = -1;
 }
 
-bool queue_is_full(if_queue *queue) {
+bool is_queue_full(if_queue *queue) {
     return (queue->tail+1) % IF_QUEUE_SIZE == queue->head;
 }
 
-bool queue_is_empty(if_queue *queue) {
+bool is_queue_empty(if_queue *queue) {
     return queue->head == -1;
 }
 
-bool add_to_queue(if_queue *queue, if_statement *element) {
-    if(queue_is_full(queue)) return false;
-    else if(element->condition()) {
-        if(queue_is_empty(queue)) queue->head = 0;
-        queue->tail = (queue->tail+1)%IF_QUEUE_SIZE;
-        queue->if_bodies[queue->tail] = element->body;
-        element->last_state = true;
-        return true;
-    }
-    element->last_state = false;
-    return false;
+bool add_to_queue(if_queue *queue, void (*element)()) {
+    if(is_queue_full(queue)) return false;
+    if(is_queue_empty(queue)) queue->head = 0;
+    queue->tail = (queue->tail+1)%IF_QUEUE_SIZE;
+    queue->if_bodies[queue->tail] = element;
+    return true;
+}
+
+bool update_if_check(if_statement *statement, if_queue *task_queue) {
+    if(is_queue_full(task_queue)) return false;
+    if(time(NULL) < statement->last_time_checked + statement->update_delay) return false;
+    if(statement->condition()) {
+        if(!statement->last_state) {
+            statement->last_state = true;
+            add_to_queue(task_queue, statement->body);
+        }
+    } else statement->last_state = false;
+    statement->last_time_checked = time(NULL);
+    return true;
 }
 
 bool remove_from_queue(if_queue *queue) {
-    if(queue_is_empty(queue)) return false;
+    if(is_queue_empty(queue)) return false;
     if(queue->head == queue->tail) init_if_queue(queue);
     else queue->head = (queue->head+1)%IF_QUEUE_SIZE;
     return true;
