@@ -1,11 +1,12 @@
-gem boolsk falsk som a
+gem enhed "localhost:3000/lightbulb" med
+    heltal 100 som brightness
+    boolsk falsk som power
+som lampe1
 
-hvis a
-    print "a"
-    sæt a til falsk
+hvis power for lampe1
+    sæt power for lampe1 til falsk
 .
 
-hvis ikke a
-    print "b"
-    sæt a til sandt
+hvis ikke power for lampe1
+    sæt power for lampe1 til sandt
 .

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <time.h>
+#include <sys/time.h>
 #include <string.h>
 #include <curl/curl.h>
 #include <cjson/cJSON.h>

@@ -55,7 +55,6 @@ Time time_generator() {
 
 void update_klokken() {
     klokken = time_generator();
-    printf("Opdaterer tid\n");
 }
 
 bool true_cond() {

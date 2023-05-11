@@ -376,23 +376,27 @@ public class CCodeGenerator extends Visitor {
 
         emit("""
                     int i = 0;
+                    struct timeval last_time_update;
+                    gettimeofday(&last_time_update, NULL);
+                    struct timeval tv;
                     while(running) {
+                        gettimeofday(&tv, NULL);
+                        if(tv.tv_sec > last_time_update.tv_sec || (tv.tv_sec == last_time_update.tv_sec && tv.tv_usec >= last_time_update.tv_usec + 100000)) {
+                            printf("Opdaterer tid\\n");
+                            update_klokken();
+                            gettimeofday(&last_time_update, NULL);
+                        }
                     """);
-        indent(blockIndent);
-        emit("add_to_queue(&task_queue, &klokken_updater);\n");
         n.getChild().forEach((ast -> {
             if (ast instanceof IfNode ifNode) {
                 indent(blockIndent);
-                emit("add_to_queue(&task_queue, &ifStatement" + ifNode.getNum() + ");\n");
+                emit("update_if_check(&ifStatement" + ifNode.getNum() + ", &task_queue);\n");
             }
         }));
         emit("""
-                    while(!queue_is_empty(&task_queue)) {
-                        printf("%d\\n", thread_count);
+                    while(!is_queue_empty(&task_queue)) {
                         pthread_mutex_lock(&thread_count_lock);
-                        if(thread_count >= MAX_THREADS) {
-                            break;
-                        }
+                        if(thread_count >= MAX_THREADS) break;
                         pthread_mutex_unlock(&thread_count_lock);
                         pthread_t thread;
                         run_if_thread_args *args = init_run_if_thread_args(&thread_count,
