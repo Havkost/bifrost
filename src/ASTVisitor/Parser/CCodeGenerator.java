@@ -292,7 +292,6 @@ public class CCodeGenerator extends Visitor {
                 emit("void ifBody" + ifNode.getNum() + "() {\n");
                 blockIndent++;
                 indent(blockIndent);
-                emit("printf(\"Test\\n\");\n");
                 ifNode.getBody().forEach((child) -> {
                     indent(blockIndent);
                     child.accept(this);
@@ -326,13 +325,6 @@ public class CCodeGenerator extends Visitor {
         emit("pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;\n");
         indent(blockIndent);
         emit("bool running = true;\n\n");
-
-        emit("""
-                void test() {
-                    printf("Kører test\\n");
-                }
-                """);
-
         emit("int main() {\n");
         blockIndent++;
         indent(blockIndent);
@@ -352,7 +344,7 @@ public class CCodeGenerator extends Visitor {
             if (ast instanceof IfNode ifNode) {
                 indent(blockIndent);
                 emit("init_if_statement(&ifStatement" + ifNode.getNum() + ", ifCond" + ifNode.getNum()
-                        + ", ifBody" + ifNode.getNum() + ");\n");
+                        + ", ifBody" + ifNode.getNum() + ", 2);\n");
             }
         });
 
@@ -383,11 +375,9 @@ public class CCodeGenerator extends Visitor {
                     int i = 0;
                     while(true) {
                         while(!queue_is_empty(&task_queue)) {
-                            printf("Tjek 1\\n");
                             pthread_mutex_lock(&thread_count_lock);
                             if(thread_count >= MAX_THREADS) break;
                             pthread_mutex_unlock(&thread_count_lock);
-                            printf("Tjek 2\\n");
                             pthread_t thread;
                             run_if_thread_args *args = init_run_if_thread_args(&thread_count,
                                                                 get_from_queue(&task_queue), &thread_count_lock);
