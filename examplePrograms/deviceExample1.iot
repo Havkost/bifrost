@@ -21,6 +21,6 @@ hvis brightness for lampe1 < 80
     print brightness for lampe1
 .
 
-hvis klokken er 14:52
+hvis klokken er 10:35
     sæt power for lampe1 til falsk
 .
