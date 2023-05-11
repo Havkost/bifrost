@@ -17,7 +17,7 @@ public class WindowsScript implements Script {
 
     @Override
     public void runProgram() throws IOException {
-        sendCommand(createTempScript("a.exe && del a.exe"), true);
+        sendCommand(createTempScript("start cmd.exe /c a.exe && del a.exe"), true);
     }
 
 

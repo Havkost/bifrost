@@ -17,7 +17,9 @@ public class UnixScript implements Script {
 
     @Override
     public void runProgram() throws IOException {
-        File tempScript = createTempScript("osascript -e 'tell app \"Terminal\"\n do script \"cd " + absPath + "&& ./a.out && rm a.out\"\n end tell'");
+        File tempScript = createTempScript("osascript -e 'tell app " +
+                "\"Terminal\"\n activate do script \"cd " + absPath + "&& " +
+                "./a.out && rm a.out\"\n end tell'");
 
         sendCommand(tempScript);
     }
