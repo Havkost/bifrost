@@ -251,4 +251,9 @@ public class DrawVisitor extends Visitor {
     public void visit(TidDcl n) {
 
     }
+
+    @Override
+    public void visit(CommentNode commentNode) {
+
+    }
 }

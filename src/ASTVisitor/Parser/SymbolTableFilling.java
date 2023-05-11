@@ -139,6 +139,11 @@ public class SymbolTableFilling extends Visitor {
     }
 
     @Override
+    public void visit(CommentNode commentNode) {
+
+    }
+
+    @Override
     public void visit(DecimaltalLiteral n) {
         n.type = AST.DataTypes.DECIMALTAL;
     }
