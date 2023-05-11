@@ -35,6 +35,19 @@ public class CodeScanner {
         // Return end of file token when reaching the end
         if (charStream.getEOF()) return new Token(EOF);
 
+        if(charStream.peek() == '#') {
+            charStream.advance();
+            while (charStream.peek() == ' ')
+                charStream.advance();
+            StringBuilder comment = new StringBuilder();
+            while (charStream.peek() != '\n') {
+                comment.append(charStream.advance());
+            }
+            charStream.advance();
+
+            return new Token(COMMENT, comment.toString());
+        }
+
         // Number literals (integers and floats)
         if (isDigit(charStream.peek())) return scanDigits();
         // String literals

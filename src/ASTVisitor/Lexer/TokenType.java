@@ -44,7 +44,8 @@ public enum TokenType {
     DEVICE_DCL("enhed"),
     MED("med"),
     KLOKKEN("klokken"),
-    TID(null);
+    TID(null),
+    COMMENT(null);
 
     final String name;
 

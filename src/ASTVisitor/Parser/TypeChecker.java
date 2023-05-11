@@ -212,6 +212,11 @@ public class TypeChecker extends Visitor{
             throw new IllegalTypeAssignmentException(id, DataTypes.TID, n.getValue(), n.getLine());
     }
 
+    @Override
+    public void visit(CommentNode commentNode) {
+
+    }
+
     /**
      * Compares two DataTypes, and returns the type if they are the same. Otherwise, if one is a floating point
      * number and the other an integer, implicit type conversion is used. If this is not the case, an error is

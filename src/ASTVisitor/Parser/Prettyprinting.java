@@ -210,6 +210,11 @@ public class Prettyprinting extends Visitor {
 		emit(" som " + n.getId().getValue());
 	}
 
+	@Override
+	public void visit(CommentNode commentNode) {
+		emit("# " + commentNode.getValue() + "\n");
+	}
+
 	public String getCode() {
 		return code;
 	}

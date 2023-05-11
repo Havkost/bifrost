@@ -40,6 +40,10 @@ public class ASTParser {
             ArrayList<AST> lines = lines();
             linesList.add(line);
             linesList.addAll(lines);
+        } else if (ts.peek() == TokenType.COMMENT) {
+            String comment = expect(TokenType.COMMENT).getVal();
+            linesList.add(new CommentNode(comment, line));
+            linesList.addAll(lines());
         } else if (ts.peek() == TokenType.EOF) {
             // Do nothing (lambda-production)
         } else if (ts.peek() == TokenType.NEWLINE) {
@@ -55,7 +59,7 @@ public class ASTParser {
             lineAST = dcl();
         } else lineAST = stmt();
 
-        if(ts.peek() != TokenType.EOF) expect(TokenType.NEWLINE);
+        if(ts.peek() != TokenType.EOF && ts.peek() != TokenType.COMMENT) expect(TokenType.NEWLINE);
 
         return lineAST;
     }

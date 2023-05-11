@@ -526,6 +526,11 @@ public class CCodeGenerator extends Visitor {
                 + ((TidNode) n.getValue()).getMinute() + ");");
     }
 
+    @Override
+    public void visit(CommentNode commentNode) {
+        emit("// " + commentNode.getValue() + "\n");
+    }
+
     public String getCode() {
         return code;
     }
