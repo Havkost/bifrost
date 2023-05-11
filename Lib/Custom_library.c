@@ -174,8 +174,8 @@ int get_field_from_endpoint(char *endpoint, char *field, void *value_ptr, enum D
     
         /* Check for errors */
         if (res != CURLE_OK)
-            fprintf(stderr, "curl_easy_perform() failed: %s\n",
-                    curl_easy_strerror(res));
+            // fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+            printf("[FEJL] Kunne ikke oprette forbindelse til %s\n", field);
     }
     
     cJSON *root = cJSON_Parse(response.ptr);
