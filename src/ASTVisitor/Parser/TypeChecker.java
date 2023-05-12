@@ -8,7 +8,7 @@ import java.util.List;
 
 import static ASTVisitor.Parser.AST.*;
 
-public class TypeChecker extends Visitor{
+public class TypeChecker implements Visitor{
 
     private int i = 1;
     private boolean stringConcatenationAllowed = true;

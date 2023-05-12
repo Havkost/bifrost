@@ -4,7 +4,7 @@ import ASTVisitor.ASTnodes.*;
 
 import javax.xml.crypto.Data;
 
-public class Prettyprinting extends Visitor {
+public class Prettyprinting implements Visitor {
 
 	private int blockIndent = 0;
 	private String code = "";

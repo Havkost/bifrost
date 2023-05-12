@@ -2,29 +2,29 @@ package ASTVisitor.Parser;
 
 import ASTVisitor.ASTnodes.*;
 
-public abstract class Visitor {
-	public abstract void visit(AssignNode n);
-	public abstract void visit(BinaryComputing n);
-	public abstract void visit(BoolskLiteral n);
-	public abstract void visit(DecimaltalLiteral n);
-	public abstract void visit(FuncDclNode n);
-	public abstract void visit(FuncNode n);
-	public abstract void visit(HeltalLiteral n);
-	public abstract void visit(IdNode n);
-	public abstract void visit(IfNode n);
-	public abstract void visit(LoopNode n);
-	public abstract void visit(PrintNode n);
-	public abstract void visit(ProgramNode n);
-	public abstract void visit(TekstLiteral n);
-	public abstract void visit(UnaryComputing n);
-	public abstract void visit(TekstDcl n);
-	public abstract void visit(HeltalDcl n);
-	public abstract void visit(DecimaltalDcl n);
-	public abstract void visit(BoolskDcl n);
-	public abstract void visit(DeviceNode n);
-	public abstract void visit(KlokkenNode n);
-    public abstract void visit(TidNode n);
-	public abstract void visit(TidDcl n);
+public interface Visitor {
+	void visit(AssignNode n);
+	void visit(BinaryComputing n);
+	void visit(BoolskLiteral n);
+	void visit(DecimaltalLiteral n);
+	void visit(FuncDclNode n);
+	void visit(FuncNode n);
+	void visit(HeltalLiteral n);
+	void visit(IdNode n);
+	void visit(IfNode n);
+	void visit(LoopNode n);
+	void visit(PrintNode n);
+	void visit(ProgramNode n);
+	void visit(TekstLiteral n);
+	void visit(UnaryComputing n);
+	void visit(TekstDcl n);
+	void visit(HeltalDcl n);
+	void visit(DecimaltalDcl n);
+	void visit(BoolskDcl n);
+	void visit(DeviceNode n);
+	void visit(KlokkenNode n);
+    void visit(TidNode n);
+	void visit(TidDcl n);
 
-	public abstract void visit(CommentNode commentNode);
+	void visit(CommentNode commentNode);
 }

@@ -6,7 +6,7 @@ import ASTVisitor.Parser.Visitor;
 
 import java.awt.*;
 
-public class DrawVisitor extends Visitor {
+public class DrawVisitor implements Visitor {
 
     private Graphics graphics;
     private int xCoord;

@@ -5,7 +5,7 @@ import ASTVisitor.Exceptions.VariableAlreadyDeclaredException;
 
 import static ASTVisitor.Parser.AST.DataTypes.*;
 
-public class SymbolTableFilling extends Visitor {
+public class SymbolTableFilling implements Visitor {
 
     public SymbolTableFilling() {
         AST.clearSymbolTable();

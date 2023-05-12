@@ -12,7 +12,7 @@ import static ASTVisitor.Parser.AST.*;
 import static java.util.Map.entry;
 import static ASTVisitor.Parser.AST.DataTypes.*;
 
-public class CCodeGenerator extends Visitor {
+public class CCodeGenerator implements Visitor {
 
     private Map<AST.DataTypes, String> datatypeEnumRepresentationC = Map.ofEntries(
             entry(BOOLSK, "TYPE_BOOL"),
