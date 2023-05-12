@@ -8,7 +8,7 @@
 #include <pthread.h>
 
 #define IF_QUEUE_SIZE 16
-#define MAX_THREADS 4
+#define MAX_THREADS 2
 
 typedef struct {
     int hour;
@@ -19,7 +19,7 @@ typedef struct {
     bool (*condition)();
     void (*body)();
     bool last_state;
-    int last_time_checked;
+    struct timeval last_time_checked;
     int update_delay;
 } if_statement;
 

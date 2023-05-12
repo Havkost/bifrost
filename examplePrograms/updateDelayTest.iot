@@ -7,6 +7,8 @@ hvis power for lampe1
     sæt power for lampe1 til falsk
 .
 
+# Test på 
+
 hvis ikke power for lampe1
     sæt power for lampe1 til sandt
 .

@@ -330,15 +330,6 @@ public class CCodeGenerator extends Visitor {
         indent(blockIndent);
         emit("int thread_count = 1;\n");
 
-        if (containsKlokken) {
-            indent(blockIndent);
-            emit("""
-                    if_statement klokken_updater;
-                    init_if_statement(&klokken_updater, true_cond, update_klokken, 5);
-                    """);
-
-        }
-
         indent(blockIndent);
         emit("if_queue task_queue;\n");
         indent(blockIndent);
@@ -348,7 +339,7 @@ public class CCodeGenerator extends Visitor {
             if (ast instanceof IfNode ifNode) {
                 indent(blockIndent);
                 emit("init_if_statement(&ifStatement" + ifNode.getNum() + ", ifCond" + ifNode.getNum()
-                        + ", ifBody" + ifNode.getNum() + ", 2);\n");
+                        + ", ifBody" + ifNode.getNum() + ", 500);\n");
             }
         });
 
@@ -381,7 +372,7 @@ public class CCodeGenerator extends Visitor {
                     struct timeval tv;
                     while(running) {
                         gettimeofday(&tv, NULL);
-                        if(tv.tv_sec > last_time_update.tv_sec || (tv.tv_sec == last_time_update.tv_sec && tv.tv_usec >= last_time_update.tv_usec + 100000)) {
+                        if(tv.tv_sec > last_time_update.tv_sec) {
                             printf("Opdaterer tid\\n");
                             update_klokken();
                             gettimeofday(&last_time_update, NULL);

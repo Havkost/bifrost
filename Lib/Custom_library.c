@@ -2,6 +2,8 @@
 
 Time klokken;
 
+struct timeval tv;
+
 int time_compare(Time t1, Time t2) {
     if (t1.hour > t2.hour) {
         return 1;
@@ -216,7 +218,7 @@ void init_if_statement(if_statement *statement, void *condition, void *body, uns
     statement->condition = condition;
     statement->body = body;
     statement->last_state = false;
-    statement->last_time_checked = 0;
+    statement->last_time_checked = tv;
     statement->update_delay = update_delay;
 }
 
@@ -247,14 +249,17 @@ bool add_to_queue(if_queue *queue, void (*element)()) {
 
 bool update_if_check(if_statement *statement, if_queue *task_queue) {
     if(is_queue_full(task_queue)) return false;
-    if(time(NULL) < statement->last_time_checked + statement->update_delay) return false;
+    gettimeofday(&tv, NULL);
+    if(tv.tv_sec < statement->last_time_checked.tv_sec + statement->update_delay / 1000 ||
+            tv.tv_sec <= statement->last_time_checked.tv_sec + statement->update_delay / 1000
+            && tv.tv_usec < statement->last_time_checked.tv_usec + (statement->update_delay%1000) * 1000) return false;
     if(statement->condition()) {
         if(!statement->last_state) {
             statement->last_state = true;
             add_to_queue(task_queue, statement->body);
         }
     } else statement->last_state = false;
-    statement->last_time_checked = time(NULL);
+    statement->last_time_checked = tv;
     return true;
 }
 
