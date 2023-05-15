@@ -40,7 +40,7 @@ public class CodeScanner {
             while (charStream.peek() == ' ')
                 charStream.advance();
             StringBuilder comment = new StringBuilder();
-            while (charStream.peek() != '\n') {
+            while (charStream.peek() != '\n' && !charStream.getEOF()) {
                 comment.append(charStream.advance());
             }
             charStream.advance();
