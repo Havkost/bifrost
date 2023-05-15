@@ -920,4 +920,62 @@ public class TestCCodeGenerator {
                                     
                 """, generator.getCode());
     }
+
+    @Test
+    public void testCommentsCodeGen() {
+        CommentNode comment = new CommentNode("# hejsa");
+        ProgramNode prog = new ProgramNode(List.of(comment));
+        prog.accept(new TypeChecker());
+        prog.accept(new SymbolTableFilling());
+        prog.accept(generator);
+
+        assertEquals("""
+                #include "Lib/Eziot.h"
+                 
+                 
+                 
+                pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
+                bool running = true;
+                 
+                int main() {
+                    int thread_count = 1;
+                    if_queue task_queue;
+                    init_if_queue(&task_queue);
+                    // # hejsa
+                 
+                int i = 0;
+                struct timeval last_time_update;
+                gettimeofday(&last_time_update, NULL);
+                struct timeval tv;
+                while(running) {
+                    gettimeofday(&tv, NULL);
+                    if(tv.tv_sec > last_time_update.tv_sec) {
+                        printf("Opdaterer tid\\n");
+                        update_klokken();
+                        gettimeofday(&last_time_update, NULL);
+                    }
+                    while(!is_queue_empty(&task_queue)) {
+                        pthread_mutex_lock(&thread_count_lock);
+                        if(thread_count >= MAX_THREADS) break;
+                        pthread_mutex_unlock(&thread_count_lock);
+                        pthread_t thread;
+                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                            get_from_queue(&task_queue), &thread_count_lock);
+                        int thread_created = pthread_create(&thread, NULL, (void *) run_if_thread, (void *) args);
+                        if(thread_created == 0) {
+                            remove_from_queue(&task_queue);
+                            pthread_mutex_lock(&thread_count_lock);
+                            thread_count++;
+                            pthread_mutex_unlock(&thread_count_lock);
+                        } else {
+                            printf("Error\\n");
+                        }
+                    }
+                    i++;
+                }
+                    return 0;
+                }
+                                    
+                """, generator.getCode());
+    }
 }

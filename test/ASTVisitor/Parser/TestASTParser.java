@@ -387,4 +387,11 @@ public class TestASTParser {
         assertThrows(UnexpectedExpressionToken.class, () -> new ASTParser(new CharStream(
                 new CharArrayReader("".toCharArray()))).getBinaryOperator(SOM, false));
     }
+
+    @Test
+    void testCommentsAST() {
+        ASTParser parser = makeASTParser("# Hejsa");
+        AST exp = new CommentNode("# Hejsa");
+        assertEquals(exp.getType(), parser.lines().get(0).getType());
+    }
 }

@@ -246,4 +246,13 @@ public class TestPrettyPrinting {
 
         assertEquals("tid 11:30 som id", prettyPrinter.getCode());
     }
+
+    @Test
+    void testCommentNode() {
+        new CommentNode("hejsa").accept(prettyPrinter);
+
+        assertEquals("""
+                # hejsa
+                """, prettyPrinter.getCode());
+    }
 }
