@@ -10,6 +10,11 @@ public class CommentNode extends AST {
         this.value = value;
     }
 
+    public CommentNode(String value) {
+        super(0);
+        this.value = value;
+    }
+
     public String getValue() {
         return value;
     }

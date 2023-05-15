@@ -214,7 +214,6 @@ public class TypeChecker implements Visitor{
 
     @Override
     public void visit(CommentNode commentNode) {
-
     }
 
     /**

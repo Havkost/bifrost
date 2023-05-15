@@ -172,4 +172,11 @@ public class TestCodeScanner
         assertEquals("11:30", token.getVal());
         assertEquals(TID, token.getType());
     }
+
+    @Test
+    public void testComments() {
+        initCodeScanner("# hej");
+        Token token1 = CodeScanner.scan();
+        assertEquals(COMMENT, token1.getType());
+    }
 }
