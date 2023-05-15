@@ -11,10 +11,14 @@ gem enhed "localhost:3000/display" med
     tekst "" som content
 som display
 
+gem enhed "localhost:3000/motionsensor" med
+    boolsk falsk som presence
+som bevægelsessensor
+
 gem heltal 3 som a
 
 hvis temperature for termometer < 20
-    sæt a til 5
+    sæt a til 1
     print a
     hvis klokken < 12:00 og power for lampe er falsk
         sæt power for lampe til sandt
@@ -26,7 +30,7 @@ hvis temperature for termometer < 20
 .
 
 hvis temperature for termometer > 20
-    sæt a til 5
+    sæt a til 0
     print a
     hvis klokken < 12:00 og power for lampe er sandt
         sæt power for lampe til falsk
@@ -39,7 +43,16 @@ hvis temperature for termometer > 20
 
 print klokken
 
-hvis klokken er 11:55
-    print content for display
-    sæt content for display til "Hej verden"
+hvis presence for bevægelsessensor er sandt
+    sæt content for display til "Hej med dig"
+.
+
+hvis presence for bevægelsessensor er falsk
+    hvis klokken < 12:00
+        sæt content for display til "God formiddag"
+    .
+
+    hvis klokken > 12:00
+        sæt content for display til "God eftermiddag"
+    .
 .

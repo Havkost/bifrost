@@ -86,7 +86,7 @@ public class CCodeGenerator implements Visitor {
             return;
         }
 
-        if (SymbolTable.get(id).equals(TEKST)) {
+        if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST)) {
             emit("strcpy(" + id + ", ");
             n.getValue().accept(this);
             emit(");");
@@ -101,7 +101,10 @@ public class CCodeGenerator implements Visitor {
             indent(blockIndent);
             emit("send_field_to_endpoint("+n.getId().getParentId()+".endpoint__");
             emit(", \""+n.getId().getValue()+"\"");
-            emit(", &"+id);
+            if (SymbolTable.get(id) == TEKST)
+                emit(", " + id);
+            else
+                emit(", &"+id);
             emit(", "+datatypeEnumRepresentationC.get(SymbolTable.get(id)));
             emit(");\n");
         }
@@ -290,6 +293,8 @@ public class CCodeGenerator implements Visitor {
         if (SymbolTable.containsValue(DEVICE)) {
             emit("void update_fields() {\n");
             blockIndent++;
+            indent(blockIndent);
+            //emit("printf(\"Opdaterer...\\n\");\n");
             SymbolTable.forEach((idString, type) -> {
                 if (idString.contains(".")) {
                     List<String> ids = List.of(idString.split("\\."));
@@ -301,7 +306,7 @@ public class CCodeGenerator implements Visitor {
                     emit(");\n");
                 }
             });
-            emit("\n}\n\n");
+            emit("}\n");
             blockIndent--;
         }
 
@@ -327,7 +332,6 @@ public class CCodeGenerator implements Visitor {
                     child.accept(this);
                     emit("\n");
                 });
-                emit("\n");
                 blockIndent--;
                 indent(blockIndent);
                 emit("}\n");
@@ -400,45 +404,54 @@ public class CCodeGenerator implements Visitor {
         // Loop
 
         emit("""
-                    int i = 0;
                     struct timeval last_time_update;
                     gettimeofday(&last_time_update, NULL);
                     struct timeval tv;
                     while(running) {
                         gettimeofday(&tv, NULL);
-                        if(tv.tv_sec > last_time_update.tv_sec + 5) {   
+                        if(tv.tv_sec > last_time_update.tv_sec) {
                             update_klokken();
-                            update_fields();
-                            gettimeofday(&last_time_update, NULL);
-                        }
-                    """);
+                """
+        );
+        blockIndent += 2;
+
+        if (SymbolTable.containsValue(DEVICE)) {
+            indent(blockIndent);
+            emit("update_fields();\n");
+        }
+
+        indent(blockIndent);
+        emit("gettimeofday(&last_time_update, NULL);\n");
+        blockIndent--;
+        indent(blockIndent);
+        emit("}\n");
         n.getChild().forEach((ast -> {
             if (ast instanceof IfNode ifNode) {
                 indent(blockIndent);
                 emit("update_if_check(&ifStatement" + ifNode.getNum() + ", &task_queue);\n");
             }
         }));
+        blockIndent--;
 
         emit("""
-                    while(!is_queue_empty(&task_queue)) {
-                        pthread_mutex_lock(&thread_count_lock);
-                        if(thread_count >= MAX_THREADS) break;
-                        pthread_mutex_unlock(&thread_count_lock);
-                        pthread_t thread;
-                        run_if_thread_args *args = init_run_if_thread_args(&thread_count,
-                                                            get_from_queue(&task_queue), &thread_count_lock);
-                        int thread_created = pthread_create(&thread, NULL, (void *) run_if_thread, (void *) args);
-                        if(thread_created == 0) {
-                            remove_from_queue(&task_queue);
+                        while(!is_queue_empty(&task_queue)) {
                             pthread_mutex_lock(&thread_count_lock);
-                            thread_count++;
+                            if(thread_count >= MAX_THREADS) break;
                             pthread_mutex_unlock(&thread_count_lock);
-                        } else {
-                            printf("Error\\n");
+                            pthread_t thread;
+                            run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                                get_from_queue(&task_queue), &thread_count_lock);
+                            int thread_created = pthread_create(&thread, NULL, (void *) run_if_thread, (void *) args);
+                            if(thread_created == 0) {
+                                remove_from_queue(&task_queue);
+                                pthread_mutex_lock(&thread_count_lock);
+                                thread_count++;
+                                pthread_mutex_unlock(&thread_count_lock);
+                            } else {
+                                printf("Error\\n");
+                            }
                         }
                     }
-                    i++;
-                }
                 """);
 
         indent(blockIndent);

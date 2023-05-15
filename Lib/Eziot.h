@@ -8,7 +8,7 @@
 #include <pthread.h>
 
 #define IF_QUEUE_SIZE 16
-#define MAX_THREADS 2
+#define MAX_THREADS 3
 
 typedef struct {
     int hour;
@@ -34,6 +34,13 @@ typedef struct {
     void (*body)();
     pthread_mutex_t *thread_count_lock;
 } run_if_thread_args;
+
+typedef struct {
+    int *thread_count;
+    pthread_mutex_t *thread_count_lock;
+    if_queue *task_queue;
+    bool *running;
+} queue_arg;
 
 int time_compare(Time t1, Time t2);
 Time make_time(int hour, int minute);

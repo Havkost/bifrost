@@ -63,6 +63,8 @@ int send_field_to_endpoint(char *endpoint, char *field, void *value_ptr, enum Da
     char *json;
     cJSON *root;
 
+    char* str;
+
     // Create JSON from field and value
     root = cJSON_CreateObject();
     switch(datatype) {
@@ -73,7 +75,10 @@ int send_field_to_endpoint(char *endpoint, char *field, void *value_ptr, enum Da
         cJSON_AddItemToObject(root, field, cJSON_CreateNumber(*((double *) value_ptr)));
         break;
     case TYPE_STRING:
+        str = malloc(strlen((char *) value_ptr));
+        strcpy(str, value_ptr);
         cJSON_AddItemToObject(root, field, cJSON_CreateString((char *) value_ptr));
+        free(str);
         break;
     case TYPE_BOOL:
         cJSON_AddItemToObject(root, field, cJSON_CreateBool(*((bool *) value_ptr)));
@@ -211,7 +216,7 @@ int get_field_from_endpoint(char *endpoint, char *field, void *value_ptr, enum D
 */
 
 void init_if_statement(if_statement *statement, void *condition, void *body, unsigned int update_delay) {
-    gettimeofday(&tv, NULL);
+
     statement->condition = condition;
     statement->body = body;
     statement->last_state = false;

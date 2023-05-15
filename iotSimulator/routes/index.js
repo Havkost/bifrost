@@ -82,6 +82,7 @@ router.get('/lightbulb', function(req, res, next) {
 // LCD DISPLAY
 router.post('/display', function(req, res, next) {
   let content = req.body?.content;
+  console.log("Request content: " + req.body.content);
 
   if(content == null) return res.status(400).send('No content was supplied.');
   content = ""+content; // Convert to string
