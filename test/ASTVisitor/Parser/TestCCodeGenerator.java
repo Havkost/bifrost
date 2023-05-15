@@ -214,45 +214,60 @@ public class TestCCodeGenerator {
         generator.visit(prog);
         assertEquals("""
                 #include "Lib/Eziot.h"
-                                     
+                 
                 int a;
                 char* b;
                 double c;
                 bool d;
-                
-                                     
+                 
+                 
                 int free_memory () {
                     free(b);
                     return 0;
                 }
-                      
-                int thread_count = 1;
+                 
                 pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
-                bool running = true;      
-                                     
+                bool running = true;
+                 
                 int main() {
+                    int thread_count = 1;
                     if_queue task_queue;
-                    init_queue(&task_queue);
+                    init_if_queue(&task_queue);
                     a = 3;
                     b = malloc(5 * sizeof(char));
                     strcpy(b, "test");
                     c = 11.5;
                     d = false;
+                int i = 0;
+                struct timeval last_time_update;
+                gettimeofday(&last_time_update, NULL);
+                struct timeval tv;
+                while(running) {
+                    gettimeofday(&tv, NULL);
+                    if(tv.tv_sec > last_time_update.tv_sec) {
+                        printf("Opdaterer tid\\n");
+                        update_klokken();
+                        gettimeofday(&last_time_update, NULL);
+                    }
                     while(!is_queue_empty(&task_queue)) {
-                        printf("Tjek 1\\n");
+                        pthread_mutex_lock(&thread_count_lock);
                         if(thread_count >= MAX_THREADS) break;
-                        printf("Tjek 2\\n");
+                        pthread_mutex_unlock(&thread_count_lock);
                         pthread_t thread;
                         run_if_thread_args *args = init_run_if_thread_args(&thread_count,
                                                             get_from_queue(&task_queue), &thread_count_lock);
-                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        int thread_created = pthread_create(&thread, NULL, (void *) run_if_thread, (void *) args);
                         if(thread_created == 0) {
-                            pop_from_queue(&task_queue);
+                            remove_from_queue(&task_queue);
                             pthread_mutex_lock(&thread_count_lock);
                             thread_count++;
                             pthread_mutex_unlock(&thread_count_lock);
+                        } else {
+                            printf("Error\\n");
                         }
                     }
+                    i++;
+                }
                     free_memory();
                     return 0;
                 }
@@ -325,38 +340,53 @@ public class TestCCodeGenerator {
                     char endpoint__[5];
                     int lysstyrke;
                 } Lampe1;
-                
+                 
                 int a;
                 Lampe1 lampe1;
                 void func();
                  
                  
-                int thread_count = 1;
                 pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
                 bool running = true;
                  
                 int main() {
+                    int thread_count = 1;
                     if_queue task_queue;
-                    init_queue(&task_queue);
+                    init_if_queue(&task_queue);
                     a = 3;
                     strcpy(lampe1.endpoint__, "test");
                     lampe1.lysstyrke = 70;
                  
+                int i = 0;
+                struct timeval last_time_update;
+                gettimeofday(&last_time_update, NULL);
+                struct timeval tv;
+                while(running) {
+                    gettimeofday(&tv, NULL);
+                    if(tv.tv_sec > last_time_update.tv_sec) {
+                        printf("Opdaterer tid\\n");
+                        update_klokken();
+                        gettimeofday(&last_time_update, NULL);
+                    }
                     while(!is_queue_empty(&task_queue)) {
-                        printf("Tjek 1\\n");
+                        pthread_mutex_lock(&thread_count_lock);
                         if(thread_count >= MAX_THREADS) break;
-                        printf("Tjek 2\\n");
+                        pthread_mutex_unlock(&thread_count_lock);
                         pthread_t thread;
                         run_if_thread_args *args = init_run_if_thread_args(&thread_count,
                                                             get_from_queue(&task_queue), &thread_count_lock);
-                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        int thread_created = pthread_create(&thread, NULL, (void *) run_if_thread, (void *) args);
                         if(thread_created == 0) {
-                            pop_from_queue(&task_queue);
+                            remove_from_queue(&task_queue);
                             pthread_mutex_lock(&thread_count_lock);
                             thread_count++;
                             pthread_mutex_unlock(&thread_count_lock);
+                        } else {
+                            printf("Error\\n");
                         }
                     }
+                    i++;
+                }
                     return 0;
                 }
                  
@@ -683,38 +713,52 @@ public class TestCCodeGenerator {
 
         assertEquals("""
                 #include "Lib/Eziot.h"
-                                                                     
+                 
                 Time klokken;
-                  
-                                
+                 
+                 
                 int free_memory () {
                     return 0;
                 }
-                
-                int thread_count = 1;
+                 
                 pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
                 bool running = true;
-                                
+                 
                 int main() {
-                    klokken = time_generator();
+                    int thread_count = 1;
                     if_queue task_queue;
-                    init_queue(&task_queue);
+                    init_if_queue(&task_queue);
                     klokken
+                int i = 0;
+                struct timeval last_time_update;
+                gettimeofday(&last_time_update, NULL);
+                struct timeval tv;
+                while(running) {
+                    gettimeofday(&tv, NULL);
+                    if(tv.tv_sec > last_time_update.tv_sec) {
+                        printf("Opdaterer tid\\n");
+                        update_klokken();
+                        gettimeofday(&last_time_update, NULL);
+                    }
                     while(!is_queue_empty(&task_queue)) {
-                        printf("Tjek 1\\n");
+                        pthread_mutex_lock(&thread_count_lock);
                         if(thread_count >= MAX_THREADS) break;
-                        printf("Tjek 2\\n");
+                        pthread_mutex_unlock(&thread_count_lock);
                         pthread_t thread;
                         run_if_thread_args *args = init_run_if_thread_args(&thread_count,
                                                             get_from_queue(&task_queue), &thread_count_lock);
-                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        int thread_created = pthread_create(&thread, NULL, (void *) run_if_thread, (void *) args);
                         if(thread_created == 0) {
-                            pop_from_queue(&task_queue);
+                            remove_from_queue(&task_queue);
                             pthread_mutex_lock(&thread_count_lock);
                             thread_count++;
                             pthread_mutex_unlock(&thread_count_lock);
+                        } else {
+                            printf("Error\\n");
                         }
                     }
+                    i++;
+                }
                     free_memory();
                     return 0;
                 }
@@ -745,41 +789,56 @@ public class TestCCodeGenerator {
 
         assertEquals("""
                 #include "Lib/Eziot.h"
-                                    
+                 
                 int hej;
-                                    
+                 
                 bool ifCond1() {
                     return 3 == 3;
                 }
                 void ifBody1() {
-                    hej = 5;;
+                    hej = 5;
                 }
                 if_statement ifStatement1;
-                                    
-                int thread_count = 1;
+                 
                 pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
                 bool running = true;
-                                    
+                 
                 int main() {
+                    int thread_count = 1;
                     if_queue task_queue;
-                    init_queue(&task_queue);
-                    init_if_statement(&ifStatement1, ifCond1, ifBody1);
-                    add_to_queue(&task_queue, &ifStatement1);
+                    init_if_queue(&task_queue);
+                    init_if_statement(&ifStatement1, ifCond1, ifBody1, 500);
+                int i = 0;
+                struct timeval last_time_update;
+                gettimeofday(&last_time_update, NULL);
+                struct timeval tv;
+                while(running) {
+                    gettimeofday(&tv, NULL);
+                    if(tv.tv_sec > last_time_update.tv_sec) {
+                        printf("Opdaterer tid\\n");
+                        update_klokken();
+                        gettimeofday(&last_time_update, NULL);
+                    }
+                    update_if_check(&ifStatement1, &task_queue);
                     while(!is_queue_empty(&task_queue)) {
-                        printf("Tjek 1\\n");
+                        pthread_mutex_lock(&thread_count_lock);
                         if(thread_count >= MAX_THREADS) break;
-                        printf("Tjek 2\\n");
+                        pthread_mutex_unlock(&thread_count_lock);
                         pthread_t thread;
                         run_if_thread_args *args = init_run_if_thread_args(&thread_count,
                                                             get_from_queue(&task_queue), &thread_count_lock);
-                        int thread_created = pthread_create(&thread, NULL, run_if_thread, (void *) args);
+                        int thread_created = pthread_create(&thread, NULL, (void *) run_if_thread, (void *) args);
                         if(thread_created == 0) {
-                            pop_from_queue(&task_queue);
+                            remove_from_queue(&task_queue);
                             pthread_mutex_lock(&thread_count_lock);
                             thread_count++;
                             pthread_mutex_unlock(&thread_count_lock);
+                        } else {
+                            printf("Error\\n");
                         }
                     }
+                    i++;
+                }
                     return 0;
                 }
                                     
