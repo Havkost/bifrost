@@ -1,0 +1,45 @@
+gem enhed "localhost:3000/thermometer" med
+    decimaltal 0,0 som temperature
+som termometer
+
+gem enhed "localhost:3000/lightbulb" med
+    boolsk falsk som power
+    heltal 100 som brightness
+som lampe
+
+gem enhed "localhost:3000/display" med
+    tekst "" som content
+som display
+
+gem heltal 3 som a
+
+hvis temperature for termometer < 20
+    sæt a til 5
+    print a
+    hvis klokken < 12:00 og power for lampe er falsk
+        sæt power for lampe til sandt
+    .
+
+    hvis (klokken > 12:00 eller klokken er 12:00) og power for lampe er sandt
+        sæt power for lampe til falsk
+    .
+.
+
+hvis temperature for termometer > 20
+    sæt a til 5
+    print a
+    hvis klokken < 12:00 og power for lampe er sandt
+        sæt power for lampe til falsk
+    .
+
+    hvis (klokken > 12:00 eller klokken er 12:00) og power for lampe er falsk
+        sæt power for lampe til sandt
+    .
+.
+
+print klokken
+
+hvis klokken er 11:55
+    print content for display
+    sæt content for display til "Hej verden"
+.

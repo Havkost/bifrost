@@ -59,10 +59,6 @@ void update_klokken() {
     klokken = time_generator();
 }
 
-bool true_cond() {
-    return true;
-}
-
 int send_field_to_endpoint(char *endpoint, char *field, void *value_ptr, enum Datatype datatype) {
     char *json;
     cJSON *root;
@@ -83,6 +79,7 @@ int send_field_to_endpoint(char *endpoint, char *field, void *value_ptr, enum Da
         cJSON_AddItemToObject(root, field, cJSON_CreateBool(*((bool *) value_ptr)));
         break;
     }
+
     json = cJSON_Print(root);
 
     // Send to endpoint
@@ -207,7 +204,6 @@ int get_field_from_endpoint(char *endpoint, char *field, void *value_ptr, enum D
     return 0;
 }
 
-
 // Event loop
 
 /*
@@ -215,6 +211,7 @@ int get_field_from_endpoint(char *endpoint, char *field, void *value_ptr, enum D
 */
 
 void init_if_statement(if_statement *statement, void *condition, void *body, unsigned int update_delay) {
+    gettimeofday(&tv, NULL);
     statement->condition = condition;
     statement->body = body;
     statement->last_state = false;
@@ -250,6 +247,7 @@ bool add_to_queue(if_queue *queue, void (*element)()) {
 bool update_if_check(if_statement *statement, if_queue *task_queue) {
     if(is_queue_full(task_queue)) return false;
     gettimeofday(&tv, NULL);
+    
     if(tv.tv_sec < statement->last_time_checked.tv_sec + statement->update_delay / 1000 ||
             tv.tv_sec <= statement->last_time_checked.tv_sec + statement->update_delay / 1000
             && tv.tv_usec < statement->last_time_checked.tv_usec + (statement->update_delay%1000) * 1000) return false;

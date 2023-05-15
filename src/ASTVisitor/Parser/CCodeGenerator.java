@@ -5,7 +5,9 @@ import ASTVisitor.Exceptions.FileWriterIOException;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static ASTVisitor.Parser.AST.*;
@@ -71,7 +73,8 @@ public class CCodeGenerator implements Visitor {
 
         // If the assigned value is a string literal reallocate memory for it
         if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST) && n.getValue() instanceof TekstLiteral) {
-            emit("realloc(" + id + ", " + ((TekstLiteral) n.getValue()).getValue().length() + " * sizeof(char));\n");
+            emit(id + " = ");
+            emit("realloc(" + id + ", " + (((TekstLiteral) n.getValue()).getValue().length()+1) + " * sizeof(char));\n");
             indent(blockIndent);
         } // If the value has the type of string, reallocate memory for that TODO: Check if this works
         else if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST)
@@ -82,9 +85,17 @@ public class CCodeGenerator implements Visitor {
             emit(");");
             return;
         }
-        emit(id + " = ");
-        n.getValue().accept(this);
-        emit(";");
+
+        if (SymbolTable.get(id).equals(TEKST)) {
+            emit("strcpy(" + id + ", ");
+            n.getValue().accept(this);
+            emit(");");
+        } else {
+            emit(id + " = ");
+            n.getValue().accept(this);
+            emit(";");
+        }
+
         if (n.getId().getParentId() != null) {
             emit("\n");
             indent(blockIndent);
@@ -276,6 +287,26 @@ public class CCodeGenerator implements Visitor {
 
         emit("\n");
 
+        if (SymbolTable.containsValue(DEVICE)) {
+            emit("void update_fields() {\n");
+            blockIndent++;
+            SymbolTable.forEach((idString, type) -> {
+                if (idString.contains(".")) {
+                    List<String> ids = List.of(idString.split("\\."));
+                    indent(blockIndent);
+                    emit("get_field_from_endpoint(" + ids.get(0) + ".endpoint__");
+                    emit(", \"" + ids.get(1)+"\"");
+                    emit(", &"+ ids.get(0) + "." + ids.get(1));
+                    emit(", " + datatypeEnumRepresentationC.get(type));
+                    emit(");\n");
+                }
+            });
+            emit("\n}\n\n");
+            blockIndent--;
+        }
+
+
+
         n.getChild().forEach((ast) -> {
             if (ast instanceof IfNode ifNode) {
                 indent(blockIndent);
@@ -294,6 +325,7 @@ public class CCodeGenerator implements Visitor {
                 ifNode.getBody().forEach((child) -> {
                     indent(blockIndent);
                     child.accept(this);
+                    emit("\n");
                 });
                 emit("\n");
                 blockIndent--;
@@ -329,6 +361,8 @@ public class CCodeGenerator implements Visitor {
         blockIndent++;
         indent(blockIndent);
         emit("int thread_count = 1;\n");
+        indent(blockIndent);
+        emit("update_klokken();\n");
 
         indent(blockIndent);
         emit("if_queue task_queue;\n");
@@ -372,9 +406,9 @@ public class CCodeGenerator implements Visitor {
                     struct timeval tv;
                     while(running) {
                         gettimeofday(&tv, NULL);
-                        if(tv.tv_sec > last_time_update.tv_sec) {
-                            printf("Opdaterer tid\\n");
+                        if(tv.tv_sec > last_time_update.tv_sec + 5) {   
                             update_klokken();
+                            update_fields();
                             gettimeofday(&last_time_update, NULL);
                         }
                     """);
@@ -384,6 +418,7 @@ public class CCodeGenerator implements Visitor {
                 emit("update_if_check(&ifStatement" + ifNode.getNum() + ", &task_queue);\n");
             }
         }));
+
         emit("""
                     while(!is_queue_empty(&task_queue)) {
                         pthread_mutex_lock(&thread_count_lock);
