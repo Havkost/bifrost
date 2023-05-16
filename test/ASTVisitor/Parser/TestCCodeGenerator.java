@@ -917,4 +917,86 @@ public class TestCCodeGenerator {
                                 
                 """, generator.getCode());
     }
+
+    @Test
+    void testDeviceTekstAssignTekstField() {
+        IdNode id = new IdNode("content", "display");
+        List<VariableDcl> list = new ArrayList<>(List.of(new TekstDcl(new TekstLiteral("hejsa"), id)));
+        DeviceNode device = new DeviceNode(id.getParentId(), list, "test");
+        AssignNode assignNode = new AssignNode(id, new TekstLiteral("hejsaaaa"));
+
+        ProgramNode prog = new ProgramNode(List.of(device, assignNode));
+        prog.accept(new SymbolTableFilling());
+        prog.accept(new TypeChecker());
+        prog.accept(generator);
+
+        assertEquals("""
+                #include "Lib/Eziot.h"
+                     
+                typedef struct {
+                    char endpoint__[5];
+                    char* content;
+                } Display;
+                 
+                Display display;
+                
+                void update_fields() {
+                        get_field_from_endpoint(display.endpoint__, "content", &display.content, TYPE_STRING);
+                }
+                
+                int free_memory () {
+                    free(display.content);
+                    return 0;
+                }
+                
+                pthread_mutex_t thread_count_lock = PTHREAD_MUTEX_INITIALIZER;
+                bool running = true; 
+                 
+                int main() {
+                    int thread_count = 1;
+                    update_klokken();
+                    if_queue task_queue;
+                    init_if_queue(&task_queue);
+                    strcpy(display.endpoint__, "test");
+                    display.content = malloc(6 * sizeof(char));
+                    strcpy(display.content, "hejsa");
+                    
+                    display.content = realloc(display.content, 9 * sizeof(char));
+                    strcpy(display.content, "hejsaaaa");
+                    send_field_to_endpoint(display.endpoint__, "content", display.content, TYPE_STRING);
+                    
+                    struct timeval last_time_update;
+                    gettimeofday(&last_time_update, NULL);
+                    struct timeval tv;
+                    while(running) {
+                        gettimeofday(&tv, NULL);
+                        if(tv.tv_sec > last_time_update.tv_sec) {
+                            update_klokken();
+                            update_fields();
+                            gettimeofday(&last_time_update, NULL);
+                        }
+                        while(!is_queue_empty(&task_queue)) {
+                            pthread_mutex_lock(&thread_count_lock);
+                            if(thread_count >= MAX_THREADS) break;
+                            pthread_mutex_unlock(&thread_count_lock);
+                            pthread_t thread;
+                            run_if_thread_args *args = init_run_if_thread_args(&thread_count,
+                                                                get_from_queue(&task_queue), &thread_count_lock);
+                            int thread_created = pthread_create(&thread, NULL, (void *) run_if_thread, (void *) args);
+                            if(thread_created == 0) {
+                                remove_from_queue(&task_queue);
+                                pthread_mutex_lock(&thread_count_lock);
+                                thread_count++;
+                                pthread_mutex_unlock(&thread_count_lock);
+                            } else {
+                                printf("Error\\n");
+                            }
+                        }
+                    }
+                    free_memory();
+                    return 0;
+                }
+                 
+                """, generator.getCode());
+    }
 }

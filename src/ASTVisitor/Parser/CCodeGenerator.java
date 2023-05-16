@@ -76,7 +76,7 @@ public class CCodeGenerator implements Visitor {
             emit(id + " = ");
             emit("realloc(" + id + ", " + (((TekstLiteral) n.getValue()).getValue().length()+1) + " * sizeof(char));\n");
             indent(blockIndent);
-        } // If the value has the type of string, reallocate memory for that TODO: Check if this works
+        } // If the value has the type of string, reallocate memory for that
         else if (SymbolTable.get(id) != null && SymbolTable.get(id).equals(TEKST)
                 && n.getValue().getType().equals(TEKST)) {
             emit(id + " = ");

@@ -152,4 +152,12 @@ public class TestSymbolTableFilling {
         tid.accept(new TypeChecker());
         assertEquals(tid.type, AST.DataTypes.TID);
     }
+
+    @Test
+    void testKlokkenNodeDataType() {
+        KlokkenNode klokken = new KlokkenNode();
+        klokken.accept(new SymbolTableFilling());
+        klokken.accept(new TypeChecker());
+        assertEquals(klokken.type, AST.DataTypes.TID);
+    }
 }
