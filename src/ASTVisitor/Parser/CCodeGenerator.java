@@ -366,7 +366,7 @@ public class CCodeGenerator implements Visitor {
         indent(blockIndent);
         emit("int thread_count = 1;\n");
         indent(blockIndent);
-        emit("update_klokken();\n");
+        emit("update_klokken(&klokken);\n");
 
         indent(blockIndent);
         emit("if_queue task_queue;\n");
@@ -410,7 +410,7 @@ public class CCodeGenerator implements Visitor {
                     while(running) {
                         gettimeofday(&tv, NULL);
                         if(tv.tv_sec > last_time_update.tv_sec) {
-                            update_klokken();
+                            update_klokken(&klokken);
                 """
         );
         blockIndent += 2;

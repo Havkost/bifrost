@@ -68,5 +68,5 @@ bool remove_from_queue(if_queue *queue);
 void (*get_from_queue(if_queue *queue))();
 void init_if_statement(if_statement *statement, void *condition, void *body, unsigned int update_delay);
 void run_if_thread(void *_args);
-void update_klokken();
+void update_klokken(Time *klokken);
 bool true_cond();

@@ -1,7 +1,5 @@
 #include "Eziot.h"
 
-Time klokken;
-
 struct timeval tv;
 
 int time_compare(Time t1, Time t2) {
@@ -55,8 +53,8 @@ Time time_generator() {
     return res;
 }
 
-void update_klokken() {
-    klokken = time_generator();
+void update_klokken(Time *klokken) {
+    *klokken = time_generator();
 }
 
 int send_field_to_endpoint(char *endpoint, char *field, void *value_ptr, enum Datatype datatype) {
