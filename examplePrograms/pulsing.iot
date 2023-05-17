@@ -1,0 +1,53 @@
+gem enhed "localhost:3000/lightbulb" med
+    heltal 100 som brightness
+    boolsk falsk som power
+som lampe
+
+# Initialiser enhed
+sæt brightness for lampe til 0
+sæt power for lampe til sandt # Kommentar 2
+
+# Definer variable
+gem boolsk falsk som flipflop
+gem heltal 1 som retning
+gem heltal 20 som hastighed
+gem heltal 0 som min_brightness
+gem heltal 100 som maks_brightness
+
+# FlipFlop
+hvis flipflop
+    print "FlipFlop er sand"
+    kør skift_brightness
+    sæt flipflop til falsk
+.
+
+hvis ikke flipflop
+    print "FlipFlop er falsk"
+    kør skift_brightness
+    sæt flipflop til sandt
+.
+
+# Flyt brightness i retning
+rutine skift_brightness
+    sæt brightness for lampe til brightness for lampe + retning * hastighed
+    print brightness for lampe
+    kør indskrænk_brightness
+    kør håndter_retning_skift
+.
+
+# Hold brightness inde for grænserne [0;100]
+rutine indskrænk_brightness
+    hvis brightness for lampe < min_brightness
+        sæt brightness for lampe til min_brightness
+    .
+    hvis brightness for lampe > maks_brightness
+        sæt brightness for lampe til maks_brightness
+    .
+.
+
+# Skift retning
+rutine håndter_retning_skift
+    hvis brightness for lampe er maks_brightness eller brightness for lampe er min_brightness
+        sæt retning til -1 * retning
+    .
+.
