@@ -47,7 +47,7 @@ public enum TokenType {
     TID(null),
     COMMENT(null);
 
-    final String name;
+    private final String name;
 
     TokenType(String name) {
         this.name = name;
