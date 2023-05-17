@@ -377,7 +377,7 @@ public class CCodeGenerator implements Visitor {
             if (ast instanceof IfNode ifNode) {
                 indent(blockIndent);
                 emit("init_if_statement(&ifStatement" + ifNode.getNum() + ", ifCond" + ifNode.getNum()
-                        + ", ifBody" + ifNode.getNum() + ", 500);\n");
+                        + ", ifBody" + ifNode.getNum() + ", 2000);\n");
             }
         });
 

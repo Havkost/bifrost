@@ -21,6 +21,7 @@ typedef struct {
     bool last_state;
     struct timeval last_time_checked;
     int update_delay;
+    pthread_mutex_t last_state_lock;
 } if_statement;
 
 typedef struct {

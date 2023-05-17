@@ -216,7 +216,8 @@ int get_field_from_endpoint(char *endpoint, char *field, void *value_ptr, enum D
 */
 
 void init_if_statement(if_statement *statement, void *condition, void *body, unsigned int update_delay) {
-
+    pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+    statement->last_state_lock = lock;
     statement->condition = condition;
     statement->body = body;
     statement->last_state = false;
@@ -257,11 +258,17 @@ bool update_if_check(if_statement *statement, if_queue *task_queue) {
             tv.tv_sec <= statement->last_time_checked.tv_sec + statement->update_delay / 1000
             && tv.tv_usec < statement->last_time_checked.tv_usec + (statement->update_delay%1000) * 1000) return false;
     if(statement->condition()) {
+        pthread_mutex_lock(&statement->last_state_lock);
         if(!statement->last_state) {
             statement->last_state = true;
+            pthread_mutex_unlock(&statement->last_state_lock);
             add_to_queue(task_queue, statement->body);
-        }
-    } else statement->last_state = false;
+        } else pthread_mutex_unlock(&statement->last_state_lock);
+    } else {
+        pthread_mutex_lock(&statement->last_state_lock);
+        statement->last_state = false;
+        pthread_mutex_unlock(&statement->last_state_lock);
+    }
     statement->last_time_checked = tv;
     return true;
 }
