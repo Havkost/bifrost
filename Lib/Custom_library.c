@@ -107,8 +107,8 @@ int send_field_to_endpoint(char *endpoint, char *field, void *value_ptr, enum Da
         res = curl_easy_perform(curl);
         /* Check for errors */
         if(res != CURLE_OK)
-            fprintf(stderr, "curl_easy_perform() failed: %s\n",
-                    curl_easy_strerror(res));
+            fprintf(stderr, "Kunne ikke oprette forbindelse til url: %s\nFejlkode: %s\n",
+                    url, curl_easy_strerror(res));
     }
 
     // Cleanup
