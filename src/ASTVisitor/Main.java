@@ -82,8 +82,6 @@ public class Main {
                 CharArrayReader reader = new CharArrayReader(sourceString.toString().toCharArray());
                 CharStream charStream = new CharStream(reader);
 
-                CodeScanner.initialize(charStream);
-
                 ASTParser p = new ASTParser(charStream);
                 AST ast = p.prog();
 
