@@ -13,6 +13,7 @@ public class SymbolTableFilling implements Visitor {
 
     @Override
     public void visit(ProgramNode n) {
+        AST.SymbolTable.put("klokken", AST.DataTypes.TID);
         for(AST ast : n.getChild()){
             ast.accept(this);
         }
@@ -119,7 +120,7 @@ public class SymbolTableFilling implements Visitor {
 
     @Override
     public void visit(KlokkenNode n) {
-        AST.SymbolTable.put("klokken", AST.DataTypes.TID);
+        /*AST.SymbolTable.put("klokken", AST.DataTypes.TID); // Har rykket dette til program node, så klokken altid er med rn*/
     }
 
     @Override

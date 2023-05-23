@@ -1,7 +1,5 @@
 #include "Eziot.h"
 
-Time klokken;
-
 struct timeval tv;
 
 int time_compare(Time t1, Time t2) {
@@ -55,8 +53,8 @@ Time time_generator() {
     return res;
 }
 
-void update_klokken() {
-    klokken = time_generator();
+void update_klokken(Time *klokken) {
+    *klokken = time_generator();
 }
 
 int send_field_to_endpoint(char *endpoint, char *field, void *value_ptr, enum Datatype datatype) {
@@ -109,8 +107,8 @@ int send_field_to_endpoint(char *endpoint, char *field, void *value_ptr, enum Da
         res = curl_easy_perform(curl);
         /* Check for errors */
         if(res != CURLE_OK)
-            fprintf(stderr, "curl_easy_perform() failed: %s\n",
-                    curl_easy_strerror(res));
+            fprintf(stderr, "Kunne ikke oprette forbindelse til url: %s\nFejlkode: %s\n",
+                    url, curl_easy_strerror(res));
     }
 
     // Cleanup
@@ -258,17 +256,11 @@ bool update_if_check(if_statement *statement, if_queue *task_queue) {
             tv.tv_sec <= statement->last_time_checked.tv_sec + statement->update_delay / 1000
             && tv.tv_usec < statement->last_time_checked.tv_usec + (statement->update_delay%1000) * 1000) return false;
     if(statement->condition()) {
-        pthread_mutex_lock(&statement->last_state_lock);
         if(!statement->last_state) {
             statement->last_state = true;
-            pthread_mutex_unlock(&statement->last_state_lock);
             add_to_queue(task_queue, statement->body);
-        } else pthread_mutex_unlock(&statement->last_state_lock);
-    } else {
-        pthread_mutex_lock(&statement->last_state_lock);
-        statement->last_state = false;
-        pthread_mutex_unlock(&statement->last_state_lock);
-    }
+        }
+    } else statement->last_state = false;
     statement->last_time_checked = tv;
     return true;
 }
