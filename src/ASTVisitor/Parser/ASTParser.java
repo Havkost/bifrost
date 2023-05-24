@@ -144,6 +144,29 @@ public class ASTParser {
         return lhs;
     }
 
+    public AST factor() {
+        AST expr;
+        if (ts.peek() == TokenType.IKKE) {
+            expect(TokenType.IKKE);
+            expr = new UnaryComputing(Operators.NOT, expr(Operators.NOT.prec), line);
+        } else if (ts.peek() == TokenType.LPAREN) {
+            expect(TokenType.LPAREN);
+            expr = new UnaryComputing("paren", expr(0), line);
+            expect(TokenType.RPAREN);
+        } else if (ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.DECIMALTAL_LIT ||
+                   ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT ||
+                   ts.peek() == TokenType.KLOKKEN ||
+                   ts.peek() == TokenType.TID || ts.peek() == TokenType.MINUS) {
+            expr = value();
+        } else if (ts.peek() == TokenType.ID) {
+            expr = field();
+        } else {
+            throw new UnexpectedExpressionToken(ts.peek(), line);
+        }
+
+        return expr;
+    }
+
     boolean isBinaryOperator(TokenType type) {
         switch (type) {
             case ELLER, OG, ER, IKKE, DIVIDE, TIMES, PLUS, MINUS, LESS_THAN, GREATER_THAN -> {
@@ -177,29 +200,6 @@ public class ASTParser {
         if (consume)
             expect(ts.peek());
         return op;
-    }
-
-    public AST factor() {
-        AST expr;
-        if (ts.peek() == TokenType.IKKE) {
-            expect(TokenType.IKKE);
-            expr = new UnaryComputing(Operators.NOT, expr(Operators.NOT.prec), line);
-        } else if (ts.peek() == TokenType.LPAREN) {
-            expect(TokenType.LPAREN);
-            expr = new UnaryComputing("paren", expr(0), line);
-            expect(TokenType.RPAREN);
-        } else if (ts.peek() == TokenType.HELTAL_LIT || ts.peek() == TokenType.DECIMALTAL_LIT ||
-                   ts.peek() == TokenType.BOOLSK_LIT || ts.peek() == TokenType.TEKST_LIT ||
-                   ts.peek() == TokenType.KLOKKEN ||
-                   ts.peek() == TokenType.TID || ts.peek() == TokenType.MINUS) {
-            expr = value();
-        } else if (ts.peek() == TokenType.ID) {
-            expr = field();
-        } else {
-            throw new UnexpectedExpressionToken(ts.peek(), line);
-        }
-
-        return expr;
     }
 
     public AST varDcl(){
