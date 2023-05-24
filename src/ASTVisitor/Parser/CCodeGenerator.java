@@ -448,7 +448,7 @@ public class CCodeGenerator implements Visitor {
                                 thread_count++;
                                 pthread_mutex_unlock(&thread_count_lock);
                             } else {
-                                printf("Error\\n");
+                                printf("Multithreading fejl\\n");
                             }
                         }
                     }
