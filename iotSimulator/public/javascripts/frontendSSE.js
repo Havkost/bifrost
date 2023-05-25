@@ -1,5 +1,4 @@
 const eventSource = new EventSource('/stateSSE');
-const lightbulbElement = document.getElementById('lightbulb');
 
 const deviceElements = {
   lightbulb: {
@@ -18,15 +17,12 @@ const deviceElements = {
 }
 
 const updateLightbulb = (update) => {
-  newBrightness = update.brightness ?? undefined;
-  newPower = update.power ?? undefined;
-  if(newBrightness != undefined) deviceElements.lightbulb.glow.style.opacity = newBrightness/100;
-  if(newPower != undefined) deviceElements.lightbulb.glow.style.display = newPower ? 'block' : 'none'; 
+  if(update.brightness != undefined) deviceElements.lightbulb.glow.style.opacity = update.brightness/100;
+  if(update.power != undefined) deviceElements.lightbulb.glow.style.display = update.power ? 'block' : 'none';
 }
 
 const updateDisplay = (update) => {
-  newContent = update.content ?? undefined;
-  if(newContent != undefined) deviceElements.display.content.innerText = newContent;
+  if(update.content != undefined) deviceElements.display.content.innerText = update.content;
 }
 
 const deviceUpdateFunctions = {
