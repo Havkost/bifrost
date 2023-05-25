@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="P4-EZiot:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/P4_EZiot_jar</output-path>
+    <root id="archive" name="P4-EZiot.jar">
+      <element id="module-output" name="P4-EZiot" />
+    </root>
+  </artifact>
+</component>
