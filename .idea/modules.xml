@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/P4-EZiot.iml" filepath="$PROJECT_DIR$/P4-EZiot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Bifrost.iml" filepath="$PROJECT_DIR$/Bifrost.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Bifrost:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Bifrost_jar</output-path>
+    <root id="archive" name="P4-EZiot.jar">
+      <element id="module-output" name="Bifrost" />
+    </root>
+  </artifact>
+</component>
