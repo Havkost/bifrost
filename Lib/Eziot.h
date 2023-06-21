@@ -8,7 +8,7 @@
 #include <pthread.h>
 
 #define IF_QUEUE_SIZE 16
-#define MAX_THREADS 3
+#define MAX_THREADS 4
 
 typedef struct {
     int hour;
