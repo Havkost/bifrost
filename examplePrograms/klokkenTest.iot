@@ -1,0 +1,12 @@
+gem tekst "formiddag" som a
+gem tekst "eftermiddag" som b
+gem tid 12:00 som tiden
+
+print klokken
+
+hvis klokken < tiden
+    print a
+.
+hvis klokken > tiden eller klokken er tiden
+    print b
+.

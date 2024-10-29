@@ -1,0 +1,26 @@
+gem heltal 5+12 som a
+gem heltal 5*a som b
+gem tekst "Hej med dig" som x
+gem boolsk sandt som erLukket
+gem boolsk falsk som erTændt
+gem decimaltal 30,0 som c
+gem decimaltal 40,0 som d
+gem tekst "test af Tekst specifier" som tekstTest
+
+
+hvis erLukket og erTændt
+    hvis erLukket eller erTændt
+        hvis a > b
+            hvis c er d
+                hvis c er a
+                    hvis erLukket er erTændt
+                        sæt d til b + c + d + a * c / d
+                    .
+                .
+            .
+        .
+    .
+.
+
+hvis erLukket og erTændt eller erTændt eller erLukket er ikke erLukket
+.

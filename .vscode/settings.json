@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.a": "c",
+        "*.tcc": "c",
+        "limits": "c"
+    }
+}

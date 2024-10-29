@@ -1,0 +1,20 @@
+gem enhed "localhost:3000/lightbulb" med
+    heltal 0 som brightness
+    boolsk sandt som power
+som lampe1
+
+gem enhed "localhost:3000/display" med
+    tekst "hej" som content
+som skærm1
+
+gem enhed "localhost:3000/thermometer" med
+    decimaltal 20,0 som temperature
+som termo1
+
+gem enhed "localhost:3000/motionsensor" med
+    boolsk falsk som presence
+som bevæg1
+
+hvis klokken er 11:30
+    sæt power for lampe1 til sandt
+.

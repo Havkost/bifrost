@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+:root {
+  --col-primary-700: #0E7490;
+  --col-gray-900: #1C1917;
+  --col-gray-800: #292524;
+  --col-gray-700: #44403C;
+  --col-gray-600: #57534E;
+  --col-gray-500: #78716C;
+  --col-gray-400: #A8A29E;
+  --col-gray-300: #D6D3D1;
+  --col-gray-200: #E7E5E4;
+  --col-gray-100: #F5F5F4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: var(--col-gray-800);
+  color: white;
+  height: 100vh;
+}
+
+#content-container {
+  display: grid;
+  place-content: center;
+  grid-template-columns: 1fr 2fr;
+}
+
+#description-container {
+  margin: auto;
+  padding: 20px;
+  background-color: var(--col-primary-700);
+  height: 100%;
+  box-shadow: -30px -1px 90px -44px rgba(0,0,0,0.75) inset;
+  -webkit-box-shadow: -30px -1px 90px -44px rgba(0,0,0,0.75) inset;
+  -moz-box-shadow: -30px -1px 90px -44px rgba(0,0,0,0.75) inset;
+  font-family: helvetica;
+}
+
+a {
+  text-decoration: none;
+}
+
+.title {
+  font-size: 3em;
+}
+
+#device-container {
+  margin: auto;
+  height: 100vh;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 8em;
+}
+
+#lightbulb {
+  position: relative;
+}
+
+#lightbulb img {
+  position: absolute;
+  width: 15em;
+  inset: 0;
+  top: 7.5em;
+  margin: auto;
+}
+
+#glow {
+  display: none;
+}
+
+#glow::after {
+  position: absolute;
+  width: 20em;
+  height: 20em;
+  inset: 0;
+  border-radius: 100vw;
+  margin: auto;
+  content: "";
+  background: radial-gradient(rgba(227, 241, 255, 1) 0%, rgba(227, 241, 255, 0.9) 10%, rgba(255, 255, 255, 0) 70%);
+}
+
+#lcd-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#content {
+    font-family: 'VT323', monospace;
+    font-size: 25px;
+    text-align: center;
+    color: greenyellow;
+    background-color: var(--col-gray-700);
+    border-radius: 10px;
+    padding: 10px 40px;
+    border: var(--col-gray-900) 2px solid;
+    letter-spacing: 3px;
+}
+
+#thermometer {
+  display: grid;
+  place-content: center;
+}
+
+#thermometer input {
+  width: 250px;
+}
+
+#thermometer label {
+  text-align: center;
+  font-size: 20px;
+}
+
+#motion-sensor {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+#motion-sensor-area {
+  flex: 1;
+  margin: 1em;
+  background-color: var(--col-gray-500);
+  border-radius: 10px;
+  border: var(--col-gray-900) 2px solid;
+}
+
+#motion-sensor-area:hover {
+  background-color: var(--col-gray-400);
+}
+
+h1.title {
+  text-align: center;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+}
+
+.subtitle {
+  letter-spacing: 2px;
+  color: var(--col-gray-100);
+  font-family: helvetica;
+}

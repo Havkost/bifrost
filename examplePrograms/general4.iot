@@ -1,0 +1,6 @@
+gem decimaltal 5,5 som a
+gem heltal 5 som b
+gem heltal 20 som c
+hvis (a + b) er 10,5
+    sæt c til 4
+.

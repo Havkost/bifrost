@@ -1,0 +1,28 @@
+gem enhed "localhost:3000/lightbulb" med
+    heltal 50 som brightness
+    boolsk falsk som power
+    tekst "hej" som besked
+    decimaltal -3,3 som temperatur
+som lampe1
+
+gem enhed "ip:port/endpoint" med
+    heltal 0 som lysstyrke
+    boolsk falsk som tændt
+    tekst "hej" som besked
+    decimaltal 3,3 som temperatur
+som lampe2
+
+# Det her er en kommentar
+
+sæt brightness for lampe1 til 20
+sæt power for lampe1 til falsk # Kommentar 2
+
+hvis brightness for lampe1 < 80
+    sæt power for lampe1 til sandt
+    sæt brightness for lampe1 til 100
+    print brightness for lampe1
+.
+
+hvis klokken er 14:24
+    sæt power for lampe1 til falsk
+.

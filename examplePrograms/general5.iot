@@ -1,0 +1,16 @@
+gem heltal 3 som a
+gem tekst "Hello world" som b
+
+rutine test
+    hvis a er 5
+        sæt a til 6
+    .
+    hvis a er 4
+        sæt a til 5
+    .
+    hvis a er 3
+        sæt a til 4
+    .
+    print a
+.
+gentag test 3 gange

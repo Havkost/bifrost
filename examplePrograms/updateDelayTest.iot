@@ -1,0 +1,14 @@
+gem enhed "localhost:3000/lightbulb" med
+    heltal 100 som brightness
+    boolsk falsk som power
+som lampe1
+
+hvis power for lampe1
+    sæt power for lampe1 til falsk
+.
+
+# Test på
+
+hvis ikke power for lampe1
+    sæt power for lampe1 til sandt
+.

@@ -1,0 +1,6 @@
+gem heltal 3 som a
+
+hvis a er 10
+    sæt a til 2.
+print a
+

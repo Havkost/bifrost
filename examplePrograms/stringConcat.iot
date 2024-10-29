@@ -1,0 +1,6 @@
+gem heltal 20 som a
+gem tekst "hej" som b
+gem tekst "test" som c
+
+sæt c til c + b
+print c

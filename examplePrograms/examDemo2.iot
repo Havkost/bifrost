@@ -1,0 +1,29 @@
+gem enhed "localhost:3000/thermometer" med
+    decimaltal 28,0 som temperature
+som termometer
+
+gem enhed "localhost:3000/lightbulb" med
+    boolsk falsk som power
+    heltal 100 som brightness
+som lampe
+
+gem enhed "localhost:3000/display" med
+    tekst "" som content
+som display
+
+gem enhed "localhost:3000/motionsensor" med
+    boolsk falsk som presence
+som bevægelsessensor
+
+gem decimaltal 20,5 som temperatur_skift
+
+hvis temperature for termometer > temperatur_skift
+    sæt content for display til "Det er brænd varmt!"
+    sæt power for lampe til falsk
+    print klokken
+.
+
+hvis temperature for termometer < temperatur_skift
+    sæt content for display til "Det er koldt!"
+    sæt power for lampe til sandt
+.

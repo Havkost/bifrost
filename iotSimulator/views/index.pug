@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  #content-container
+    #description-container
+      h1.title Devices
+      h4.subtitle
+        i Here you can see the status of simulated IoT devices.
+      h2.lightbulb-title Lightbulb
+      p #[strong power:] turned on/off using true/false booleans.
+      p #[strong brightness:] adjusted using number ranges from 0 - 100.
+      h2.lcd-display-title LCD-display
+      p #[strong content:] changed using a string.
+      h2.thermometer-title Thermometer 
+      p #[strong temperature:] can be read as float. 
+      h2.motion-sensor-title Motion sensor
+      p #[strong presence updated:] read as true/false booleans.
+      p #[strong lastUpdated:] date of state change, read as a string.
+    #device-container
+      #lightbulb
+        img(src="/images/lightbulb.png", alt="Lightbulb")
+        #glow
+      #lcd-display
+        p#content ...
+      #thermometer
+        label#thermometer-label(for='thermometer')
+        input#thermometer-slider.slider(name='thermometer' type='range' min='-50' max='50' value='20.0' step='0.1') 
+      #motion-sensor
+        label#motion-sensor-label Motion detection area
+        #motion-sensor-area
